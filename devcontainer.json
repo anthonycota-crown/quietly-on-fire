@@ -1,0 +1,14 @@
+{
+  "name": "Codespace Dev",
+  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "features": {},
+  "postCreateCommand": "",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.vscode-typescript-next",
+        "ms-python.python"
+      ]
+    }
+  }
+}
