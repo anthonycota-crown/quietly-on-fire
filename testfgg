@@ -1,3 +1,9 @@
+
+
+    Pulled all HD6000 + HD6000c TDM modules not currently on firmware 169044P10702001. Result: 3,249 modules. For context, 8,150 are already on target (11,398 total active HD6000-family TDM modules). HD6000c is included, filter the module_model column if HD6000-only is wanted. Note: “under this version” interpreted as “not on target build”, flag if a numeric-version cutoff was intended.
+
+
+
 SELECT
     SUM(CASE WHEN firmware_version =  '169044P10702001' THEN 1 ELSE 0 END) AS on_target,
     SUM(CASE WHEN firmware_version <> '169044P10702001' THEN 1 ELSE 0 END) AS off_target,
