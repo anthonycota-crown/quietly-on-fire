@@ -1,0 +1,52 @@
+SET @ModuleMAC = '<comma-separated MAC list from parameter>';
+
+WITH
+hola_ids AS (
+    SELECT
+        commDev.MacAddress,
+        moduleHola.ModuleKey,
+        commDev.ModuleHolaId
+    FROM truck_sw_cmptblty_oprtnl.communicationdevice commDev
+    LEFT JOIN truck_sw_cmptblty_oprtnl.moduleHola
+        ON moduleHola.ModuleHolaId = commDev.ModuleHolaId
+    WHERE FIND_IN_SET(commDev.MacAddress, REPLACE(@ModuleMAC, ' ', ''))
+),
+
+communicating AS (
+    SELECT h.MacAddress
+    FROM hola_ids h
+    WHERE EXISTS (
+        SELECT 1
+        FROM eqpmnt_oprtnl.module m
+        WHERE m.module_bk = h.ModuleKey
+    )
+),
+
+module_detail AS (
+    SELECT
+        h.MacAddress,
+        h.ModuleKey,
+        m.module_id,
+        m.assctn_status,
+        m.firmware_version,
+        m.protocol_version,
+        m.cnnctn_type_text_id,
+        m.access_point_mac_address,
+        m.last_cmmnctn_dt_utc
+    FROM hola_ids h
+    LEFT JOIN eqpmnt_oprtnl.module m
+        ON m.module_bk = h.ModuleKey
+)
+
+SELECT
+    md.MacAddress                                AS 'Module MAC',
+    md.access_point_mac_address                  AS 'Access Point MAC',
+    COALESCE(md.last_cmmnctn_dt_utc, 'Never')    AS 'Last Comm Date (UTC)',
+    md.assctn_status                             AS 'Association Status',
+    md.cnnctn_type_text_id                       AS 'Connection Type',
+    md.firmware_version                          AS 'Firmware Version',
+    md.protocol_version                          AS 'Protocol Version',
+    'Registered - Not Communicating'             AS 'Non-Comm Reason'
+FROM module_detail md
+WHERE md.MacAddress NOT IN (SELECT MacAddress FROM communicating)
+ORDER BY md.last_cmmnctn_dt_utc ASC;
