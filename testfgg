@@ -3,6 +3,17 @@
     Pulled all HD6000 + HD6000c TDM modules not currently on firmware 169044P10702001. Result: 3,249 modules. For context, 8,150 are already on target (11,398 total active HD6000-family TDM modules). HD6000c is included, filter the module_model column if HD6000-only is wanted. Note: “under this version” interpreted as “not on target build”, flag if a numeric-version cutoff was intended.
 
 
+       Report of All HD6000 / HD6000c TDM Modules Not on Firmware 169044P10702001”
+That’s the honest description of the 3,249-row extract.
+Why each piece
+	•	HD6000 / HD6000c — the model scope, per Anthony’s Nov 7 correction. The original title’s “HD6000” was right; you just added the c variant.
+	•	TDM Modules — the device scope, from Tyler’s Nov 6 comment (“any modules under this TDM version”). The original title omitted this entirely.
+	•	Not on Firmware 169044P10702001 — the real firmware target, from Tyler’s Nov 6 comment. Replaces the title’s incorrect “less than 1.7.2.”
+The honest caveat
+I’d hold off on actually renaming the ticket until Tyler confirms two things, because the title depends on them:
+	1.	Is 169044P10702001 definitely the target? If 1.7.2 was a separate real thing, the title changes.
+	2.	Does “under” mean “not on” or “numerically older”? If it’s “older,” the title should say “Below Firmware…” not “Not on Firmware…” — those describe different result sets.
+
 
 SELECT
     SUM(CASE WHEN firmware_version =  '169044P10702001' THEN 1 ELSE 0 END) AS on_target,
