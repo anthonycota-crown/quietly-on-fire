@@ -1,0 +1,26 @@
+SELECT
+    SUM(CASE WHEN firmware_version =  '169044P10702001' THEN 1 ELSE 0 END) AS on_target,
+    SUM(CASE WHEN firmware_version <> '169044P10702001' THEN 1 ELSE 0 END) AS off_target,
+    SUM(CASE WHEN firmware_version IS NULL THEN 1 ELSE 0 END)              AS null_fw
+FROM LifecycleServicesReporting.dbo.truck_firmware_tracker
+WHERE module_model IN ('HD6000','HD6000c')
+  AND device_name = 'TDM'
+  AND current_flag = 1
+  AND deleted_flag != 1;
+
+
+SELECT COUNT(*) AS active_rows_before_dedupe
+FROM LifecycleServicesReporting.dbo.truck_firmware_tracker
+WHERE module_model IN ('HD6000','HD6000c')
+  AND device_name = 'TDM'
+  AND current_flag = 1
+  AND deleted_flag != 1;
+
+
+SELECT DISTINCT firmware_version, LEN(firmware_version) AS len
+FROM LifecycleServicesReporting.dbo.truck_firmware_tracker
+WHERE module_model IN ('HD6000','HD6000c')
+  AND device_name = 'TDM'
+  AND firmware_version LIKE '%169044P10702001%';
+
+
