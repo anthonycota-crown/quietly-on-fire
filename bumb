@@ -8,3 +8,66 @@ hola_ids AS (
         ON moduleHola.ModuleHolaId = commDev.ModuleHolaId
     WHERE FIND_IN_SET(commDev.MacAddress, REPLACE(@ModuleMAC, ' ', ''))
 )
+
+SET @ModuleMAC = '<comma-separated MAC list from parameter>';
+
+WITH
+-- Resolve ModuleKey and MacAddress for every submitted MAC that is
+-- registered in communicationdevice. FIND_IN_SET mirrors the exact
+-- pattern used in the existing communicating-count query.
+hola_ids AS (
+    SELECT
+        commDev.MacAddress,
+        moduleHola.ModuleKey,
+        commDev.ModuleHolaId
+    FROM truck_sw_cmptblty_oprtnl.communicationdevice commDev
+    LEFT JOIN truck_sw_cmptblty_oprtnl.moduleHola
+        ON moduleHola.ModuleHolaId = commDev.ModuleHolaId
+    WHERE FIND_IN_SET(commDev.MacAddress, REPLACE(@ModuleMAC, ' ', ''))
+),
+
+-- Identify which of those registered modules are confirmed communicating
+-- via the EXISTS check against eqpmnt_oprtnl.module.
+communicating AS (
+    SELECT h.MacAddress
+    FROM hola_ids h
+    WHERE EXISTS (
+        SELECT 1
+        FROM eqpmnt_oprtnl.module m
+        WHERE m.module_bk = h.ModuleKey
+    )
+),
+
+-- Pull detail columns for all registered modules regardless of status.
+module_detail AS (
+    SELECT
+        h.MacAddress,
+        h.ModuleKey,
+        m.module_id,
+        m.last_comm_dt_utc,    -- VERIFY: run DESCRIBE eqpmnt_oprtnl.module
+        m.status_text_id,
+        m.firmware_version,    -- drop if column does not exist on table
+        e.mfr_serial_number,
+        e.eqpmnt_model_id
+    FROM hola_ids h
+    LEFT JOIN eqpmnt_oprtnl.module m
+        ON m.module_bk = h.ModuleKey
+    LEFT JOIN eqpmnt_oprtnl.eqpmnt e
+        ON e.eqpmnt_id = m.eqpmnt_id   -- VERIFY FK direction
+)
+
+-- Return registered modules that are not communicating, oldest first.
+SELECT
+    md.MacAddress                            AS 'Module MAC',
+    COALESCE(md.last_comm_dt_utc, 'Never')   AS 'Last Comm Date (UTC)',
+    md.mfr_serial_number                     AS 'Equipment Serial',
+    md.status_text_id                        AS 'Module Status',
+    md.firmware_version                      AS 'Firmware Version',
+    'Registered - Not Communicating'         AS 'Non-Comm Reason'
+FROM module_detail md
+WHERE md.MacAddress NOT IN (SELECT MacAddress FROM communicating)
+ORDER BY md.last_comm_dt_utc ASC;
+
+
+
+  
