@@ -1,0 +1,10 @@
+hola_ids AS (
+    SELECT
+        commDev.MacAddress,
+        moduleHola.ModuleKey,
+        commDev.ModuleHolaId
+    FROM truck_sw_cmptblty_oprtnl.communicationdevice commDev
+    LEFT JOIN truck_sw_cmptblty_oprtnl.moduleHola
+        ON moduleHola.ModuleHolaId = commDev.ModuleHolaId
+    WHERE FIND_IN_SET(commDev.MacAddress, REPLACE(@ModuleMAC, ' ', ''))
+)
