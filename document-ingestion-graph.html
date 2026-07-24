@@ -1,0 +1,2615 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Document Ingestion Graph</title>
+<style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit}iframe{display:block;width:100%;max-width:1180px;height:calc(100vh - 2rem);margin:0 auto;border:0}</style>
+</head>
+<body>
+<iframe sandbox="allow-scripts" referrerpolicy="no-referrer" title="Document Ingestion Graph" srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27; &#x27;unsafe-eval&#x27; &#x27;wasm-unsafe-eval&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src &#x27;unsafe-inline&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src &#x27;none&#x27;; object-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;&quot;&gt;
+&lt;title&gt;Document Ingestion Graph&lt;/title&gt;
+&lt;style&gt;:root {
+  color-scheme: light dark;
+  background-color: var(--background) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: light-dark(rgb(255 255 255), rgb(24 24 24));
+  --foreground: light-dark(rgb(26 28 31), rgb(255 255 255));
+  --card: color-mix(in oklab, var(--foreground) 5%, transparent);
+  --card-foreground: var(--foreground);
+  --popover: light-dark(rgb(255 255 255), rgb(45 45 45));
+  --popover-foreground: var(--foreground);
+  --primary: light-dark(rgb(51 156 255), rgb(131 195 255));
+  --primary-foreground: light-dark(rgb(255 255 255), rgb(13 13 13));
+  --secondary: light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%));
+  --secondary-foreground: var(--foreground);
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: light-dark(
+    rgb(26 28 31 / 49.4%),
+    rgb(255 255 255 / 49.8%)
+  );
+  --accent: light-dark(rgb(229 242 255), rgb(13 39 63));
+  --accent-foreground: var(--primary);
+  --destructive: light-dark(rgb(226 85 7), rgb(255 133 73));
+  --border: light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%));
+  --input: light-dark(
+    rgb(26 28 31 / 11.8%),
+    color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+  );
+  --ring: light-dark(rgb(51 156 255), rgb(131 195 255 / 76%));
+  --font-size-base: 14px;
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, &quot;Segoe UI&quot;, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, &quot;Liberation Mono&quot;,
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --radius: 12.5px;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 17 17&#x27;%3E%3Cpath d=&#x27;M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z&#x27;/%3E%3C/svg%3E&quot;);
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+  --color-background-primary: var(--background);
+  --color-text-primary: var(--foreground);
+  --color-border-secondary: var(--border);
+}
+
+:root[data-theme=&quot;light&quot;] {
+  color-scheme: light;
+}
+
+:root[data-theme=&quot;dark&quot;] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html &gt; body {
+  margin: 0;
+  padding: 5px;
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: pointer;
+  font-weight: var(--viz-font-weight-medium);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+}
+
+.table :is(th, td) {
+  padding-block: 10px;
+  padding-inline: 0 24px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.table-responsive &gt; .table :is(th, td) {
+  overflow-wrap: break-word;
+}
+
+.table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.table :is(caption, thead th) {
+  font-weight: 600;
+}
+
+.table thead th {
+  padding-block: 8px;
+  border-bottom-color: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+
+.table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+
+.table.table-sm :is(th, td) {
+  padding-block: 6px;
+}
+
+.table.table-sm :is(th, td):not(:last-child) {
+  padding-inline-end: 16px;
+}
+
+.table :is(.text-end, [align=&quot;right&quot;]) {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.table :is(.text-center, [align=&quot;center&quot;]) {
+  text-align: center;
+}
+
+.table .text-nowrap {
+  white-space: nowrap;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: superellipse(1.5);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget &gt; :not(.card) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls &gt; .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls &gt; .form-label &gt; :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type=&quot;file&quot;] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type=&quot;file&quot;]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type=&quot;file&quot;]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type=&quot;color&quot;] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: superellipse(1.5);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: &quot;&quot;;
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type=&quot;radio&quot;] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type=&quot;radio&quot;]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: &quot;&quot;;
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+    [aria-pressed=&quot;true&quot;],
+    [aria-selected=&quot;true&quot;],
+    .is-selected
+  ) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed=&quot;true&quot;], [aria-selected=&quot;true&quot;], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget &gt; svg {
+  width: 100%;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html&gt;body{padding:0}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id=&quot;contextos-ingestion-graph&quot;&gt;
+  &lt;div class=&quot;graph-key viz-row text-small text-muted&quot; aria-label=&quot;Graph key&quot;&gt;
+    &lt;span&gt;Arrows show execution flow&lt;/span&gt;
+    &lt;span&gt;Branch labels show conditions&lt;/span&gt;
+    &lt;span&gt;Select a numbered process for its settings&lt;/span&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;graph-workspace&quot;&gt;
+  &lt;div class=&quot;graph-column&quot;&gt;
+  &lt;section class=&quot;graph-canvas&quot; aria-label=&quot;Interactive document ingestion graph&quot;&gt;
+    &lt;svg class=&quot;ingestion-graph-edges&quot; id=&quot;ingestion-graph-edges&quot; role=&quot;img&quot; aria-labelledby=&quot;ingestion-graph-title ingestion-graph-desc&quot;&gt;
+      &lt;title id=&quot;ingestion-graph-title&quot;&gt;ContextOS document ingestion directed graph&lt;/title&gt;
+      &lt;desc id=&quot;ingestion-graph-desc&quot;&gt;A directed process graph from source selection through validation, review, searchable storage, enrichment, intelligence, and library refinement.&lt;/desc&gt;
+      &lt;defs&gt;
+        &lt;marker id=&quot;ingestion-arrow&quot; viewBox=&quot;0 0 10 10&quot; refX=&quot;9&quot; refY=&quot;5&quot; markerWidth=&quot;7&quot; markerHeight=&quot;7&quot; orient=&quot;auto-start-reverse&quot;&gt;
+          &lt;path d=&quot;M 0 0 L 10 5 L 0 10 z&quot; class=&quot;arrow-neutral&quot;&gt;&lt;/path&gt;
+        &lt;/marker&gt;
+        &lt;marker id=&quot;ingestion-arrow-active&quot; viewBox=&quot;0 0 10 10&quot; refX=&quot;9&quot; refY=&quot;5&quot; markerWidth=&quot;7&quot; markerHeight=&quot;7&quot; orient=&quot;auto-start-reverse&quot;&gt;
+          &lt;path d=&quot;M 0 0 L 10 5 L 0 10 z&quot; class=&quot;arrow-active&quot;&gt;&lt;/path&gt;
+        &lt;/marker&gt;
+      &lt;/defs&gt;
+      &lt;g id=&quot;ingestion-edge-layer&quot;&gt;&lt;/g&gt;
+    &lt;/svg&gt;
+
+    &lt;div class=&quot;ingestion-graph-grid&quot; id=&quot;ingestion-graph-grid&quot;&gt;
+      &lt;div class=&quot;process-node node-source&quot; data-node-id=&quot;source&quot;&gt;
+        &lt;button class=&quot;btn btn-block&quot; type=&quot;button&quot; data-stage-id=&quot;source&quot; aria-pressed=&quot;true&quot;&gt;01 · Source selection&lt;/button&gt;
+        &lt;span class=&quot;node-tech text-small text-muted&quot;&gt;TSX · React · browser APIs&lt;/span&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;process-node node-acquire&quot; data-node-id=&quot;acquire&quot;&gt;
+        &lt;button class=&quot;btn btn-block&quot; type=&quot;button&quot; data-stage-id=&quot;acquire&quot; aria-pressed=&quot;false&quot;&gt;02 · Web acquisition&lt;/button&gt;
+        &lt;span class=&quot;node-tech text-small text-muted&quot;&gt;TypeScript · Express · guarded HTTP&lt;/span&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;process-node node-guard&quot; data-node-id=&quot;guard&quot;&gt;
+        &lt;button class=&quot;btn btn-block&quot; type=&quot;button&quot; data-stage-id=&quot;guard&quot; aria-pressed=&quot;false&quot;&gt;03 · Intake guard&lt;/button&gt;
+        &lt;span class=&quot;node-tech text-small text-muted&quot;&gt;TypeScript · deterministic validation&lt;/span&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;state-node node-rejected&quot; data-node-id=&quot;rejected&quot;&gt;
+        &lt;span class=&quot;viz-badge text-destructive&quot;&gt;Rejected · no batch&lt;/span&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;process-node node-extract&quot; data-node-id=&quot;extract&quot;&gt;
+        &lt;button class=&quot;btn btn-block&quot; type=&quot;button&quot; data-stage-id=&quot;extract&quot; aria-pressed=&quot;false&quot;&gt;04 · Envelope + extract&lt;/button&gt;
+        &lt;span class=&quot;node-tech text-small text-muted&quot;&gt;TypeScript · SHA-256 · SQLite&lt;/span&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;process-node node-classify&quot; data-node-id=&quot;classify&quot;&gt;
+        &lt;button class=&quot;btn btn-block&quot; type=&quot;button&quot; data-stage-id=&quot;classify&quot; aria-pressed=&quot;false&quot;&gt;05 · Classify + group&lt;/button&gt;
+        &lt;span class=&quot;node-tech text-small text-muted&quot;&gt;TypeScript · heuristics · TF-IDF&lt;/span&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;state-node node-duplicate&quot; data-node-id=&quot;duplicate&quot;&gt;
+        &lt;span class=&quot;viz-badge&quot;&gt;Duplicate receipt&lt;/span&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;process-node node-review&quot; data-node-id=&quot;review&quot;&gt;
+        &lt;button class=&quot;btn btn-block&quot; type=&quot;button&quot; data-stage-id=&quot;review&quot; aria-pressed=&quot;false&quot;&gt;06 · Inspect + approve&lt;/button&gt;
+        &lt;span class=&quot;node-tech text-small text-muted&quot;&gt;TSX · React · human gate&lt;/span&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;state-node node-excluded&quot; data-node-id=&quot;excluded&quot;&gt;
+        &lt;span class=&quot;viz-badge&quot;&gt;Excluded · no write&lt;/span&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;process-node node-handoff&quot; data-node-id=&quot;handoff&quot;&gt;
+        &lt;button class=&quot;btn btn-block&quot; type=&quot;button&quot; data-stage-id=&quot;handoff&quot; aria-pressed=&quot;false&quot;&gt;07 · Durable handoff&lt;/button&gt;
+        &lt;span class=&quot;node-tech text-small text-muted&quot;&gt;TypeScript · SQLite job ledger&lt;/span&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;state-node node-existing&quot; data-node-id=&quot;existing&quot;&gt;
+        &lt;span class=&quot;viz-badge&quot;&gt;Existing document linked&lt;/span&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;process-node node-fast&quot; data-node-id=&quot;fast&quot;&gt;
+        &lt;button class=&quot;btn btn-block&quot; type=&quot;button&quot; data-stage-id=&quot;fast&quot; aria-pressed=&quot;false&quot;&gt;08 · Pool fast path&lt;/button&gt;
+        &lt;span class=&quot;node-tech text-small text-muted&quot;&gt;TypeScript · FTS5 · local vault&lt;/span&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;state-node node-searchable&quot; data-node-id=&quot;searchable&quot;&gt;
+        &lt;span class=&quot;viz-badge&quot;&gt;Searchable in Pool&lt;/span&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;process-node node-enrich&quot; data-node-id=&quot;enrich&quot;&gt;
+        &lt;button class=&quot;btn btn-block&quot; type=&quot;button&quot; data-stage-id=&quot;enrich&quot; aria-pressed=&quot;false&quot;&gt;09 · Deep enrichment&lt;/button&gt;
+        &lt;span class=&quot;node-tech text-small text-muted&quot;&gt;TypeScript · LLMs · embeddings&lt;/span&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;process-node node-refine&quot; data-node-id=&quot;refine&quot;&gt;
+        &lt;button class=&quot;btn btn-block&quot; type=&quot;button&quot; data-stage-id=&quot;refine&quot; aria-pressed=&quot;false&quot;&gt;12 · Auto refinement&lt;/button&gt;
+        &lt;span class=&quot;node-tech text-small text-muted&quot;&gt;TypeScript · CDC · debounced worker&lt;/span&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;process-node node-synthesize&quot; data-node-id=&quot;synthesize&quot;&gt;
+        &lt;button class=&quot;btn btn-block&quot; type=&quot;button&quot; data-stage-id=&quot;synthesize&quot; aria-pressed=&quot;false&quot;&gt;11 · Library synthesis&lt;/button&gt;
+        &lt;span class=&quot;node-tech text-small text-muted&quot;&gt;TypeScript · evidence sampling · fallback&lt;/span&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;process-node node-intelligence&quot; data-node-id=&quot;intelligence&quot;&gt;
+        &lt;button class=&quot;btn btn-block&quot; type=&quot;button&quot; data-stage-id=&quot;intelligence&quot; aria-pressed=&quot;false&quot;&gt;10 · Intelligence&lt;/button&gt;
+        &lt;span class=&quot;node-tech text-small text-muted&quot;&gt;TypeScript · Python NLP · SQLite graph&lt;/span&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;state-node node-complete&quot; data-node-id=&quot;complete&quot;&gt;
+        &lt;span class=&quot;viz-badge&quot;&gt;Maintained library knowledge&lt;/span&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;detail-rail&quot;&gt;
+  &lt;section class=&quot;card graph-detail&quot; aria-live=&quot;polite&quot; aria-atomic=&quot;false&quot;&gt;
+    &lt;div class=&quot;detail-heading viz-row&quot;&gt;
+      &lt;div&gt;
+        &lt;span class=&quot;viz-badge&quot; id=&quot;ingestion-detail-phase&quot;&gt;Studio preparation&lt;/span&gt;
+        &lt;h2 id=&quot;ingestion-detail-title&quot;&gt;01 · Source selection&lt;/h2&gt;
+      &lt;/div&gt;
+      &lt;span class=&quot;text-small text-muted&quot; id=&quot;ingestion-detail-status&quot;&gt;Not started&lt;/span&gt;
+    &lt;/div&gt;
+
+    &lt;p id=&quot;ingestion-detail-summary&quot;&gt;The Add workspace identifies what is entering the funnel and keeps the draft local until preparation begins.&lt;/p&gt;
+
+    &lt;div class=&quot;viz-controls detail-tabs&quot; role=&quot;tablist&quot; aria-label=&quot;Selected process details&quot;&gt;
+      &lt;button class=&quot;btn btn-ghost&quot; type=&quot;button&quot; role=&quot;tab&quot; data-detail-tab=&quot;flow&quot; aria-selected=&quot;true&quot; aria-controls=&quot;ingestion-panel-flow&quot;&gt;Flow&lt;/button&gt;
+      &lt;button class=&quot;btn btn-ghost&quot; type=&quot;button&quot; role=&quot;tab&quot; data-detail-tab=&quot;implementation&quot; aria-selected=&quot;false&quot; aria-controls=&quot;ingestion-panel-implementation&quot;&gt;Implementation&lt;/button&gt;
+      &lt;button class=&quot;btn btn-ghost&quot; type=&quot;button&quot; role=&quot;tab&quot; data-detail-tab=&quot;controls&quot; aria-selected=&quot;false&quot; aria-controls=&quot;ingestion-panel-controls&quot;&gt;Controls + decisions&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;div id=&quot;ingestion-panel-flow&quot; role=&quot;tabpanel&quot; data-detail-panel=&quot;flow&quot;&gt;
+      &lt;div class=&quot;detail-columns&quot;&gt;
+        &lt;div&gt;
+          &lt;h3&gt;What happens&lt;/h3&gt;
+          &lt;ul id=&quot;ingestion-detail-actions&quot;&gt;&lt;/ul&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;h3&gt;Approach taken&lt;/h3&gt;
+          &lt;ul id=&quot;ingestion-detail-approach&quot;&gt;&lt;/ul&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;detail-result&quot;&gt;
+        &lt;p&gt;&lt;strong&gt;Output&lt;/strong&gt; &lt;span id=&quot;ingestion-detail-output&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+        &lt;p&gt;&lt;strong&gt;Branch / failure&lt;/strong&gt; &lt;span id=&quot;ingestion-detail-branch&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div id=&quot;ingestion-panel-implementation&quot; role=&quot;tabpanel&quot; data-detail-panel=&quot;implementation&quot; hidden&gt;
+      &lt;div class=&quot;detail-columns implementation-columns&quot;&gt;
+        &lt;div&gt;
+          &lt;h3&gt;Language + runtime&lt;/h3&gt;
+          &lt;p id=&quot;ingestion-detail-runtime&quot;&gt;&lt;/p&gt;
+          &lt;h3&gt;Internal modules + endpoints&lt;/h3&gt;
+          &lt;ul class=&quot;code-list&quot; id=&quot;ingestion-detail-modules&quot;&gt;&lt;/ul&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;h3&gt;Third-party tools actually in this path&lt;/h3&gt;
+          &lt;ul id=&quot;ingestion-detail-tools&quot;&gt;&lt;/ul&gt;
+          &lt;h3&gt;Data + artifacts&lt;/h3&gt;
+          &lt;ul id=&quot;ingestion-detail-artifacts&quot;&gt;&lt;/ul&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;div id=&quot;ingestion-panel-controls&quot; role=&quot;tabpanel&quot; data-detail-panel=&quot;controls&quot; hidden&gt;
+      &lt;div class=&quot;detail-columns controls-columns&quot;&gt;
+        &lt;div&gt;
+          &lt;h3&gt;Specific settings&lt;/h3&gt;
+          &lt;dl class=&quot;settings-list&quot; id=&quot;ingestion-detail-settings&quot;&gt;&lt;/dl&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+          &lt;h3&gt;Failure + recovery controls&lt;/h3&gt;
+          &lt;ul id=&quot;ingestion-detail-resilience&quot;&gt;&lt;/ul&gt;
+          &lt;h3&gt;Decision implications&lt;/h3&gt;
+          &lt;ul id=&quot;ingestion-detail-decisions&quot;&gt;&lt;/ul&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+  &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;section class=&quot;platform-inventory&quot; aria-labelledby=&quot;platform-inventory-heading&quot;&gt;
+    &lt;h2 id=&quot;platform-inventory-heading&quot;&gt;Platform, languages, and third-party inventory&lt;/h2&gt;
+    &lt;p class=&quot;text-small text-muted&quot;&gt;Settings labeled current were verified on this workstation on 22 July 2026. They are mutable, gitignored local configuration—not repository defaults.&lt;/p&gt;
+    &lt;div class=&quot;table-responsive&quot;&gt;
+      &lt;table class=&quot;table table-sm&quot;&gt;
+        &lt;thead&gt;
+          &lt;tr&gt;&lt;th&gt;Layer&lt;/th&gt;&lt;th&gt;Languages + runtime&lt;/th&gt;&lt;th&gt;Third-party tools in this process&lt;/th&gt;&lt;th&gt;Responsibility / current mode&lt;/th&gt;&lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+          &lt;tr&gt;
+            &lt;td&gt;Pool client&lt;/td&gt;
+            &lt;td&gt;TypeScript, TSX, CSS · browser ESM&lt;/td&gt;
+            &lt;td&gt;React 18.2, ReactDOM, React Router, Lucide React, Inter variable font · Vite 4.5 build&lt;/td&gt;
+            &lt;td&gt;Choose → Inspect → Library UI. Uses native File API, fetch, sessionStorage, and webkitdirectory. No React Flow, D3, ECharts, or external state library in the Add path.&lt;/td&gt;
+          &lt;/tr&gt;
+          &lt;tr&gt;
+            &lt;td&gt;Studio control plane&lt;/td&gt;
+            &lt;td&gt;TypeScript ES2022 · CommonJS modules · Node&lt;/td&gt;
+            &lt;td&gt;Express 4.22, better-sqlite3 11.10 in the standalone manifest, Node crypto/fs/path&lt;/td&gt;
+            &lt;td&gt;Owns deterministic intake planning, review state, decisions, and the durable handoff ledger in &lt;code&gt;ingestion.db&lt;/code&gt;.&lt;/td&gt;
+          &lt;/tr&gt;
+          &lt;tr&gt;
+            &lt;td&gt;Web acquisition&lt;/td&gt;
+            &lt;td&gt;TypeScript · Node workers/subprocesses · HTTP/HTML&lt;/td&gt;
+            &lt;td&gt;Axios, Cheerio, Archiver, yauzl, Zod; guarded pdf-parse, Mammoth, SheetJS/xlsx, Turndown; shared provider layer for optional semantic ranking&lt;/td&gt;
+            &lt;td&gt;Bounded crawling, SSRF/redirect controls, configurable robots policy, reviewed downloads, safe ZIP expansion, and parser isolation. Docling is deliberately disabled for untrusted scraped files.&lt;/td&gt;
+          &lt;/tr&gt;
+          &lt;tr&gt;
+            &lt;td&gt;Pool document plane&lt;/td&gt;
+            &lt;td&gt;TypeScript ES2022 · CommonJS · Node 20 via ts-node + SWC · SQL&lt;/td&gt;
+            &lt;td&gt;Express 4.18, better-sqlite3 9.4, SQLite FTS5&lt;/td&gt;
+            &lt;td&gt;Canonical document rows in &lt;code&gt;contextos.db&lt;/code&gt;, search chunks/indexes, local vault files, library links, and event buses.&lt;/td&gt;
+          &lt;/tr&gt;
+          &lt;tr&gt;
+            &lt;td&gt;Local NLP workers&lt;/td&gt;
+            &lt;td&gt;Python 3.12 · per-parse child process + persistent JSONL workers&lt;/td&gt;
+            &lt;td&gt;Docling, spaCy with &lt;code&gt;en_core_web_sm&lt;/code&gt;, lazy fastcoref, fastembed/ONNX&lt;/td&gt;
+            &lt;td&gt;Docling, spaCy, and fastembed are installed locally. Docling starts a short-lived parser per parse; spaCy/fastcoref and fastembed use persistent workers. First coreference use may download fastcoref. Fastembed is not automatic remote-call failover.&lt;/td&gt;
+          &lt;/tr&gt;
+          &lt;tr&gt;
+            &lt;td&gt;AI provider layer&lt;/td&gt;
+            &lt;td&gt;TypeScript provider adapters · HTTPS&lt;/td&gt;
+            &lt;td&gt;OpenAI SDK, Anthropic SDK, Google Generative AI SDK; Mistral through the OpenAI-compatible adapter&lt;/td&gt;
+            &lt;td&gt;Snapshot: active chat OpenAI &lt;code&gt;gpt-5-chat-latest&lt;/code&gt;; knowledge OpenAI &lt;code&gt;gpt-5.5&lt;/code&gt;; independent backup Mistral &lt;code&gt;mistral-small-latest&lt;/code&gt;. Structured calls try knowledge → chat → backup; individual substages can use narrower routes. Local Ollama is off.&lt;/td&gt;
+          &lt;/tr&gt;
+          &lt;tr&gt;
+            &lt;td&gt;Retrieval + vectors&lt;/td&gt;
+            &lt;td&gt;TypeScript · SQL/FTS5 · normalized Float32 vectors&lt;/td&gt;
+            &lt;td&gt;Current OpenAI &lt;code&gt;text-embedding-3-small&lt;/code&gt;; selectable fastembed/ONNX last resort; SQLite BM25/FTS5&lt;/td&gt;
+            &lt;td&gt;One embedding provider is resolved per request; a remote failure does not automatically switch to fastembed. Vectors are SQLite BLOBs compared with exact in-process cosine and fused with lexical ranks. No external vector database or ANN index is active.&lt;/td&gt;
+          &lt;/tr&gt;
+          &lt;tr&gt;
+            &lt;td&gt;Knowledge graph&lt;/td&gt;
+            &lt;td&gt;TypeScript + SQL · optional Cypher projection&lt;/td&gt;
+            &lt;td&gt;SQLite is canonical; neo4j-driver is installed but Neo4j is currently disabled&lt;/td&gt;
+            &lt;td&gt;Entity, mention, relationship, event, decision, people, and signal tables remain available without the Java/Neo4j service.&lt;/td&gt;
+          &lt;/tr&gt;
+        &lt;/tbody&gt;
+      &lt;/table&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+
+  &lt;section class=&quot;card decision-watchpoints&quot; aria-labelledby=&quot;decision-watchpoints-heading&quot;&gt;
+    &lt;h2 id=&quot;decision-watchpoints-heading&quot;&gt;Decision-critical watchpoints&lt;/h2&gt;
+    &lt;div class=&quot;table-responsive&quot;&gt;
+      &lt;table class=&quot;table table-sm&quot;&gt;
+        &lt;thead&gt;
+          &lt;tr&gt;&lt;th&gt;Area&lt;/th&gt;&lt;th&gt;Verified current state&lt;/th&gt;&lt;th&gt;Why it matters&lt;/th&gt;&lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;UI mismatch&lt;/span&gt;&lt;/td&gt;&lt;td&gt;Enforcement is 100 MiB total, but the dropzone copy still says 25 MB.&lt;/td&gt;&lt;td&gt;Users may under-estimate capacity; documentation and visible limits disagree with actual behavior.&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;Binary boundary&lt;/span&gt;&lt;/td&gt;&lt;td&gt;Browser Add rejects PDF/Word and sends text JSON only. Smart-site files use guarded binary parsers; other collectors can use Docling.&lt;/td&gt;&lt;td&gt;The broad parser stack exists, but it is not exposed uniformly through this exact Add branch.&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;Draft durability&lt;/span&gt;&lt;/td&gt;&lt;td&gt;Browser file bodies live in memory until preparation; sessionStorage preserves metadata and prepared backend batch IDs.&lt;/td&gt;&lt;td&gt;Closing the drawer is safe, but a page reload loses unprepared browser file contents.&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;Crawl depth contract&lt;/span&gt;&lt;/td&gt;&lt;td&gt;The UI labels depth 1 as supplied pages only, while the crawler follows links whenever &lt;code&gt;level &amp;lt; depth&lt;/code&gt;; 10/20-page caps apply per seed URL.&lt;/td&gt;&lt;td&gt;Scope and load can exceed the user’s apparent selection. Product copy, crawler semantics, and aggregate caps need one contract.&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;Synthetic crawl fallback&lt;/span&gt;&lt;/td&gt;&lt;td&gt;When no direct page survives, the route creates a “Live scraper unavailable here” document and continues ingestion.&lt;/td&gt;&lt;td&gt;A network failure can become searchable synthetic content instead of an error; this can pollute knowledge and should be blocked or unmistakably quarantined.&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;Workspace symlink escape&lt;/span&gt;&lt;/td&gt;&lt;td&gt;Directory symlinks are skipped, but a supported-extension file symlink can be stat/read outside &lt;code&gt;STUDIO_FS_ROOTS&lt;/code&gt;.&lt;/td&gt;&lt;td&gt;This is a local-file trust-boundary vulnerability and should be fixed before workspace-folder intake is treated as contained.&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;Intake residue&lt;/span&gt;&lt;/td&gt;&lt;td&gt;An exception during &lt;code&gt;startBatch&lt;/code&gt; returns HTTP 500 without a failed transition or cleanup, so inserted &lt;code&gt;running&lt;/code&gt; rows can remain.&lt;/td&gt;&lt;td&gt;Operators need stale-batch detection/repair; otherwise dashboards and retries can accumulate ambiguous control-plane state.&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;Runtime contract&lt;/span&gt;&lt;/td&gt;&lt;td&gt;The active Pool server is pinned to Node 20, while the standalone ingestion-engine manifest declares Node ≥22 &amp;lt;23.&lt;/td&gt;&lt;td&gt;The embedded path works through the Pool runtime, but packaging or independent deployment needs an explicit supported-runtime decision.&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;Storage topology&lt;/span&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;ingestion.db&lt;/code&gt; owns Studio batches/jobs; &lt;code&gt;contextos.db&lt;/code&gt; plus the vault own searchable knowledge.&lt;/td&gt;&lt;td&gt;The adapter boundary is deliberate, but backup, migration, and recovery plans must cover both stores atomically enough for the product promise.&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;Semantic handoff&lt;/span&gt;&lt;/td&gt;&lt;td&gt;The approved handoff transports source text, title, and origin. Studio classifications/clusters remain review-plan data and are not copied into Pool.&lt;/td&gt;&lt;td&gt;Pool performs its own later deep classification; decisions must not assume Studio grouping metadata becomes the canonical library organization.&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;Split state&lt;/span&gt;&lt;/td&gt;&lt;td&gt;A successful handoff is completed in job/item ledgers while the Studio batch itself remains &lt;code&gt;paused_review&lt;/code&gt;.&lt;/td&gt;&lt;td&gt;Operational dashboards must read handoff status, not infer completion from the batch state alone.&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;Review semantics&lt;/span&gt;&lt;/td&gt;&lt;td&gt;Confidence, grouping, and &lt;code&gt;classificationFlagged&lt;/code&gt; are returned by the API but are not rendered or blocking in Pool; the UI cannot correct type/cluster.&lt;/td&gt;&lt;td&gt;The visible gate validates inclusion and title, not the semantic plan. Treat Studio classification as API-only advisory metadata.&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;Gate enforcement&lt;/span&gt;&lt;/td&gt;&lt;td&gt;Review is required by the Pool UI, not by the commit API. Omitted &lt;code&gt;selectedSourceIds&lt;/code&gt; defaults to all sources, and hidden duplicates are preselected.&lt;/td&gt;&lt;td&gt;A direct or malformed client can bypass explicit human selection, and unseen duplicates can be linked. Server-side approval semantics need hardening.&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;Review edit durability&lt;/span&gt;&lt;/td&gt;&lt;td&gt;Title/selection edits are tab-scoped sessionStorage, not durable server state.&lt;/td&gt;&lt;td&gt;The batch survives reload/restart, but unsent reviewer intent does not survive closing the tab/app; recovery UX must distinguish the two.&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;Duplicate identity&lt;/span&gt;&lt;/td&gt;&lt;td&gt;Studio hashes exact raw text; Pool hashes normalized lowercase text with collapsed whitespace and punctuation removed.&lt;/td&gt;&lt;td&gt;A document can pass Studio dedupe and still be linked as an existing Pool document. This is intentional, but counts differ by layer.&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;Duplicate readiness&lt;/span&gt;&lt;/td&gt;&lt;td&gt;The Pool adapter rejects an existing duplicate in &lt;code&gt;error&lt;/code&gt;, but currently allows &lt;code&gt;processing&lt;/code&gt; and can return &lt;code&gt;searchReady=false&lt;/code&gt; after linking it.&lt;/td&gt;&lt;td&gt;A successful link is not unconditional proof of immediate searchability. The implementation and its “healthy duplicate” comment should be reconciled.&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;Alternate path&lt;/span&gt;&lt;/td&gt;&lt;td&gt;The normal Add flow does not call the legacy Studio tree commit (&lt;code&gt;synthesizeTree&lt;/code&gt;/&lt;code&gt;persistTree&lt;/code&gt;/&lt;code&gt;buildIndexes&lt;/code&gt;).&lt;/td&gt;&lt;td&gt;This graph maps the live Add → add-to-library path only; legacy tree output should not be included in current capability claims.&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;External data egress&lt;/span&gt;&lt;/td&gt;&lt;td&gt;With local models off, deep enrichment—and optional smart-site candidate ranking—sends bounded source excerpts or batches to configured external providers. Secret-shaped values are redacted; general PII is not anonymized.&lt;/td&gt;&lt;td&gt;Provider use is a privacy/compliance decision, not just a cost decision. Sensitive-library policy needs an explicit local-only or consent boundary.&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;Enrichment restart gap&lt;/span&gt;&lt;/td&gt;&lt;td&gt;The deep-enrichment queue is memory-only. Restart loses waiting &lt;code&gt;fast_ready&lt;/code&gt; work; boot reclaim excludes that status and &lt;code&gt;autoResweep&lt;/code&gt; is off.&lt;/td&gt;&lt;td&gt;A searchable document can remain permanently shallow after restart without a durable queue, boot catch-up, or explicit repair job.&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;Intelligence signal&lt;/span&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;intelligence_ready&lt;/code&gt; emits after isolated extractor attempts even when one or more errors were swallowed; startup backfill covers only the fast catalog.&lt;/td&gt;&lt;td&gt;Consumers need per-extractor receipts rather than treating one event as proof of complete intelligence.&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;Recovery gap&lt;/span&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;autoResweep=false&lt;/code&gt; returns before the sweeper reclaims documents stuck in &lt;code&gt;enriching&lt;/code&gt; for 45 minutes.&lt;/td&gt;&lt;td&gt;The configured stale-row recovery is currently inactive; operations need a manual recovery path or a deliberate re-sweep policy.&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;Timeout is not cancellation&lt;/span&gt;&lt;/td&gt;&lt;td&gt;Refinement’s 90-second stage timeout abandons the awaited promise but does not cancel underlying provider/enrichment work.&lt;/td&gt;&lt;td&gt;Calls and spend can continue after the operation advances; timeout, cancellation, and cost observability need separate controls.&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;Budget units&lt;/span&gt;&lt;/td&gt;&lt;td&gt;Paid-AI guards cap requests and tokens—not currency. No provider-price-normalized $/document forecast is stored.&lt;/td&gt;&lt;td&gt;Hard technical ceilings prevent runaway volume but do not answer unit economics; viability planning still needs cost attribution.&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;Cost automation&lt;/span&gt;&lt;/td&gt;&lt;td&gt;Auto-refine, paid AI, and paid resume are on; request ceilings are 600/hour and 6,000/day. Legacy auto-resweep is off.&lt;/td&gt;&lt;td&gt;New ingestion deepens automatically within hard ceilings; older enrichment generations will not self-upgrade while re-sweep remains off.&lt;/td&gt;&lt;/tr&gt;
+          &lt;tr&gt;&lt;td&gt;&lt;span class=&quot;viz-badge&quot;&gt;Test coverage&lt;/span&gt;&lt;/td&gt;&lt;td&gt;Main Pool Studio tests do not cover a complete choose → inspect → commit journey; smart-site restoration/polling tests are materially stronger.&lt;/td&gt;&lt;td&gt;The most important viability gap is regression confidence across the full user-visible ingestion journey.&lt;/td&gt;&lt;/tr&gt;
+        &lt;/tbody&gt;
+      &lt;/table&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+#contextos-ingestion-graph {
+  color: var(--foreground);
+}
+
+#contextos-ingestion-graph .graph-key {
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+#contextos-ingestion-graph .graph-workspace,
+#contextos-ingestion-graph .graph-column,
+#contextos-ingestion-graph .detail-rail {
+  min-width: 0;
+}
+
+#contextos-ingestion-graph .graph-column {
+  container-name: ingestion-flow;
+  container-type: inline-size;
+}
+
+#contextos-ingestion-graph .graph-canvas {
+  position: relative;
+  padding: 0.75rem 0;
+}
+
+#contextos-ingestion-graph .ingestion-graph-edges {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+#contextos-ingestion-graph .ingestion-graph-edges .edge {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+#contextos-ingestion-graph .ingestion-graph-edges .edge.is-active {
+  stroke: var(--viz-series-1);
+  stroke-width: 2;
+}
+
+#contextos-ingestion-graph .ingestion-graph-edges .arrow-neutral {
+  fill: var(--border);
+}
+
+#contextos-ingestion-graph .ingestion-graph-edges .arrow-active {
+  fill: var(--viz-series-1);
+}
+
+#contextos-ingestion-graph .ingestion-graph-edges .edge-label {
+  fill: var(--muted-foreground);
+  stroke: var(--background);
+  stroke-width: 4;
+  paint-order: stroke;
+  font-size: 11px;
+  font-weight: 400;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+#contextos-ingestion-graph .ingestion-graph-edges .edge-label.is-active {
+  fill: var(--foreground);
+}
+
+#contextos-ingestion-graph .ingestion-graph-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-areas:
+    &quot;. source .&quot;
+    &quot;. . acquire&quot;
+    &quot;. guard .&quot;
+    &quot;rejected extract .&quot;
+    &quot;. classify duplicate&quot;
+    &quot;. review .&quot;
+    &quot;excluded handoff .&quot;
+    &quot;existing fast .&quot;
+    &quot;. searchable .&quot;
+    &quot;. enrich .&quot;
+    &quot;refine synthesize intelligence&quot;
+    &quot;. complete .&quot;;
+  column-gap: 1rem;
+  row-gap: 3.5rem;
+  align-items: center;
+}
+
+#contextos-ingestion-graph .process-node {
+  position: relative;
+  z-index: 2;
+  align-self: center;
+  justify-self: stretch;
+}
+
+#contextos-ingestion-graph .node-tech {
+  display: block;
+  margin-top: 0.25rem;
+  text-align: center;
+}
+
+#contextos-ingestion-graph .state-node {
+  position: relative;
+  z-index: 2;
+  justify-self: center;
+  text-align: center;
+}
+
+#contextos-ingestion-graph .node-source { grid-area: source; }
+#contextos-ingestion-graph .node-acquire { grid-area: acquire; }
+#contextos-ingestion-graph .node-guard { grid-area: guard; }
+#contextos-ingestion-graph .node-rejected { grid-area: rejected; }
+#contextos-ingestion-graph .node-extract { grid-area: extract; }
+#contextos-ingestion-graph .node-classify { grid-area: classify; }
+#contextos-ingestion-graph .node-duplicate { grid-area: duplicate; }
+#contextos-ingestion-graph .node-review { grid-area: review; }
+#contextos-ingestion-graph .node-excluded { grid-area: excluded; }
+#contextos-ingestion-graph .node-handoff { grid-area: handoff; }
+#contextos-ingestion-graph .node-existing { grid-area: existing; }
+#contextos-ingestion-graph .node-fast { grid-area: fast; }
+#contextos-ingestion-graph .node-searchable { grid-area: searchable; }
+#contextos-ingestion-graph .node-enrich { grid-area: enrich; }
+#contextos-ingestion-graph .node-refine { grid-area: refine; }
+#contextos-ingestion-graph .node-synthesize { grid-area: synthesize; }
+#contextos-ingestion-graph .node-intelligence { grid-area: intelligence; }
+#contextos-ingestion-graph .node-complete { grid-area: complete; }
+
+#contextos-ingestion-graph .graph-detail {
+  margin-top: 1rem;
+}
+
+#contextos-ingestion-graph .detail-heading {
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+#contextos-ingestion-graph .detail-heading h2 {
+  margin-bottom: 0;
+}
+
+#contextos-ingestion-graph .detail-tabs {
+  margin: 0.75rem 0 1rem;
+}
+
+#contextos-ingestion-graph .detail-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+  gap: 1rem;
+}
+
+#contextos-ingestion-graph .settings-list {
+  display: grid;
+  grid-template-columns: minmax(7rem, 0.8fr) minmax(0, 1.2fr);
+  column-gap: 0.75rem;
+  row-gap: 0.45rem;
+  margin: 0;
+}
+
+#contextos-ingestion-graph .settings-list dt {
+  color: var(--muted-foreground);
+}
+
+#contextos-ingestion-graph .settings-list dd {
+  margin: 0;
+}
+
+#contextos-ingestion-graph .detail-result {
+  margin-top: 1rem;
+  padding-top: 0.25rem;
+  border-top: 1px solid var(--border);
+}
+
+#contextos-ingestion-graph .detail-result p:last-child {
+  margin-bottom: 0;
+}
+
+#contextos-ingestion-graph .code-list code {
+  overflow-wrap: anywhere;
+}
+
+#contextos-ingestion-graph .platform-inventory,
+#contextos-ingestion-graph .decision-watchpoints {
+  margin-top: 1.5rem;
+}
+
+#contextos-ingestion-graph .platform-inventory h2,
+#contextos-ingestion-graph .decision-watchpoints h2 {
+  margin-bottom: 0.5rem;
+}
+
+@container ingestion-flow (max-width: 520px) {
+  #contextos-ingestion-graph .ingestion-graph-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      &quot;source source&quot;
+      &quot;guard acquire&quot;
+      &quot;rejected extract&quot;
+      &quot;duplicate classify&quot;
+      &quot;review review&quot;
+      &quot;excluded handoff&quot;
+      &quot;existing fast&quot;
+      &quot;searchable searchable&quot;
+      &quot;enrich enrich&quot;
+      &quot;intelligence intelligence&quot;
+      &quot;synthesize synthesize&quot;
+      &quot;refine refine&quot;
+      &quot;complete complete&quot;;
+    column-gap: 0.5rem;
+    row-gap: 3.25rem;
+  }
+
+  #contextos-ingestion-graph .process-node {
+    width: 100%;
+    max-width: 15.5rem;
+    justify-self: center;
+  }
+
+  #contextos-ingestion-graph .ingestion-graph-edges .mobile-hide {
+    display: none;
+  }
+}
+
+@media (min-width: 700px) {
+  #contextos-ingestion-graph .graph-workspace {
+    display: grid;
+    grid-template-columns: minmax(0, 1.65fr) minmax(18rem, 1fr);
+    gap: 1rem;
+    align-items: start;
+  }
+
+  #contextos-ingestion-graph .detail-rail {
+    position: sticky;
+    top: 0.75rem;
+    align-self: start;
+    max-height: min(34rem, calc(100dvh - 1.5rem));
+  }
+
+  #contextos-ingestion-graph .graph-detail {
+    margin-top: 0;
+    max-height: min(34rem, calc(100dvh - 1.5rem));
+    overflow: auto;
+    scrollbar-gutter: stable;
+  }
+
+  #contextos-ingestion-graph .graph-detail .detail-columns,
+  #contextos-ingestion-graph .graph-detail .settings-list {
+    grid-template-columns: 1fr;
+  }
+
+  #contextos-ingestion-graph .graph-detail .settings-list dt:not(:first-child) {
+    margin-top: 0.35rem;
+  }
+}
+
+@media (max-width: 520px) {
+  #contextos-ingestion-graph .graph-key {
+    justify-content: flex-start;
+  }
+
+  #contextos-ingestion-graph .detail-columns,
+  #contextos-ingestion-graph .settings-list {
+    grid-template-columns: 1fr;
+  }
+
+  #contextos-ingestion-graph .settings-list dt:not(:first-child) {
+    margin-top: 0.35rem;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  #contextos-ingestion-graph .ingestion-graph-edges .edge {
+    transition: stroke 150ms ease, stroke-width 150ms ease;
+  }
+}
+&lt;/style&gt;
+
+&lt;script&gt;
+(() =&gt; {
+  const root = document.getElementById(&#x27;contextos-ingestion-graph&#x27;);
+  if (!root) return;
+
+  const stages = [
+    {
+      id: &#x27;source&#x27;, number: &#x27;01&#x27;, title: &#x27;Source selection&#x27;, phase: &#x27;Studio preparation&#x27;, status: &#x27;Local draft · no write&#x27;,
+      summary: &#x27;The Add workspace identifies what kind of material is entering the funnel and keeps the draft local until you prepare it.&#x27;,
+      actions: [
+        &#x27;Choose browser files or a folder, pasted text, readable web pages, or linked web files.&#x27;,
+        &#x27;Read browser text locally and retain source-specific draft state per library.&#x27;,
+        &#x27;Route web sources through acquisition; send local files and paste directly to intake validation.&#x27;
+      ],
+      settings: [
+        [&#x27;Default mode&#x27;, &#x27;Files or folder&#x27;],
+        [&#x27;Default web task&#x27;, &#x27;Readable pages&#x27;],
+        [&#x27;Default link depth&#x27;, &#x27;UI says depth 1 = supplied pages only; crawler currently follows one linked level&#x27;],
+        [&#x27;File ceiling&#x27;, &#x27;4,000 files · 5 MiB each · 100 MiB total&#x27;],
+        [&#x27;Supported browser text&#x27;, &#x27;Markdown, text, CSV/TSV, JSON/YAML, HTML/XML, code and SQL&#x27;],
+        [&#x27;Draft state&#x27;, &#x27;contextos:pool-studio:&lt;libraryId&gt; · version 1&#x27;]
+      ],
+      output: &#x27;A source-specific local request ready for validation. No document, library link, index, or model call exists yet.&#x27;,
+      branch: &#x27;Web URLs go to stage 02. Local files, folders, and pasted text bypass stage 02 and go directly to stage 03.&#x27;
+    },
+    {
+      id: &#x27;acquire&#x27;, number: &#x27;02&#x27;, title: &#x27;Web acquisition&#x27;, phase: &#x27;Studio preparation&#x27;, status: &#x27;Conditional · network-bound&#x27;,
+      summary: &#x27;Web input becomes readable local material through either a bounded page crawler or a reviewed linked-file discovery job.&#x27;,
+      actions: [
+        &#x27;Fetch supplied pages, remove navigation, ads, popups, and cookie text, and follow only the selected depth.&#x27;,
+        &#x27;Discover linked document candidates first, pause for human selection, then download only approved candidates.&#x27;,
+        &#x27;For smart-site discovery, optionally ask the configured knowledge model to rank semantic candidates inside the deterministic candidate set.&#x27;,
+        &#x27;Enforce robots directives, redirects, crawl scope, host pacing, archive limits, and artifact generations.&#x27;
+      ],
+      settings: [
+        [&#x27;Direct pages&#x27;, &#x27;Per seed URL: depth 1 → 10 pages; depth 2 → 20 pages&#x27;],
+        [&#x27;Depth contract&#x27;, &#x27;Crawler follows links while level &lt; depth; this conflicts with the UI depth-1 label&#x27;],
+        [&#x27;Direct-page scope&#x27;, &#x27;sameDomain=true · clean_mode=standard&#x27;],
+        [&#x27;Linked-file scope&#x27;, &#x27;Section by default; page / section / site available&#x27;],
+        [&#x27;Linked-file defaults&#x27;, &#x27;Depth 6 · UI page limit 250 · file limit 1,000&#x27;],
+        [&#x27;Linked-file bounds&#x27;, &#x27;Depth 0–12 · pages 1–500 · files 1–2,000&#x27;],
+        [&#x27;Linked-file network defaults&#x27;, &#x27;Robots enabled but switchable off · include external/CDN files=true&#x27;],
+        [&#x27;Smart-site candidate ranking&#x27;, &#x27;Deterministic boundaries first · optional knowledgeAdvisor proposal · deterministic fallback + human review&#x27;],
+        [&#x27;Server pacing&#x27;, &#x27;180 ms host delay · defaults discovery 3/download 1 · maxima 6/4&#x27;]
+      ],
+      output: &#x27;Clean page text or a versioned downloaded-file artifact plus a source receipt. Direct-page failure can currently become a synthetic “scraper unavailable” document.&#x27;,
+      branch: &#x27;Out-of-scope redirects and robots-disallowed paths are rejected when those controls apply. If no direct page survives, the route currently fabricates placeholder text and continues instead of failing.&#x27;
+    },
+    {
+      id: &#x27;guard&#x27;, number: &#x27;03&#x27;, title: &#x27;Intake guard&#x27;, phase: &#x27;Studio preparation&#x27;, status: &#x27;Blocking · must pass&#x27;,
+      summary: &#x27;The Studio API rejects unsafe, empty, unsupported, or oversized input before creating a batch.&#x27;,
+      actions: [
+        &#x27;Cap submissions, reject empty text, normalize path separators, and remove dot or parent-directory segments.&#x27;,
+        &#x27;Scan server folders for ingestible files and report binary, skipped, or truncated content.&#x27;,
+        &#x27;Enter planning with model proposals disabled so Add preparation remains deterministic and local.&#x27;
+      ],
+      settings: [
+        [&#x27;API JSON body ceiling&#x27;, &#x27;150 MiB&#x27;],
+        [&#x27;General API limiter&#x27;, &#x27;300 authenticated requests/minute&#x27;],
+        [&#x27;Browser /intake/files&#x27;, &#x27;Maximum 4,000 files · 5 MiB each · 100 MiB aggregate&#x27;],
+        [&#x27;Paste boundary&#x27;, &#x27;150 MiB Express JSON body ceiling · no separate 100 MiB batch cap&#x27;],
+        [&#x27;Workspace-folder boundary&#x27;, &#x27;Maximum 4,000 files · 5 MiB each · no aggregate byte ceiling&#x27;],
+        [&#x27;Planning model&#x27;, &#x27;disableLlm=true for files, folders, paste, and direct web&#x27;],
+        [&#x27;Folder exclusions&#x27;, &#x27;node_modules, .git, dist, build, .next, coverage, vendor, virtualenvs, __pycache__&#x27;],
+        [&#x27;Workspace trust boundary&#x27;, &#x27;Configured STUDIO_FS_ROOTS · directory symlinks skipped · supported file symlinks can currently escape the root · ignores honored&#x27;]
+      ],
+      output: &#x27;A sanitized FunnelInput list with origin, MIME type, raw text, batch label, and accepted/skipped counts.&#x27;,
+      branch: &#x27;No readable input returns 400 and writes no batch. Valid input continues to stage 04.&#x27;
+    },
+    {
+      id: &#x27;extract&#x27;, number: &#x27;04&#x27;, title: &#x27;Envelope and extraction&#x27;, phase: &#x27;Studio preparation&#x27;, status: &#x27;Deterministic batch stage&#x27;,
+      summary: &#x27;Every accepted source receives a replayable envelope, checksum identity, and extracted readable content.&#x27;,
+      actions: [
+        &#x27;Create source envelopes and run checksum duplicate detection before extraction.&#x27;,
+        &#x27;Persist fresh envelopes and point duplicate envelopes at their original source.&#x27;,
+        &#x27;Extract readable text, structural hints, and media metadata for downstream planning.&#x27;
+      ],
+      settings: [
+        [&#x27;Stage order&#x27;, &#x27;Envelope/checksum → extraction&#x27;],
+        [&#x27;Studio duplicate key&#x27;, &#x27;Global SHA-256 of exact raw text&#x27;],
+        [&#x27;Duplicate behavior&#x27;, &#x27;Record duplicateOf; do not extract or classify the same Studio payload twice&#x27;],
+        [&#x27;Decision log&#x27;, &#x27;Persist every tree-shaping decision for replay&#x27;],
+        [&#x27;Studio database&#x27;, &#x27;ingestion.db · WAL · foreign keys · 10 s busy timeout · 32 MiB page cache&#x27;],
+        [&#x27;Intake exception state&#x27;, &#x27;Route returns HTTP 500; startBatch has no failure cleanup, so inserted running rows can remain&#x27;]
+      ],
+      output: &#x27;Envelope rows, extracted documents, checksums, structural hints, and duplicate links.&#x27;,
+      branch: &#x27;Fresh content continues to classification. Duplicates remain visible as review information and rejoin at stage 06.&#x27;
+    },
+    {
+      id: &#x27;classify&#x27;, number: &#x27;05&#x27;, title: &#x27;Classification and grouping&#x27;, phase: &#x27;Studio preparation&#x27;, status: &#x27;Pauses for review&#x27;,
+      summary: &#x27;Studio proposes document types and clusters, applies confidence tiers, and stops before committing anything.&#x27;,
+      actions: [
+        &#x27;Classify content type and archetype with confidence and supporting signals.&#x27;,
+        &#x27;Group documents through four voters; code validates, grounds, and disposes the result.&#x27;,
+        &#x27;Persist degraded or low-confidence flags in the API plan; the current Pool review UI does not render them.&#x27;
+      ],
+      settings: [
+        [&#x27;Current proposal mode&#x27;, &#x27;LLM disabled by Add requests; heuristic floor used&#x27;],
+        [&#x27;Heuristic confidence&#x27;, &#x27;Code MIME 0.65 · speaker/code 0.55 · table/decision/heading 0.50 · default reference 0.35&#x27;],
+        [&#x27;Grouping&#x27;, &#x27;Taxonomy + TF-IDF 0.22 + semantic stand-in 0.34; optional LLM tie-breaker is disabled here&#x27;],
+        [&#x27;Profile thresholds&#x27;, &#x27;confidenceAuto 0.85 · confidencePause 0.60 defaults&#x27;],
+        [&#x27;Failure policy&#x27;, &#x27;Proposal failure degrades; it does not fail the batch&#x27;],
+        [&#x27;Terminal planner state&#x27;, &#x27;Always paused_review, regardless of tier&#x27;],
+        [&#x27;Pool metadata handoff&#x27;, &#x27;Studio type/cluster/confidence are not transported&#x27;]
+      ],
+      output: &#x27;Classifications, clusters, orphans, confidence tiers, and a complete Studio review plan. These planning labels are not yet canonical Pool metadata.&#x27;,
+      branch: &#x27;Low confidence is flagged in the API but is neither rendered nor blocking in the current Pool UI. Every plan still goes to stage 06.&#x27;
+    },
+    {
+      id: &#x27;review&#x27;, number: &#x27;06&#x27;, title: &#x27;Inspect and approve&#x27;, phase: &#x27;Pool UI authority gate&#x27;, status: &#x27;Required by UI · not API-enforced&#x27;,
+      summary: &#x27;The Pool review surface is the intended authority before a write, but explicit approval is enforced by this UI rather than by the commit API.&#x27;,
+      actions: [
+        &#x27;Preview title, source, type, word count, excerpt, and duplicate/review state; confidence and grouping stay API-only.&#x27;,
+        &#x27;Select or exclude individual documents and apply title overrides.&#x27;,
+        &#x27;Keep the prepared batch server-side; keep UI edits in tab-scoped sessionStorage so drawer closure/reload is resumable, but tab/app restart is not.&#x27;
+      ],
+      settings: [
+        [&#x27;Document states&#x27;, &#x27;ready · review · duplicate&#x27;],
+        [&#x27;Needs-review rule&#x27;, &#x27;Unreadable text or an untitled derived document&#x27;],
+        [&#x27;Duplicate display&#x27;, &#x27;Hidden by default · showDuplicates=false&#x27;],
+        [&#x27;Confidence visibility&#x27;, &#x27;classificationFlagged/group/confidence are returned by the API but not rendered or blocking&#x27;],
+        [&#x27;Current UI edits&#x27;, &#x27;include/exclude + title only; no type/cluster correction UI&#x27;],
+        [&#x27;Duplicate selection&#x27;, &#x27;Hidden duplicates remain preselected by default and can be linked without being shown&#x27;],
+        [&#x27;Server enforcement&#x27;, &#x27;If selectedSourceIds is omitted, the commit endpoint defaults to all sources&#x27;],
+        [&#x27;Edit durability&#x27;, &#x27;Tab-scoped sessionStorage · not durable across tab/app restart&#x27;],
+        [&#x27;Engine-only overrides&#x27;, &#x27;rename · move · merge · reassignType exist outside this Pool surface&#x27;],
+        [&#x27;Editable commit fields&#x27;, &#x27;selectedSourceIds · excludeSourceIds · titleOverrides&#x27;]
+      ],
+      output: &#x27;From the Pool UI: a selected source set, title corrections, and one target library. The server does not independently require an explicit selection set.&#x27;,
+      branch: &#x27;Visible exclusions stop with no library write. Hidden preselected duplicates and any server call omitting selectedSourceIds can still flow to stage 07.&#x27;
+    },
+    {
+      id: &#x27;handoff&#x27;, number: &#x27;07&#x27;, title: &#x27;Durable library handoff&#x27;, phase: &#x27;Commit ledger&#x27;, status: &#x27;Asynchronous · resumable&#x27;,
+      summary: &#x27;Approval becomes a persistent per-document job instead of one fragile browser request.&#x27;,
+      actions: [
+        &#x27;Create or resume one idempotent handoff job for the batch and target library.&#x27;,
+        &#x27;Record every source outcome, including skipped and globally duplicate envelopes.&#x27;,
+        &#x27;Start work asynchronously and return a public job snapshot for polling.&#x27;
+      ],
+      settings: [
+        [&#x27;Client poll interval&#x27;, &#x27;2 seconds&#x27;],
+        [&#x27;Worker concurrency&#x27;, &#x27;STUDIO_HANDOFF_CONCURRENCY default 2 · clamped 1–8&#x27;],
+        [&#x27;Recovery lease&#x27;, &#x27;15 minutes; orphaned jobs reclaimed after restart&#x27;],
+        [&#x27;Item states&#x27;, &#x27;pending · processing · added · linked · already-linked · skipped · failed · cancelled&#x27;],
+        [&#x27;Retry identity&#x27;, &#x27;Existing jobId plus per-source ledger rows&#x27;],
+        [&#x27;Commit endpoint&#x27;, &#x27;POST /api/studio/batch/:id/add-to-library&#x27;],
+        [&#x27;Batch state after handoff&#x27;, &#x27;Studio batch remains paused_review; job/item tables are authoritative for handoff completion&#x27;]
+      ],
+      output: &#x27;Per-source receipts, document IDs, search-ready counts, and partial-failure details. Delivery is at least once across the adapter boundary, with idempotent document/link effects. The adapter transports content, title, and origin—not Studio cluster/type metadata.&#x27;,
+      branch: &#x27;A non-error exact duplicate links the existing document; only search-ready statuses take the searchable edge. A processing duplicate can link with searchReady=false. New content enters stage 08.&#x27;
+    },
+    {
+      id: &#x27;fast&#x27;, number: &#x27;08&#x27;, title: &#x27;Pool fast path&#x27;, phase: &#x27;Searchable storage&#x27;, status: &#x27;Blocking until fast_ready&#x27;,
+      summary: &#x27;Pool performs canonical dedupe, parsing, indexing, vault storage, and library linking before reporting success.&#x27;,
+      actions: [
+        &#x27;Run the purity pass, exact-content duplicate detection, and media-specific preprocessing.&#x27;,
+        &#x27;Register a processing document and parse it into sections.&#x27;,
+        &#x27;Build FTS/chunks and the local vault in parallel, then link the library and emit fast-ready.&#x27;
+      ],
+      settings: [
+        [&#x27;Exact duplicate branch&#x27;, &#x27;Link an existing non-error document; return searchReady from its current status&#x27;],
+        [&#x27;Pool duplicate key&#x27;, &#x27;SHA-256 after lowercase + whitespace collapse + punctuation removal&#x27;],
+        [&#x27;Parallel work&#x27;, &#x27;FTS/chunks/routing scaffold ∥ readable vault/source artifacts&#x27;],
+        [&#x27;Section fallback&#x27;, &#x27;Split low-structure documents around 350 words&#x27;],
+        [&#x27;Retrieval chunks&#x27;, &#x27;400-word target · 80-word overlap · whole sections retained through 520 words&#x27;],
+        [&#x27;Ready status&#x27;, &#x27;fast_ready&#x27;],
+        [&#x27;Search-ready statuses&#x27;, &#x27;fast_ready · enriching · complete · partial&#x27;],
+        [&#x27;Deep enrichment&#x27;, &#x27;deferDeepEnrichment=false unless caller explicitly opts out&#x27;]
+      ],
+      output: &#x27;Sections, retrieval chunks, FTS rows, vault files, a library link, and immediate chat/search availability.&#x27;,
+      branch: &#x27;The document is searchable now. Fast-ready independently triggers deep enrichment, the deterministic catalog, and library refinement debounce.&#x27;
+    },
+    {
+      id: &#x27;enrich&#x27;, number: &#x27;09&#x27;, title: &#x27;Deep enrichment&#x27;, phase: &#x27;Background intelligence&#x27;, status: &#x27;Non-blocking · bounded queue&#x27;,
+      summary: &#x27;Search stays available while model-backed and embedding stages build richer retrieval and provenance artifacts.&#x27;,
+      actions: [
+        &#x27;Generate and validate summaries first so the micro-summary can contextualize later stages.&#x27;,
+        &#x27;Run facts, classification, key sections, digest, section embeddings, and datasets concurrently.&#x27;,
+        &#x27;Build meta-embeddings afterward and issue advisory near-duplicate notices at 95% similarity.&#x27;
+      ],
+      settings: [
+        [&#x27;Pipeline generation&#x27;, &#x27;enrichment_version=2&#x27;],
+        [&#x27;Queue concurrency&#x27;, &#x27;ENRICHMENT_CONCURRENCY default 6 · clamped 1–8&#x27;],
+        [&#x27;Queue durability&#x27;, &#x27;In-memory only · waiting fast_ready jobs are not persisted across restart&#x27;],
+        [&#x27;Provider background concurrency&#x27;, &#x27;10 simultaneous background calls&#x27;],
+        [&#x27;Immediate attempts&#x27;, &#x27;Default 1 · clamped 1–2&#x27;],
+        [&#x27;Current active chat model&#x27;, &#x27;OpenAI gpt-5-chat-latest&#x27;],
+        [&#x27;Current knowledge model&#x27;, &#x27;OpenAI gpt-5.5 · Mistral mistral-small-latest backup&#x27;],
+        [&#x27;Structured routing&#x27;, &#x27;Knowledge model → active chat → independent backup&#x27;],
+        [&#x27;Substage routing&#x27;, &#x27;Digest uses knowledge override · datasets use active chat&#x27;],
+        [&#x27;Current embeddings&#x27;, &#x27;OpenAI text-embedding-3-small · one provider/request · no automatic fastembed failover&#x27;],
+        [&#x27;Required stages&#x27;, &#x27;summaries · facts · classification · digest&#x27;],
+        [&#x27;Optional stages&#x27;, &#x27;key sections · section embeddings · datasets · meta-embeddings&#x27;],
+        [&#x27;Current paid mode&#x27;, &#x27;enabled=true · freeOnly=false&#x27;],
+        [&#x27;Current request ceilings&#x27;, &#x27;600/hour · 6,000/day · background 500/hour and 5,000/day&#x27;],
+        [&#x27;Current aggregate token ceilings&#x27;, &#x27;Hour 10M input/1M output · day 60M input/5M output · background day 4M output&#x27;],
+        [&#x27;Current per-call ceilings&#x27;, &#x27;100,000 input tokens · 16,384 output tokens&#x27;],
+        [&#x27;Cost unit&#x27;, &#x27;Requests + tokens only · no currency-normalized budget&#x27;]
+      ],
+      output: &#x27;Validated summaries, grounded facts, classifications, digest, embeddings, datasets, and stage receipts.&#x27;,
+      branch: &#x27;Required stages produce complete or partial status. Complete triggers full intelligence and refinement; partial remains searchable. Restart can lose waiting fast_ready jobs, and current boot/re-sweep policy does not catch them up.&#x27;
+    },
+    {
+      id: &#x27;intelligence&#x27;, number: &#x27;10&#x27;, title: &#x27;Intelligence&#x27;, phase: &#x27;Background intelligence&#x27;, status: &#x27;Two triggers · isolated stages&#x27;,
+      summary: &#x27;A deterministic catalog starts at fast-ready; full model-assisted intelligence follows successful enrichment.&#x27;,
+      actions: [
+        &#x27;At fast-ready, build a deterministic scaffold and harvest people, places, organizations, concepts, relationships, and dated events.&#x27;,
+        &#x27;At complete, run harvest, entities, graph, timeline, decisions, and people in order.&#x27;,
+        &#x27;Cross-link person entities, update living signals, invalidate stale context, and emit intelligence-ready.&#x27;
+      ],
+      settings: [
+        [&#x27;Catalog generation&#x27;, &#x27;CATALOG_VERSION=4&#x27;],
+        [&#x27;Fast catalog trigger&#x27;, &#x27;document:fast-ready&#x27;],
+        [&#x27;Full pipeline trigger&#x27;, &#x27;document:complete&#x27;],
+        [&#x27;Full order&#x27;, &#x27;harvest → entities → graph → timeline → decisions → people → signals&#x27;],
+        [&#x27;Fast content sample&#x27;, &#x27;First 60k + last 20k characters when document exceeds 80k&#x27;],
+        [&#x27;Fast caps&#x27;, &#x27;50 people · 30 places · 30 organizations · 10 concepts · 60 dates&#x27;],
+        [&#x27;Coreference worker&#x27;, &#x27;spaCy en_core_web_sm + lazy fastcoref · first use may download the model&#x27;],
+        [&#x27;Confidence layers&#x27;, &#x27;Deterministic baseline 0.6; model/user-confirmed objects preserved&#x27;],
+        [&#x27;Graph backend&#x27;, &#x27;SQLite active · Neo4j optional projection currently disabled&#x27;],
+        [&#x27;Failure isolation&#x27;, &#x27;Each stage catches its own error; remaining stages continue&#x27;],
+        [&#x27;Completion signal&#x27;, &#x27;intelligence_ready emits after the loop even when individual extractor errors were swallowed&#x27;]
+      ],
+      output: &#x27;Entity mentions, graph edges, dated events, decisions, people links, signals, and refreshed context artifacts.&#x27;,
+      branch: &#x27;One extractor cannot sink ingestion or block later extractors. Startup backfill refreshes the deterministic fast catalog only; full intelligence still requires document:complete.&#x27;
+    },
+    {
+      id: &#x27;synthesize&#x27;, number: &#x27;11&#x27;, title: &#x27;Library synthesis&#x27;, phase: &#x27;Library understanding&#x27;, status: &#x27;Automatic · evidence-bounded&#x27;,
+      summary: &#x27;After enrichment, a library-wide synthesis samples representative evidence and refreshes the corpus brief, intent, themes, and gaps.&#x27;,
+      actions: [
+        &#x27;Debounce completion events so a burst of documents produces one synthesis pass.&#x27;,
+        &#x27;Sample documents, summaries, entities, recency, and corpus stride with topic round-robin coverage.&#x27;,
+        &#x27;Produce an evidence-backed corpus brief and gap alert, or a deterministic fallback when model work fails.&#x27;
+      ],
+      settings: [
+        [&#x27;Debounce&#x27;, &#x27;12 seconds&#x27;],
+        [&#x27;Lease&#x27;, &#x27;2 minutes&#x27;],
+        [&#x27;Representative documents&#x27;, &#x27;Maximum 30&#x27;],
+        [&#x27;Evidence items&#x27;, &#x27;Maximum 36&#x27;],
+        [&#x27;Provider-call budget&#x27;, &#x27;Up to 2 calls/run: intent + gaps · 1 attempt per call by default&#x27;],
+        [&#x27;Gap event condition&#x27;, &#x27;Emit gap_alert only when high-urgency gap count &gt; 0&#x27;],
+        [&#x27;Skip gate&#x27;, &#x27;Matching fingerprint + document count&#x27;],
+        [&#x27;Duplicate-link trigger&#x27;, &#x27;Existing enriched documents schedule synthesis immediately after a new library link&#x27;]
+      ],
+      output: &#x27;Corpus brief, inferred intent, themes, evidence-backed gaps, provenance, and generation mode. gap_alert emits only when at least one gap is high urgency.&#x27;,
+      branch: &#x27;An unchanged corpus fingerprint skips work. Model failure keeps a deterministic synthesis instead of removing library understanding.&#x27;
+    },
+    {
+      id: &#x27;refine&#x27;, number: &#x27;12&#x27;, title: &#x27;Automatic refinement&#x27;, phase: &#x27;Library maintenance&#x27;, status: &#x27;Automatic · debounced&#x27;,
+      summary: &#x27;Library-level structure converges after ingestion bursts through resumable, delta-aware repair and optional paid deepening.&#x27;,
+      actions: [
+        &#x27;Reset one per-library debounce on both fast-ready and complete events.&#x27;,
+        &#x27;Use change-data-capture identity to skip unchanged libraries before creating an operation.&#x27;,
+        &#x27;Run deterministic repair and, when allowed, paid deepening; reuse an active refinement run.&#x27;
+      ],
+      settings: [
+        [&#x27;Current autoAfterIngest&#x27;, &#x27;true&#x27;],
+        [&#x27;Current autoAllowPaidAi&#x27;, &#x27;true&#x27;],
+        [&#x27;Current autoResumePaid&#x27;, &#x27;true&#x27;],
+        [&#x27;Debounce&#x27;, &#x27;90 seconds default · bounded 10 seconds–30 minutes&#x27;],
+        [&#x27;Minimum interval&#x27;, &#x27;10 minutes default · bounded 1 minute–24 hours&#x27;],
+        [&#x27;Change gate&#x27;, &#x27;CDC cursor + coveredSince + libraryChangedSince&#x27;],
+        [&#x27;Refinement stages&#x27;, &#x27;purity → safety → repair → enrichment → entities → connections → chapters → synthesis → verify&#x27;],
+        [&#x27;Refinement model work&#x27;, &#x27;1 document/run default · worker concurrency 4 · 1 attempt · 90 s stage timeout&#x27;],
+        [&#x27;Timeout semantics&#x27;, &#x27;90 s abandons the awaited stage but does not cancel underlying provider/enrichment work&#x27;],
+        [&#x27;Semantic chapter limit&#x27;, &#x27;500 documents&#x27;],
+        [&#x27;Circuit breaker&#x27;, &#x27;Open after 4 failures without measurable improvement&#x27;],
+        [&#x27;Current autoResweep&#x27;, &#x27;false&#x27;],
+        [&#x27;Re-sweep when enabled&#x27;, &#x27;Boot delay 90 seconds · tick 5 minutes · batch 8 · max 2 attempts/boot&#x27;],
+        [&#x27;Re-sweep-only stale recovery&#x27;, &#x27;When autoResweep is enabled: reset enriching documents after 45 minutes without a write&#x27;]
+      ],
+      output: &#x27;Updated context architecture, chapter/graph structure, repaired enrichment/entities/connections, quality metrics, and a durable receipt for runs that start.&#x27;,
+      branch: &#x27;An unchanged CDC cursor returns before operation creation, so that no-op has no durable operation receipt. Errors never crash ingestion; timed-out underlying work may continue.&#x27;
+    }
+  ];
+
+  const implementation = {
+    source: {
+      runtime: &#x27;Browser TypeScript/TSX compiled as ES modules for React 18.2; native DOM/File APIs and same-origin JSON requests.&#x27;,
+      modules: [
+        &#x27;app_build/client/src/components/dock/PoolStudioPanel.tsx&#x27;,
+        &#x27;app_build/client/src/components/ui/FileUploadDropzone.tsx&#x27;,
+        &#x27;app_build/client/src/api/client.ts&#x27;,
+        &#x27;POST /api/studio/intake/files | /folder | /paste | /web&#x27;
+      ],
+      tools: [
+        &#x27;React + ReactDOM — stateful Choose → Inspect → Library workflow.&#x27;,
+        &#x27;React Router — exposes the /pool-frame route.&#x27;,
+        &#x27;Lucide React + self-hosted Inter variable font — visible controls and typography.&#x27;,
+        &#x27;Native FileList, File.text(), Promise.allSettled, sessionStorage, and webkitdirectory — no upload/state library in this path.&#x27;
+      ],
+      artifacts: [
+        &#x27;Browser file bodies in an in-memory Map until the batch is prepared.&#x27;,
+        &#x27;Per-library session key contextos:pool-studio:&lt;libraryId&gt; for resumable UI metadata.&#x27;,
+        &#x27;Text-only JSON payload containing origin, MIME hint, relative path, and content.&#x27;
+      ],
+      approach: [
+        &#x27;Split intake by source instead of forcing every source through one ambiguous upload path.&#x27;,
+        &#x27;Keep the initial draft local and set disableLlm=true for file, folder, paste, and direct-web planning.&#x27;,
+        &#x27;Persist lightweight state while keeping potentially large file bodies out of browser storage.&#x27;
+      ],
+      resilience: [
+        &#x27;Read files with Promise.allSettled so one unreadable file does not discard valid siblings.&#x27;,
+        &#x27;Reject unsupported, empty, oversized, or over-count files before the API call.&#x27;,
+        &#x27;On sessionStorage quota failure, retry persistence without the pasted body while retaining batch and handoff identifiers.&#x27;
+      ],
+      decisions: [
+        &#x27;The exact browser Add route is intentionally text-only; PDF and Word need a different collector or prior extraction.&#x27;,
+        &#x27;Unprepared browser file bodies survive drawer closure but not a page reload.&#x27;,
+        &#x27;Visible dropzone copy says 25 MB total while live enforcement is 100 MiB.&#x27;
+      ]
+    },
+    acquire: {
+      runtime: &#x27;TypeScript/CommonJS on Node, mounted through Express; network discovery uses worker threads and untrusted parsing uses a killable child process.&#x27;,
+      modules: [
+        &#x27;app_build/server/lib/site-file-scraper.ts&#x27;,
+        &#x27;app_build/server/lib/safe-http.ts&#x27;,
+        &#x27;app_build/server/lib/archive-intake.ts&#x27;,
+        &#x27;app_build/server/lib/site-file-collector-worker.ts&#x27;,
+        &#x27;app_build/server/lib/web.ts&#x27;,
+        &#x27;POST /api/studio/site-scrapes | /download | /intake/site-scrape&#x27;
+      ],
+      tools: [
+        &#x27;Axios + guarded Node HTTP/DNS primitives — bounded requests with redirect and private-address enforcement.&#x27;,
+        &#x27;Cheerio — HTML and link extraction.&#x27;,
+        &#x27;Archiver + yauzl — retained source archives and bounded ZIP expansion.&#x27;,
+        &#x27;Zod — boundary validation.&#x27;,
+        &#x27;knowledgeAdvisor + shared provider layer — optional semantic candidate proposal for smart-site selection.&#x27;,
+        &#x27;pdf-parse, Mammoth, SheetJS/xlsx, Cheerio/Turndown — guarded JS file extraction in the scraper subprocess.&#x27;
+      ],
+      artifacts: [
+        &#x27;Atomic per-job JSON manifest plus candidate tree, selected IDs, and status history.&#x27;,
+        &#x27;Downloaded source archive, extracted readable inputs, artifact generation, and fingerprint.&#x27;,
+        &#x27;Clean page Markdown/text ready for the Studio batch planner—or, on total direct-crawl failure, the current synthetic scraper-unavailable placeholder.&#x27;
+      ],
+      approach: [
+        &#x27;Separate discovery from download: enumerate first, require review, then fetch only confirmed candidates.&#x27;,
+        &#x27;Treat the supplied path as a section boundary by default and enforce configured scope, pacing, byte, archive, and parser limits; robots can be switched off.&#x27;,
+        &#x27;Call the direct-page crawler once per seed URL, so 10/20-page caps are per seed rather than aggregate.&#x27;,
+        &#x27;Apply deterministic boundaries and candidate IDs first; optionally use knowledgeAdvisor to rank semantic candidates, then retain deterministic fallback and manual review.&#x27;
+      ],
+      resilience: [
+        &#x27;A restart preserves completed work and marks interrupted work retryable; it never silently resumes outbound traffic.&#x27;,
+        &#x27;A missing, blocked, or invalid provider proposal falls back to deterministic candidate scoring.&#x27;,
+        &#x27;Direct-page total failure currently degrades to fabricated placeholder text rather than returning an ingestion error.&#x27;,
+        &#x27;An RSS watchdog can terminate the parser child without taking down the API process.&#x27;,
+        &#x27;Docling is forced off for untrusted scraped files so an unbounded Python parser cannot bypass decoded-data ceilings.&#x27;,
+        &#x27;Artifact generation + fingerprint prevent an old review receipt from ingesting regenerated files.&#x27;
+      ],
+      decisions: [
+        &#x27;Direct-page crawling is capped at 10/20 pages per seed; multiple URLs multiply that ceiling.&#x27;,
+        &#x27;UI depth-1 copy and crawler link-following semantics disagree, so a user can crawl beyond the apparent supplied-page scope.&#x27;,
+        &#x27;Smart-site semantic ranking adds provider cost and bounded source-text egress when the optional proposal path runs.&#x27;,
+        &#x27;External site availability, robots rules, and document parser quality remain environmental dependencies.&#x27;,
+        &#x27;The safety posture prioritizes containment over maximum format fidelity for untrusted downloads.&#x27;
+      ]
+    },
+    guard: {
+      runtime: &#x27;TypeScript/CommonJS in the Node/Express Studio router with synchronous SQLite bookkeeping.&#x27;,
+      modules: [
+        &#x27;ingestion-engine/studio-router.ts&#x27;,
+        &#x27;ingestion-engine/lib/fsbrowse.ts&#x27;,
+        &#x27;ingestion-engine/lib/ignore.ts&#x27;,
+        &#x27;POST /api/studio/intake/files | /folder | /paste | /web | /site-scrape&#x27;
+      ],
+      tools: [
+        &#x27;Express — request boundary and response surface.&#x27;,
+        &#x27;better-sqlite3 — batch identity and durable intake state.&#x27;,
+        &#x27;Node path/fs/crypto — path normalization, scanning, and identifiers.&#x27;,
+        &#x27;No model or embedding dependency is required at this stage.&#x27;
+      ],
+      artifacts: [
+        &#x27;Sanitized FunnelInput records with source ID, origin, MIME hint, and raw text.&#x27;,
+        &#x27;Accepted, skipped, binary, and truncation counts.&#x27;,
+        &#x27;A batch identifier only when at least one valid input remains.&#x27;
+      ],
+      approach: [
+        &#x27;Reject basic invalid input before durable work; downstream startBatch exceptions can still leave inserted running rows.&#x27;,
+        &#x27;Normalize path separators and strip dot/parent traversal components.&#x27;,
+        &#x27;Use deterministic, source-specific guards and explicit exclusions rather than a permissive catch-all parser.&#x27;
+      ],
+      resilience: [
+        &#x27;No readable input returns 400 and creates no batch.&#x27;,
+        &#x27;Invalid siblings are skipped while valid files can continue.&#x27;,
+        &#x27;Directory symlinks are skipped, but supported-extension file symlinks can currently be stat/read outside STUDIO_FS_ROOTS.&#x27;,
+        &#x27;Planning remains available with all model providers down because Add sends disableLlm=true.&#x27;
+      ],
+      decisions: [
+        &#x27;This is the main correctness/security choke point; expanding supported inputs should happen here and in the client together.&#x27;,
+        &#x27;Workspace-folder intake and browser-folder intake are different trust and persistence paths.&#x27;,
+        &#x27;The 100 MiB aggregate applies to /intake/files only; paste and workspace-folder paths have different ceilings.&#x27;
+      ]
+    },
+    extract: {
+      runtime: &#x27;TypeScript/CommonJS on Node with synchronous prepared statements in the Studio SQLite database.&#x27;,
+      modules: [
+        &#x27;ingestion-engine/engine.ts&#x27;,
+        &#x27;ingestion-engine/stages/envelope.ts&#x27;,
+        &#x27;ingestion-engine/stages/extract.ts&#x27;,
+        &#x27;ingestion-engine/lib/db.ts&#x27;
+      ],
+      tools: [
+        &#x27;better-sqlite3 — envelopes, extracted documents, decisions, and batch state.&#x27;,
+        &#x27;Node crypto SHA-256 — exact payload identity.&#x27;,
+        &#x27;Internal text/encoding/title helpers — deterministic readable extraction and structural hints.&#x27;,
+        &#x27;No external model is required.&#x27;
+      ],
+      artifacts: [
+        &#x27;envelopes rows with checksum, origin, MIME, and duplicateOf.&#x27;,
+        &#x27;extracted_docs rows with text, structural hints, and media metadata.&#x27;,
+        &#x27;decision_log entries that preserve every tree-shaping duplicate decision.&#x27;
+      ],
+      approach: [
+        &#x27;Compute identity before extraction so exact content is never parsed twice inside the batch.&#x27;,
+        &#x27;Persist duplicate envelopes rather than silently dropping them.&#x27;,
+        &#x27;Keep extraction deterministic and replayable; note that startBatch has no exception cleanup or failed transition.&#x27;
+      ],
+      resilience: [
+        &#x27;Duplicates bypass duplicate work and rejoin the human review path.&#x27;,
+        &#x27;Model availability cannot affect identity or extraction.&#x27;,
+        &#x27;An exception after the running batch is inserted returns HTTP 500 but can leave partial running rows for operational cleanup.&#x27;,
+        &#x27;SQLite WAL, foreign keys, a 10-second busy timeout, and NORMAL synchronous mode protect the local control store.&#x27;
+      ],
+      decisions: [
+        &#x27;Replayability and auditability are strong, but the Studio database is a second local state store that must be backed up with the Pool store.&#x27;,
+        &#x27;Checksum identity is exact, not semantic; near-duplicate handling happens later.&#x27;,
+        &#x27;Structural extraction quality depends on the text supplied by the selected source branch.&#x27;
+      ]
+    },
+    classify: {
+      runtime: &#x27;TypeScript/CommonJS on Node; synchronous SQLite persistence plus optional asynchronous provider calls that Add currently disables.&#x27;,
+      modules: [
+        &#x27;ingestion-engine/stages/classify.ts&#x27;,
+        &#x27;ingestion-engine/stages/grouping.ts&#x27;,
+        &#x27;ingestion-engine/stages/confidence.ts&#x27;,
+        &#x27;ingestion-engine/lib/tfidf.ts&#x27;,
+        &#x27;ingestion-engine/lib/text.ts&#x27;,
+        &#x27;ingestion-engine/lib/schema.ts&#x27;
+      ],
+      tools: [
+        &#x27;better-sqlite3 — classifications, clusters, profiles, and decision logs.&#x27;,
+        &#x27;In-house TF-IDF vectors, cosine similarity, and deterministic greedy clustering — no third-party clustering library.&#x27;,
+        &#x27;Optional LLM adapter exists for proposals/tie-breaking, but this Add flow passes disableLlm=true.&#x27;
+      ],
+      artifacts: [
+        &#x27;Classification rows: content type, profile-controlled archetype, confidence, signals, source, and flagged state.&#x27;,
+        &#x27;Cluster rows with members, deterministic votes, label, rationale, and confidence.&#x27;,
+        &#x27;Confidence-tier decisions and the paused_review batch state.&#x27;
+      ],
+      approach: [
+        &#x27;Use structural heuristics as the always-available classification floor.&#x27;,
+        &#x27;Reconcile three deterministic voters—taxonomy, TF-IDF, and a stricter semantic stand-in—with an optional LLM as tie-breaker only.&#x27;,
+        &#x27;Code validates type vocabulary, overwrites unsupported archetypes, and prevents an LLM from creating a cluster with zero deterministic support.&#x27;,
+        &#x27;Apply profile-specific auto/pause thresholds; defaults are 0.85 auto and 0.60 pause.&#x27;
+      ],
+      resilience: [
+        &#x27;Unavailable or invalid model output degrades each document to a flagged heuristic result instead of failing the batch.&#x27;,
+        &#x27;Proposal failures cannot write to the library because the batch always terminates at paused_review.&#x27;,
+        &#x27;Low-confidence and fallback decisions are persisted and returned by the API, but the current Pool UI does not render them.&#x27;
+      ],
+      decisions: [
+        &#x27;Current Add behavior is deterministic and cost-free at planning time, but classification/grouping quality is bounded by heuristics and source text.&#x27;,
+        &#x27;The Pool UI requires the human gate, but the commit API does not enforce it and defaults omitted selectedSourceIds to all sources.&#x27;,
+        &#x27;If model-assisted planning is enabled later, code remains the final authority rather than the provider.&#x27;
+      ]
+    },
+    review: {
+      runtime: &#x27;React 18 TypeScript/TSX in the browser, backed by the TypeScript/Express Studio review API.&#x27;,
+      modules: [
+        &#x27;app_build/client/src/components/dock/PoolStudioPanel.tsx&#x27;,
+        &#x27;ingestion-engine/studio-router.ts&#x27;,
+        &#x27;ingestion-engine/engine.ts#reviewPlan&#x27;,
+        &#x27;GET /api/studio/batch/:id/documents&#x27;
+      ],
+      tools: [
+        &#x27;React hooks — selection, search, title edits, expansion, and review state.&#x27;,
+        &#x27;Lucide React — review controls.&#x27;,
+        &#x27;Native fetch through the shared API client.&#x27;,
+        &#x27;better-sqlite3 — authoritative persisted batch plan and duplicate state.&#x27;
+      ],
+      artifacts: [
+        &#x27;selectedSourceIds, excludeSourceIds, and titleOverrides.&#x27;,
+        &#x27;Server plan includes ready/review/duplicate state, excerpt, type, confidence, and grouping; the client renders only a subset.&#x27;,
+        &#x27;Restorable batch ID and tab-scoped review UI state in sessionStorage.&#x27;
+      ],
+      approach: [
+        &#x27;Make the Pool UI human-controlled after automatic planning; the server endpoint itself is not an authority gate.&#x27;,
+        &#x27;Preselect readable new documents and exact duplicates, hide duplicates by default, and allow explicit inspection.&#x27;,
+        &#x27;Keep title correction separate from source content; duplicates reuse the existing document identity.&#x27;
+      ],
+      resilience: [
+        &#x27;A missing target library blocks the commit; the client blocks an empty selection, but the API defaults an omitted selection to all sources.&#x27;,
+        &#x27;Prepared batches restore by re-fetching the durable plan after reload; edit state is only tab-scoped sessionStorage.&#x27;,
+        &#x27;Duplicate titles are not edited as if they were new documents.&#x27;
+      ],
+      decisions: [
+        &#x27;The UI gate reduces accidental writes, but hidden preselected duplicates and direct API calls weaken the authority guarantee.&#x27;,
+        &#x27;The main Pool Studio test suite does not yet prove the complete choose → inspect → commit journey.&#x27;,
+        &#x27;Review quality depends on the accuracy of excerpts and source titles generated upstream.&#x27;
+      ]
+    },
+    handoff: {
+      runtime: &#x27;TypeScript/CommonJS on Node with a local asynchronous worker loop and synchronous SQLite claim/update transactions.&#x27;,
+      modules: [
+        &#x27;ingestion-engine/lib/library-handoff.ts&#x27;,
+        &#x27;ingestion-engine/studio-router.ts&#x27;,
+        &#x27;app_build/server/engine/library-ingest-adapter.ts&#x27;,
+        &#x27;POST + GET /api/studio/batch/:id/add-to-library&#x27;
+      ],
+      tools: [
+        &#x27;better-sqlite3 — job and per-source ledgers.&#x27;,
+        &#x27;Node crypto.randomUUID — stable job/source identities.&#x27;,
+        &#x27;No Redis, RabbitMQ, cloud queue, or external workflow engine; durability is local SQLite.&#x27;
+      ],
+      artifacts: [
+        &#x27;library_handoff_jobs and library_handoff_items rows.&#x27;,
+        &#x27;Per-item attempt count, lease expiry, document ID, searchReady flag, and error.&#x27;,
+        &#x27;Public job snapshot with Added / Linked / Already here / Skipped / Failed counts.&#x27;,
+        &#x27;Adapter payload carries extracted text, approved title, and source/origin; Studio classification and clustering stay in ingestion.db.&#x27;
+      ],
+      approach: [
+        &#x27;Create one idempotent job per batch + target library and one ledger row per source.&#x27;,
+        &#x27;Run a bounded worker pool (default 2); each worker claims transactionally, processes one source at a time, and finalizes each item independently.&#x27;,
+        &#x27;Return immediately and let the client poll every two seconds.&#x27;
+      ],
+      resilience: [
+        &#x27;A 15-minute item lease makes interrupted processing reclaimable; startup recovery reclaims known orphans immediately.&#x27;,
+        &#x27;Retry resets only failed/cancelled items, leaving successful siblings untouched.&#x27;,
+        &#x27;Adapter effects are idempotent across crash ambiguity: a successful Pool write can be retried before the Studio ledger is finalized.&#x27;,
+        &#x27;A linked existing document can still report searchReady=false when its status is processing; only error is rejected.&#x27;,
+        &#x27;Cancellation stops new claims and records terminal item states without erasing receipts.&#x27;
+      ],
+      decisions: [
+        &#x27;This is strong single-machine durability and idempotency without extra infrastructure.&#x27;,
+        &#x27;Studio grouping is advisory review context, not the canonical Pool classification; Pool deep enrichment classifies again later.&#x27;,
+        &#x27;Scaling to multiple hosts would require a deliberate distributed claim/lease design; the current promise is local-first single-user.&#x27;,
+        &#x27;Backup/recovery must include this ledger or the UI can lose authoritative job history even when Pool documents survive.&#x27;
+      ]
+    },
+    fast: {
+      runtime: &#x27;TypeScript ES2022/CommonJS on Node 20, executed through ts-node with SWC; synchronous SQLite plus local filesystem writes.&#x27;,
+      modules: [
+        &#x27;app_build/server/engine/index.ts&#x27;,
+        &#x27;app_build/server/engine/duplicate-detector.ts&#x27;,
+        &#x27;app_build/server/engine/parser.ts&#x27;,
+        &#x27;app_build/server/engine/fast-path.ts&#x27;,
+        &#x27;app_build/server/engine/vault-writer.ts&#x27;,
+        &#x27;app_build/server/engine/library-ingest-adapter.ts&#x27;
+      ],
+      tools: [
+        &#x27;better-sqlite3 + SQLite FTS5 — canonical rows, sections, chunks, and lexical search.&#x27;,
+        &#x27;Node crypto/fs/path — exact hashes and local vault artifacts.&#x27;,
+        &#x27;Docling, pdf-parse, Mammoth, SheetJS/xlsx, Tesseract, Cheerio/Turndown are available to broader collectors; this Studio handoff normally arrives as extracted text.&#x27;
+      ],
+      artifacts: [
+        &#x27;documents, document_sections, retrieval chunks, routing scaffold, and FTS rows in contextos.db.&#x27;,
+        &#x27;data/vault/&lt;documentId&gt;/readable.md, source artifact, derived files, metadata, and processing receipt.&#x27;,
+        &#x27;library_documents link plus document:fast-ready and library document_added events.&#x27;
+      ],
+      approach: [
+        &#x27;Run a purity pass, exact-content hash check, media preprocessing, registry insert, and section parsing in order.&#x27;,
+        &#x27;Build FTS/chunks and write the vault concurrently with Promise.all.&#x27;,
+        &#x27;Declare fast_ready only after both durable search and readable-vault work succeed, then link the library and emit events.&#x27;
+      ],
+      resilience: [
+        &#x27;Healthy exact duplicates are linked rather than reinserted; same-library duplicates become already-linked.&#x27;,
+        &#x27;A unique content_hash constraint closes the simultaneous-upload race and surfaces the existing identity.&#x27;,
+        &#x27;Media preprocessing can fall back to raw content; parse/index/vault failures mark the new document error.&#x27;
+      ],
+      decisions: [
+        &#x27;Search readiness does not depend on an LLM, embedding provider, or Python worker.&#x27;,
+        &#x27;The blocking fast path makes success meaningful, but local disk/SQLite health is therefore on the critical path.&#x27;,
+        &#x27;The Studio and Pool runtimes have different declared Node constraints; independent packaging should resolve that mismatch.&#x27;
+      ]
+    },
+    enrich: {
+      runtime: &#x27;TypeScript/CommonJS background queue on Node; external HTTPS provider calls plus optional Python fastembed worker.&#x27;,
+      modules: [
+        &#x27;app_build/server/engine/enrichment.ts&#x27;,
+        &#x27;app_build/server/engine/enrichment-queue.ts&#x27;,
+        &#x27;app_build/server/lib/llm.ts&#x27;,
+        &#x27;app_build/server/lib/embeddings.ts&#x27;,
+        &#x27;app_build/server/lib/paid-ai-budget.ts&#x27;,
+        &#x27;app_build/server/engine/dataset-extractor.ts&#x27;
+      ],
+      tools: [
+        &#x27;OpenAI SDK — current knowledge model gpt-5.5 and OpenAI-compatible calls.&#x27;,
+        &#x27;Mistral API through the OpenAI-compatible adapter — current knowledge backup.&#x27;,
+        &#x27;Anthropic SDK and Google Generative AI SDK — supported alternative providers.&#x27;,
+        &#x27;fastembed/ONNX through Python 3.12 — selectable free local alternative/last resort, not automatic remote-call failover.&#x27;,
+        &#x27;better-sqlite3 — stage outputs, receipts, and document status.&#x27;,
+        &#x27;Atomic data/paid-ai-budget.json — request/token budget counters; no currency ledger.&#x27;
+      ],
+      artifacts: [
+        &#x27;Validated summaries, grounded facts, trust/time classification, key sections, and digest.&#x27;,
+        &#x27;Section embeddings, datasets, document meta-embeddings, and per-stage receipts.&#x27;,
+        &#x27;complete or partial document status plus document:complete when all required stages pass.&#x27;
+      ],
+      approach: [
+        &#x27;Generate and validate summaries first; use the accepted micro-summary as context for later stages.&#x27;,
+        &#x27;Run independent facts, classification, key-section, digest, embedding, and dataset work concurrently where safe.&#x27;,
+        &#x27;Route structured work knowledge-first with chat and independent backup fallthrough; digest and dataset extraction use their narrower model routes.&#x27;,
+        &#x27;Build meta-embeddings after the content stages and issue a non-blocking 95% near-duplicate advisory.&#x27;,
+        &#x27;Separate required from optional stages so visualization/ranking extras cannot invalidate a searchable document.&#x27;
+      ],
+      resilience: [
+        &#x27;Queue concurrency defaults to 6 and is clamped 1–8; immediate attempts default to one and clamp at two.&#x27;,
+        &#x27;The waiting queue is memory-only; restart loses queued fast_ready jobs, boot reclaim excludes them, and autoResweep is currently off.&#x27;,
+        &#x27;Provider circuit breakers fail fast; a global background semaphore prevents saturation; an LRU avoids repeated identical background prompts.&#x27;,
+        &#x27;Budget checks fail closed before paid calls. Required failure produces partial; optional failure only degrades that capability.&#x27;,
+        &#x27;The document remains searchable throughout and can be re-enriched later.&#x27;
+      ],
+      decisions: [
+        &#x27;Current paid automation is enabled with hard request/token ceilings; quality/cost/latency decisions live here, not in the fast path.&#x27;,
+        &#x27;The guard limits requests/tokens rather than dollars, so this snapshot does not provide a $/document forecast.&#x27;,
+        &#x27;The active knowledge provider is OpenAI with a Mistral backup; provider portability exists but outputs still need stage validation.&#x27;,
+        &#x27;With local models off, bounded source content leaves the workstation for provider-backed stages; secret redaction is not general PII anonymization.&#x27;,
+        &#x27;Legacy auto-resweep is off, so older enrichment generations do not automatically converge to v2.&#x27;
+      ]
+    },
+    intelligence: {
+      runtime: &#x27;TypeScript/CommonJS event pipeline on Node plus a persistent Python 3.12 spaCy worker; synchronous SQLite remains canonical.&#x27;,
+      modules: [
+        &#x27;app_build/server/intelligence/index.ts&#x27;,
+        &#x27;app_build/server/engine/fast-scaffold.ts&#x27;,
+        &#x27;app_build/server/intelligence/entities&#x27;,
+        &#x27;app_build/server/intelligence/graph&#x27;,
+        &#x27;app_build/server/intelligence/timeline&#x27;,
+        &#x27;app_build/server/intelligence/decisions&#x27;,
+        &#x27;app_build/server/people&#x27;,
+        &#x27;app_build/server/lib/spacy-nlp.ts&#x27;
+      ],
+      tools: [
+        &#x27;compromise — deterministic people/place/organization/concept harvesting in the fast catalog.&#x27;,
+        &#x27;spaCy with en_core_web_sm plus lazy fastcoref — local entity floor and coreference; first use may download the fastcoref model.&#x27;,
+        &#x27;Current configured LLM adapter — model-assisted entity/graph/timeline/decision extraction.&#x27;,
+        &#x27;better-sqlite3 — canonical intelligence objects and mentions.&#x27;,
+        &#x27;neo4j-driver — optional projection/read backend, installed but currently disabled.&#x27;
+      ],
+      artifacts: [
+        &#x27;Entities, mentions, grounded relationships, dated events, decisions, people links, and living signals.&#x27;,
+        &#x27;Fast scaffold and document_library_catalog generation stamp.&#x27;,
+        &#x27;Catalog-ready and intelligence-ready signals plus invalidated compiled context; intelligence-ready means attempts finished, not that every extractor succeeded.&#x27;
+      ],
+      approach: [
+        &#x27;At fast-ready, create a deterministic 0.6-confidence scaffold so basic catalog data does not wait for AI.&#x27;,
+        &#x27;At complete, execute harvest → entities → graph → timeline → decisions → people → signals.&#x27;,
+        &#x27;When rebuilding an older catalog generation, remove only deterministic low-confidence objects and preserve model/user-confirmed knowledge.&#x27;
+      ],
+      resilience: [
+        &#x27;Each extractor catches its own error, so one failure cannot sink ingestion or later extractors.&#x27;,
+        &#x27;Startup backfill queues deterministic fast-catalog refresh for missing or old generations; it does not run full intelligence.&#x27;,
+        &#x27;Graph reads fall back to SQLite when Neo4j is disabled or unhealthy.&#x27;,
+        &#x27;The Python worker probes dependencies, restarts on failure, and degrades cleanly when unavailable.&#x27;
+      ],
+      decisions: [
+        &#x27;The knowledge graph remains functional without a Java/Neo4j service, reducing local operational burden.&#x27;,
+        &#x27;Deterministic early objects improve immediacy; full model-assisted objects improve depth later.&#x27;,
+        &#x27;Consumers must not treat intelligence_ready as proof that every extractor succeeded because stage errors are swallowed.&#x27;,
+        &#x27;Confidence/provenance policy must remain explicit because deterministic and model/user-confirmed layers coexist.&#x27;
+      ]
+    },
+    synthesize: {
+      runtime: &#x27;TypeScript/CommonJS background work on Node with synchronous SQLite reads and up to two optional provider calls per run.&#x27;,
+      modules: [
+        &#x27;app_build/server/engine/synthesis.ts&#x27;,
+        &#x27;app_build/server/engine/index.ts&#x27;,
+        &#x27;app_build/server/engine/library-ingest-adapter.ts&#x27;,
+        &#x27;app_build/server/lib/library-bus.ts&#x27;
+      ],
+      tools: [
+        &#x27;better-sqlite3 — representative documents, summaries, entities, fingerprint, and durable synthesis state.&#x27;,
+        &#x27;The shared LLM provider layer — separate evidence-bounded intent and gap calls, one attempt per call by default.&#x27;,
+        &#x27;In-process timer + lease — no external workflow service.&#x27;
+      ],
+      artifacts: [
+        &#x27;Corpus brief, inferred intent, themes, evidence-backed gaps, provenance, and generation mode.&#x27;,
+        &#x27;Corpus fingerprint and document count used to skip unchanged work.&#x27;,
+        &#x27;gap_alert library event only when at least one high-urgency gap exists.&#x27;
+      ],
+      approach: [
+        &#x27;Sample by topic round-robin, entities, summaries, recency, and corpus stride instead of feeding the whole library blindly.&#x27;,
+        &#x27;Bound the working set to 30 documents and 36 evidence items.&#x27;,
+        &#x27;Require evidence for gaps and retain a deterministic synthesis when provider work fails.&#x27;
+      ],
+      resilience: [
+        &#x27;A 12-second debounce collapses document bursts into one run.&#x27;,
+        &#x27;A two-minute lease protects against overlapping synthesis work.&#x27;,
+        &#x27;Fingerprint + document-count equality returns a no-op for unchanged corpora.&#x27;,
+        &#x27;Model failure falls back deterministically rather than clearing the last usable library understanding.&#x27;
+      ],
+      decisions: [
+        &#x27;This is a sampled corpus interpretation, not an exhaustive pass over every document.&#x27;,
+        &#x27;Existing enriched documents linked into a new library schedule synthesis immediately.&#x27;,
+        &#x27;The evidence cap bounds cost and context size but can miss low-frequency themes in very large libraries.&#x27;
+      ]
+    },
+    refine: {
+      runtime: &#x27;TypeScript/CommonJS background work on Node with synchronous SQLite CDC reads and optional paid LLM calls.&#x27;,
+      modules: [
+        &#x27;app_build/server/engine/auto-refine.ts&#x27;,
+        &#x27;app_build/server/engine/library-refinement.ts&#x27;,
+        &#x27;app_build/server/lib/change-tracker.ts&#x27;,
+        &#x27;app_build/server/engine/re-enrich-sweeper.ts&#x27;,
+        &#x27;app_build/server/lib/config.ts&#x27;
+      ],
+      tools: [
+        &#x27;better-sqlite3 + SQLite triggers — change-data-capture sequence and refinement receipts.&#x27;,
+        &#x27;The shared LLM provider layer — optional paid deepening with the same budget/circuit controls.&#x27;,
+        &#x27;In-process timers and event buses — no external scheduler or orchestration service.&#x27;
+      ],
+      artifacts: [
+        &#x27;Library refinement operation, proposal/checkpoint, context architecture, and quality metrics.&#x27;,
+        &#x27;CDC cursor/high-water identity proving whether the library changed.&#x27;,
+        &#x27;Updated chapter/graph structure and durable completion/failure receipt for runs that pass the automatic CDC gate.&#x27;
+      ],
+      approach: [
+        &#x27;Reset one per-library debounce on both document:fast-ready and document:complete.&#x27;,
+        &#x27;Use coveredSince + libraryChangedSince to skip unchanged corpora before creating expensive work.&#x27;,
+        &#x27;Run deterministic repair first, allow paid deepening under policy, and reuse an already-active operation.&#x27;,
+        &#x27;Keep legacy document re-sweep as a separate config-gated maintenance loop.&#x27;
+      ],
+      resilience: [
+        &#x27;Debounce defaults to 90 seconds and the minimum interval to 10 minutes, both bounded.&#x27;,
+        &#x27;Errors are logged and cannot crash ingestion; later events retrigger the library.&#x27;,
+        &#x27;A 90-second timeout stops awaiting the stage but does not cancel underlying provider or enrichment work, so spend can continue.&#x27;,
+        &#x27;Paid interrupted runs auto-resume under current policy.&#x27;,
+        &#x27;The 45-minute stale-enriching reset exists inside the re-sweep loop, but it is inactive while autoResweep=false.&#x27;
+      ],
+      decisions: [
+        &#x27;autoAfterIngest, autoAllowPaidAi, and autoResumePaid are currently on; the system optimizes without a manual button.&#x27;,
+        &#x27;autoResweep is currently off; that caps background cost, leaves legacy generations behind, and disables the sweeper’s stale-enriching recovery.&#x27;,
+        &#x27;Automatic CDC no-ops return before operation creation; dashboards cannot rely on a durable receipt for every debounce.&#x27;,
+        &#x27;Timeout is abandonment, not cancellation; cost and overlapping work need separate observability.&#x27;,
+        &#x27;The in-process design is appropriate for the current single-user local architecture; product-scale multi-host orchestration would be a separate decision.&#x27;
+      ]
+    }
+  };
+
+  const edges = [
+    { from: &#x27;source&#x27;, to: &#x27;acquire&#x27;, label: &#x27;web URL&#x27; },
+    { from: &#x27;source&#x27;, to: &#x27;guard&#x27;, label: &#x27;files / paste&#x27; },
+    { from: &#x27;acquire&#x27;, to: &#x27;guard&#x27;, label: &#x27;text / placeholder&#x27;, mobileLabelHide: true },
+    { from: &#x27;guard&#x27;, to: &#x27;rejected&#x27;, label: &#x27;invalid&#x27; },
+    { from: &#x27;guard&#x27;, to: &#x27;extract&#x27;, label: &#x27;pass&#x27; },
+    { from: &#x27;extract&#x27;, to: &#x27;classify&#x27;, label: &#x27;fresh&#x27; },
+    { from: &#x27;extract&#x27;, to: &#x27;duplicate&#x27;, label: &#x27;duplicate&#x27; },
+    { from: &#x27;classify&#x27;, to: &#x27;review&#x27;, label: &#x27;review plan&#x27; },
+    { from: &#x27;duplicate&#x27;, to: &#x27;review&#x27;, label: &#x27;inspect&#x27; },
+    { from: &#x27;review&#x27;, to: &#x27;excluded&#x27;, label: &#x27;excluded&#x27; },
+    { from: &#x27;review&#x27;, to: &#x27;handoff&#x27;, label: &#x27;text + title approved&#x27; },
+    { from: &#x27;handoff&#x27;, to: &#x27;existing&#x27;, label: &#x27;exact duplicate&#x27; },
+    { from: &#x27;handoff&#x27;, to: &#x27;fast&#x27;, label: &#x27;new content&#x27; },
+    { from: &#x27;existing&#x27;, to: &#x27;searchable&#x27;, label: &#x27;if search-ready&#x27; },
+    { from: &#x27;existing&#x27;, to: &#x27;intelligence&#x27;, label: &#x27;catalog for library&#x27;, labelDx: 34, labelDy: -6, mobileRoute: &#x27;left&#x27;, mobileRail: 1, mobileLabelHide: true },
+    { from: &#x27;existing&#x27;, to: &#x27;refine&#x27;, label: &#x27;fast-ready event&#x27;, labelDx: -16, labelDy: -4, mobileRoute: &#x27;left&#x27;, mobileRail: 3, mobileLabelHide: true },
+    { from: &#x27;fast&#x27;, to: &#x27;searchable&#x27;, label: &#x27;fast_ready&#x27; },
+    { from: &#x27;fast&#x27;, to: &#x27;enrich&#x27;, label: &#x27;background&#x27;, labelDy: 12, route: &#x27;right&#x27;, mobileRoute: &#x27;right&#x27;, mobileLabelHide: true },
+    { from: &#x27;fast&#x27;, to: &#x27;intelligence&#x27;, label: &#x27;fast catalog&#x27;, labelDx: 26, labelDy: 12, mobileRoute: &#x27;right&#x27;, mobileRail: 1, mobileLabelHide: true },
+    { from: &#x27;fast&#x27;, to: &#x27;refine&#x27;, label: &#x27;debounce&#x27;, labelDx: -26, labelDy: 20, mobileRoute: &#x27;right&#x27;, mobileRail: 3, mobileLabelHide: true },
+    { from: &#x27;enrich&#x27;, to: &#x27;intelligence&#x27;, label: &#x27;complete&#x27; },
+    { from: &#x27;enrich&#x27;, to: &#x27;synthesize&#x27;, label: &#x27;document ready&#x27;, mobileRoute: &#x27;left&#x27;, mobileLabelHide: true },
+    { from: &#x27;enrich&#x27;, to: &#x27;refine&#x27;, label: &#x27;complete event&#x27;, mobileRoute: &#x27;right&#x27;, mobileLabelHide: true },
+    { from: &#x27;existing&#x27;, to: &#x27;synthesize&#x27;, label: &#x27;reused document&#x27;, labelDx: -28, labelDy: -18, mobileRoute: &#x27;left&#x27;, mobileRail: 2, mobileLabelHide: true },
+    { from: &#x27;intelligence&#x27;, to: &#x27;complete&#x27;, label: &#x27;knowledge objects&#x27;, mobileRoute: &#x27;left&#x27;, mobileLabelHide: true },
+    { from: &#x27;synthesize&#x27;, to: &#x27;complete&#x27;, label: &#x27;corpus brief + gaps&#x27;, mobileRoute: &#x27;right&#x27;, mobileLabelHide: true },
+    { from: &#x27;refine&#x27;, to: &#x27;complete&#x27;, label: &#x27;refined architecture&#x27; }
+  ];
+
+  const canvas = root.querySelector(&#x27;.graph-canvas&#x27;);
+  const svg = root.querySelector(&#x27;#ingestion-graph-edges&#x27;);
+  const edgeLayer = root.querySelector(&#x27;#ingestion-edge-layer&#x27;);
+  const buttons = Array.from(root.querySelectorAll(&#x27;button[data-stage-id]&#x27;));
+  const detailPanel = root.querySelector(&#x27;.graph-detail&#x27;);
+  const phase = root.querySelector(&#x27;#ingestion-detail-phase&#x27;);
+  const title = root.querySelector(&#x27;#ingestion-detail-title&#x27;);
+  const status = root.querySelector(&#x27;#ingestion-detail-status&#x27;);
+  const summary = root.querySelector(&#x27;#ingestion-detail-summary&#x27;);
+  const actions = root.querySelector(&#x27;#ingestion-detail-actions&#x27;);
+  const approach = root.querySelector(&#x27;#ingestion-detail-approach&#x27;);
+  const settings = root.querySelector(&#x27;#ingestion-detail-settings&#x27;);
+  const output = root.querySelector(&#x27;#ingestion-detail-output&#x27;);
+  const branch = root.querySelector(&#x27;#ingestion-detail-branch&#x27;);
+  const runtime = root.querySelector(&#x27;#ingestion-detail-runtime&#x27;);
+  const modules = root.querySelector(&#x27;#ingestion-detail-modules&#x27;);
+  const tools = root.querySelector(&#x27;#ingestion-detail-tools&#x27;);
+  const artifacts = root.querySelector(&#x27;#ingestion-detail-artifacts&#x27;);
+  const resilience = root.querySelector(&#x27;#ingestion-detail-resilience&#x27;);
+  const decisions = root.querySelector(&#x27;#ingestion-detail-decisions&#x27;);
+  const detailTabs = Array.from(root.querySelectorAll(&#x27;[data-detail-tab]&#x27;));
+  const detailPanels = Array.from(root.querySelectorAll(&#x27;[data-detail-panel]&#x27;));
+  let selectedId = &#x27;source&#x27;;
+
+  const nodeRect = id =&gt; {
+    const node = root.querySelector(`[data-node-id=&quot;${id}&quot;]`);
+    if (!node) return null;
+    const nodeBox = node.getBoundingClientRect();
+    const canvasBox = canvas.getBoundingClientRect();
+    return {
+      left: nodeBox.left - canvasBox.left,
+      right: nodeBox.right - canvasBox.left,
+      top: nodeBox.top - canvasBox.top,
+      bottom: nodeBox.bottom - canvasBox.top,
+      width: nodeBox.width,
+      height: nodeBox.height,
+      cx: nodeBox.left - canvasBox.left + nodeBox.width / 2,
+      cy: nodeBox.top - canvasBox.top + nodeBox.height / 2
+    };
+  };
+
+  const edgeGeometry = (from, to, edge) =&gt; {
+    const narrow = canvas.clientWidth &lt;= 520;
+    const routedSide = narrow ? edge.mobileRoute : edge.route;
+    if (routedSide) {
+      const leftRoute = routedSide === &#x27;left&#x27;;
+      const railOffset = Number(narrow ? edge.mobileRail || 0 : edge.rail || 0) * 6;
+      const sx = leftRoute ? from.left : from.right;
+      const tx = leftRoute ? to.left : to.right;
+      const sy = from.cy;
+      const ty = to.cy;
+      const railX = leftRoute
+        ? Math.max(4, Math.min(from.left, to.left) - 12 - railOffset)
+        : Math.min(canvas.clientWidth - 4, Math.max(from.right, to.right) + 12 + railOffset);
+      return {
+        path: `M ${sx} ${sy} C ${railX} ${sy}, ${railX} ${ty}, ${tx} ${ty}`,
+        labelX: railX,
+        labelY: (sy + ty) / 2
+      };
+    }
+
+    const nearlyHorizontal = Math.abs(to.cy - from.cy) &lt; Math.max(from.height, to.height);
+    if (nearlyHorizontal) {
+      const leftToRight = from.cx &lt; to.cx;
+      const sx = leftToRight ? from.right : from.left;
+      const tx = leftToRight ? to.left : to.right;
+      const sy = from.cy;
+      const ty = to.cy;
+      const mx = (sx + tx) / 2;
+      return {
+        path: `M ${sx} ${sy} C ${mx} ${sy}, ${mx} ${ty}, ${tx} ${ty}`,
+        labelX: mx,
+        labelY: (sy + ty) / 2 - 8
+      };
+    }
+
+    const sx = from.cx;
+    const sy = from.bottom;
+    const tx = to.cx;
+    const ty = to.top;
+    const my = sy + (ty - sy) / 2;
+    return {
+      path: `M ${sx} ${sy} C ${sx} ${my}, ${tx} ${my}, ${tx} ${ty}`,
+      labelX: (sx + tx) / 2,
+      labelY: my - 7
+    };
+  };
+
+  const updateEdgeSelection = () =&gt; {
+    const activeNodes = new Set([selectedId]);
+    const activeEdges = new Set();
+    let changed = true;
+    while (changed) {
+      changed = false;
+      edges.forEach((edge, index) =&gt; {
+        if (!activeNodes.has(edge.to)) return;
+        activeEdges.add(index);
+        if (!activeNodes.has(edge.from)) {
+          activeNodes.add(edge.from);
+          changed = true;
+        }
+      });
+    }
+
+    edgeLayer.querySelectorAll(&#x27;[data-edge-index]&#x27;).forEach(element =&gt; {
+      const active = activeEdges.has(Number(element.dataset.edgeIndex));
+      element.classList.toggle(&#x27;is-active&#x27;, active);
+      if (element.tagName.toLowerCase() === &#x27;path&#x27;) {
+        element.setAttribute(&#x27;marker-end&#x27;, active ? &#x27;url(#ingestion-arrow-active)&#x27; : &#x27;url(#ingestion-arrow)&#x27;);
+      }
+    });
+  };
+
+  const drawEdges = () =&gt; {
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+    svg.setAttribute(&#x27;viewBox&#x27;, `0 0 ${width} ${height}`);
+    edgeLayer.replaceChildren();
+
+    edges.forEach((edge, index) =&gt; {
+      const from = nodeRect(edge.from);
+      const to = nodeRect(edge.to);
+      if (!from || !to) return;
+      const geometry = edgeGeometry(from, to, edge);
+
+      const path = document.createElementNS(&#x27;http://www.w3.org/2000/svg&#x27;, &#x27;path&#x27;);
+      path.setAttribute(&#x27;d&#x27;, geometry.path);
+      path.setAttribute(&#x27;class&#x27;, edge.mobileHide ? &#x27;edge mobile-hide&#x27; : &#x27;edge&#x27;);
+      path.setAttribute(&#x27;marker-end&#x27;, &#x27;url(#ingestion-arrow)&#x27;);
+      path.dataset.edgeIndex = String(index);
+      edgeLayer.appendChild(path);
+
+      const label = document.createElementNS(&#x27;http://www.w3.org/2000/svg&#x27;, &#x27;text&#x27;);
+      label.setAttribute(&#x27;x&#x27;, String(geometry.labelX + Number(edge.labelDx || 0)));
+      label.setAttribute(&#x27;y&#x27;, String(geometry.labelY + Number(edge.labelDy || 0)));
+      label.setAttribute(
+        &#x27;class&#x27;,
+        `edge-label${edge.mobileHide ? &#x27; mobile-hide&#x27; : &#x27;&#x27;}${edge.mobileLabelHide ? &#x27; mobile-hide&#x27; : &#x27;&#x27;}`
+      );
+      label.dataset.edgeIndex = String(index);
+      label.textContent = edge.label;
+      edgeLayer.appendChild(label);
+    });
+
+    updateEdgeSelection();
+  };
+
+  const replaceList = (element, items) =&gt; {
+    element.replaceChildren(...items.map(item =&gt; {
+      const li = document.createElement(&#x27;li&#x27;);
+      li.textContent = item;
+      return li;
+    }));
+  };
+
+  const replaceSettings = items =&gt; {
+    const nodes = [];
+    items.forEach(([label, value]) =&gt; {
+      const term = document.createElement(&#x27;dt&#x27;);
+      const detail = document.createElement(&#x27;dd&#x27;);
+      term.textContent = label;
+      detail.textContent = value;
+      nodes.push(term, detail);
+    });
+    settings.replaceChildren(...nodes);
+  };
+
+  const replaceCodeList = (element, items) =&gt; {
+    element.replaceChildren(...items.map(item =&gt; {
+      const li = document.createElement(&#x27;li&#x27;);
+      const code = document.createElement(&#x27;code&#x27;);
+      code.textContent = item;
+      li.appendChild(code);
+      return li;
+    }));
+  };
+
+  const showDetailTab = tabId =&gt; {
+    detailTabs.forEach(tab =&gt; tab.setAttribute(&#x27;aria-selected&#x27;, String(tab.dataset.detailTab === tabId)));
+    detailPanels.forEach(panel =&gt; { panel.hidden = panel.dataset.detailPanel !== tabId; });
+  };
+
+  const showStage = stageId =&gt; {
+    const stage = stages.find(candidate =&gt; candidate.id === stageId);
+    const detail = implementation[stageId];
+    if (!stage || !detail) return;
+    selectedId = stageId;
+    buttons.forEach(button =&gt; button.setAttribute(&#x27;aria-pressed&#x27;, String(button.dataset.stageId === stageId)));
+    phase.textContent = stage.phase;
+    title.textContent = `${stage.number} · ${stage.title}`;
+    status.textContent = stage.status;
+    summary.textContent = stage.summary;
+    replaceList(actions, stage.actions);
+    replaceList(approach, detail.approach);
+    replaceSettings(stage.settings);
+    output.textContent = stage.output;
+    branch.textContent = stage.branch;
+    runtime.textContent = detail.runtime;
+    replaceCodeList(modules, detail.modules);
+    replaceList(tools, detail.tools);
+    replaceList(artifacts, detail.artifacts);
+    replaceList(resilience, detail.resilience);
+    replaceList(decisions, detail.decisions);
+    detailPanel.scrollTop = 0;
+    updateEdgeSelection();
+  };
+
+  buttons.forEach(button =&gt; button.addEventListener(&#x27;click&#x27;, () =&gt; showStage(button.dataset.stageId)));
+  detailTabs.forEach(tab =&gt; tab.addEventListener(&#x27;click&#x27;, () =&gt; showDetailTab(tab.dataset.detailTab)));
+  showDetailTab(&#x27;flow&#x27;);
+  showStage(&#x27;source&#x27;);
+  requestAnimationFrame(drawEdges);
+
+  if (typeof ResizeObserver === &#x27;function&#x27;) {
+    const observer = new ResizeObserver(() =&gt; requestAnimationFrame(drawEdges));
+    observer.observe(canvas);
+  } else {
+    window.addEventListener(&#x27;resize&#x27;, drawEdges);
+  }
+})();
+&lt;/script&gt;
+
+&lt;script src=&quot;https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set([&quot;top&quot;, &quot;right&quot;, &quot;bottom&quot;, &quot;left&quot;]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+
+  const getTrigger = (target) =&gt;
+    target?.nodeType === Node.ELEMENT_NODE
+      ? target.closest(&quot;[data-tooltip]&quot;)
+      : null;
+  const containsTarget = (trigger, target) =&gt;
+    target?.nodeType != null &amp;&amp; trigger.contains(target);
+  const getContent = (trigger) =&gt;
+    trigger.getAttribute(&quot;data-tooltip&quot;)?.trim() ?? &quot;&quot;;
+  const getPlacement = (trigger) =&gt; {
+    const placement = trigger.getAttribute(&quot;data-tooltip-placement&quot;);
+    return tooltipPlacements.has(placement) ? placement : &quot;top&quot;;
+  };
+  const getTooltip = () =&gt; {
+    if (tooltip == null) {
+      tooltip = document.createElement(&quot;div&quot;);
+      tooltip.id = tooltipId;
+      tooltip.className = &quot;tooltip&quot;;
+      tooltip.setAttribute(&quot;role&quot;, &quot;tooltip&quot;);
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) =&gt; {
+    const ids = new Set(
+      (trigger.getAttribute(&quot;aria-describedby&quot;) ?? &quot;&quot;)
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute(&quot;aria-describedby&quot;);
+    } else {
+      trigger.setAttribute(&quot;aria-describedby&quot;, [...ids].join(&quot; &quot;));
+    }
+  };
+  const clearOpenTimeout = () =&gt; {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) =&gt; {
+    clearOpenTimeout();
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) =&gt; {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-width&quot;,
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-height&quot;,
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: &quot;fixed&quot;,
+    })
+      .then(({ x, y }) =&gt; {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = &quot;visible&quot;;
+      })
+      .catch(() =&gt; {
+        if (activeTrigger === trigger &amp;&amp; request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) =&gt; {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = &quot;hidden&quot;;
+    floating.style.transform = &quot;translate(0, 0)&quot;;
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () =&gt; {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) =&gt; {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() &lt; skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() =&gt; {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) =&gt; {
+    if (event.pointerType === &quot;touch&quot;) {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handleLeave = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger?.matches(&quot;:focus-visible&quot;)) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) =&gt; {
+    if (event.key === &quot;Escape&quot;) {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const destroy = () =&gt; {
+    closeTooltip(false);
+    document.removeEventListener(&quot;pointerover&quot;, handlePointerOpen);
+    document.removeEventListener(&quot;pointerout&quot;, handleLeave);
+    document.removeEventListener(&quot;focusin&quot;, handleFocusIn);
+    document.removeEventListener(&quot;focusout&quot;, handleLeave);
+    document.removeEventListener(&quot;keydown&quot;, handleKeyDown);
+    document.removeEventListener(&quot;contextmenu&quot;, handleContextMenu);
+    tooltip = null;
+  };
+
+  document.addEventListener(&quot;pointerover&quot;, handlePointerOpen);
+  document.addEventListener(&quot;pointerout&quot;, handleLeave);
+  document.addEventListener(&quot;focusin&quot;, handleFocusIn);
+  document.addEventListener(&quot;focusout&quot;, handleLeave);
+  document.addEventListener(&quot;keydown&quot;, handleKeyDown);
+  document.addEventListener(&quot;contextmenu&quot;, handleContextMenu);
+  window.addEventListener(&quot;pagehide&quot;, destroy, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-lucide&quot; async src=&quot;https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  const initialize = () =&gt; {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById(&quot;codex-visualization-lucide&quot;)
+    ?.addEventListener(&quot;load&quot;, initialize, { once: true });
+})();
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+</body>
+</html>

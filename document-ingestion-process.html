@@ -1,0 +1,1552 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src 'unsafe-inline' blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Document Ingestion Process</title>
+<style>:root{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}html,body{margin:0}body{box-sizing:border-box;padding:1rem;background:inherit}iframe{display:block;width:100%;max-width:736px;height:calc(100vh - 2rem);margin:0 auto;border:0}</style>
+</head>
+<body>
+<iframe sandbox="allow-scripts" referrerpolicy="no-referrer" title="Document Ingestion Process" srcdoc="&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+&lt;meta name=&quot;referrer&quot; content=&quot;no-referrer&quot;&gt;
+&lt;meta http-equiv=&quot;Content-Security-Policy&quot; content=&quot;default-src &#x27;none&#x27;; script-src &#x27;unsafe-inline&#x27; &#x27;unsafe-eval&#x27; &#x27;wasm-unsafe-eval&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; style-src &#x27;unsafe-inline&#x27; blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; font-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; media-src blob: data: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://esm.sh https://fonts.bunny.net https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; worker-src blob:; connect-src blob: data:; frame-src &#x27;none&#x27;; object-src &#x27;none&#x27;; base-uri &#x27;none&#x27;; form-action &#x27;none&#x27;&quot;&gt;
+&lt;title&gt;Document Ingestion Process&lt;/title&gt;
+&lt;style&gt;:root {
+  color-scheme: light dark;
+  background-color: var(--background) !important;
+
+  /* Agent-facing contract; keep in sync with SKILL.md. */
+  --background: light-dark(rgb(255 255 255), rgb(24 24 24));
+  --foreground: light-dark(rgb(26 28 31), rgb(255 255 255));
+  --card: color-mix(in oklab, var(--foreground) 5%, transparent);
+  --card-foreground: var(--foreground);
+  --popover: light-dark(rgb(255 255 255), rgb(45 45 45));
+  --popover-foreground: var(--foreground);
+  --primary: light-dark(rgb(51 156 255), rgb(131 195 255));
+  --primary-foreground: light-dark(rgb(255 255 255), rgb(13 13 13));
+  --secondary: light-dark(rgb(255 255 255 / 96%), rgb(54 54 54 / 96%));
+  --secondary-foreground: var(--foreground);
+  --muted: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --muted-foreground: light-dark(
+    rgb(26 28 31 / 49.4%),
+    rgb(255 255 255 / 49.8%)
+  );
+  --accent: light-dark(rgb(229 242 255), rgb(13 39 63));
+  --accent-foreground: var(--primary);
+  --destructive: light-dark(rgb(226 85 7), rgb(255 133 73));
+  --border: light-dark(rgb(26 28 31 / 8%), rgb(255 255 255 / 8.2%));
+  --input: light-dark(
+    rgb(26 28 31 / 11.8%),
+    color-mix(in oklab, rgb(0 0 0) 10%, transparent)
+  );
+  --ring: light-dark(rgb(51 156 255), rgb(131 195 255 / 76%));
+  --font-size-base: 14px;
+  --viz-series-1: var(--primary);
+  --viz-series-2: light-dark(rgb(243 136 59), rgb(245 154 86));
+  --viz-series-3: light-dark(rgb(93 201 119), rgb(116 213 139));
+  --viz-series-4: light-dark(rgb(235 119 177), rgb(240 143 192));
+  --viz-series-5: light-dark(rgb(155 121 236), rgb(170 145 239));
+  --viz-series-6: light-dark(rgb(58 185 177), rgb(90 203 194));
+
+  /* Internal implementation variables; not part of the agent contract. */
+  --font-sans: -apple-system, system-ui, &quot;Segoe UI&quot;, sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, &quot;SF Mono&quot;, Menlo, Consolas, &quot;Liberation Mono&quot;,
+    monospace;
+  --font-size-normal: max(11px, var(--font-size-base));
+  --font-size-tooltip: calc(var(--font-size-base) - 1px);
+  --font-size-small: max(11px, calc(var(--font-size-base) - 2px));
+  --font-size-h1: calc(var(--font-size-normal) * 1.7142857143);
+  --font-size-h2: calc(var(--font-size-normal) * 1.4285714286);
+  --font-size-h3: calc(var(--font-size-normal) * 1.2857142857);
+  --font-weight-normal: 430;
+  --font-weight-medium: 500;
+  --line-height-normal: calc(var(--font-size-normal) * 1.5);
+  --line-height-tooltip: calc(var(--font-size-tooltip) * 1.4285714286);
+  --line-height-small: calc(var(--font-size-small) + 4px);
+  --radius: 12.5px;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-2xl: calc(var(--radius) * 1.6);
+  --radius-full: 9999px;
+  --shadow-sm: 0 1px 2px -1px rgb(0 0 0 / 8%);
+  --checkmark-image: url(&quot;data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 17 17&#x27;%3E%3Cpath d=&#x27;M12.8961 3.64101C13.1297 3.41418 13.4984 3.37523 13.7779 3.56581C14.0571 3.75635 14.1554 4.11331 14.0299 4.41347L13.9615 4.53847L7.71151 13.7045C7.59411 13.8767 7.4063 13.9877 7.19881 14.0072C6.99136 14.0267 6.78564 13.9533 6.63826 13.806L2.88826 10.056L2.79842 9.9457C2.6192 9.67407 2.64927 9.30496 2.88826 9.06581C3.12738 8.82669 3.49647 8.79676 3.76815 8.97597L3.8785 9.06581L7.03084 12.2182L12.8053 3.74941L12.8961 3.64101Z&#x27;/%3E%3C/svg%3E&quot;);
+
+  /* Legacy aliases; not part of the current agent contract. */
+  --viz-bg: transparent;
+  --viz-panel: var(--card);
+  --viz-border: var(--border);
+  --viz-text: var(--foreground);
+  --viz-muted: var(--muted-foreground);
+  --viz-accent: var(--primary);
+  --viz-accent-text: var(--primary-foreground);
+  --viz-accent-bg: var(--accent);
+  --viz-font-size: var(--font-size-base);
+  --viz-warning: var(--destructive);
+  --color-background-primary: var(--background);
+  --color-text-primary: var(--foreground);
+  --color-border-secondary: var(--border);
+}
+
+:root[data-theme=&quot;light&quot;] {
+  color-scheme: light;
+}
+
+:root[data-theme=&quot;dark&quot;] {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html &gt; body {
+  margin: 0;
+  padding: 5px;
+  color: var(--foreground);
+  background: transparent !important;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-normal);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-normal);
+}
+
+a {
+  color: color-mix(in srgb, var(--viz-accent) 80%, var(--viz-text) 20%);
+  cursor: pointer;
+  font-weight: var(--viz-font-weight-medium);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+a:is(:hover, :focus-visible) {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-thickness: 0.5px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-block: 0;
+}
+
+h1 {
+  font-size: var(--font-size-h1);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  font-size: var(--font-size-h3);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.3;
+}
+
+b,
+strong,
+th {
+  font-weight: var(--font-weight-medium);
+}
+
+code:not(pre code) {
+  display: inline;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  overflow-wrap: anywhere;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  word-break: break-word;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+}
+
+.table :is(th, td) {
+  padding-block: 10px;
+  padding-inline: 0 24px;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.table-responsive &gt; .table :is(th, td) {
+  overflow-wrap: break-word;
+}
+
+.table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+.table :is(caption, thead th) {
+  font-weight: 600;
+}
+
+.table thead th {
+  padding-block: 8px;
+  border-bottom-color: color-mix(in srgb, var(--foreground) 16%, transparent);
+}
+
+.table tbody tr:last-child :is(th, td) {
+  border-bottom: 0;
+}
+
+.table.table-sm :is(th, td) {
+  padding-block: 6px;
+}
+
+.table.table-sm :is(th, td):not(:last-child) {
+  padding-inline-end: 16px;
+}
+
+.table :is(.text-end, [align=&quot;right&quot;]) {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.table :is(.text-center, [align=&quot;center&quot;]) {
+  text-align: center;
+}
+
+.table .text-nowrap {
+  white-space: nowrap;
+}
+
+#widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  background: transparent !important;
+}
+
+.card {
+  min-width: 0;
+  padding: 12px;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  border-radius: var(--radius-2xl);
+  corner-shape: superellipse(1.5);
+  color: var(--card-foreground);
+  background: var(--card);
+}
+
+#widget &gt; :not(.card) {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.tooltip {
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  left: 0;
+  width: max-content;
+  max-width: min(
+    20rem,
+    var(--tooltip-available-width, calc(100vw - 10px)),
+    calc(100vw - 10px)
+  );
+  max-height: min(
+    var(--tooltip-available-height, calc(100vh - 10px)),
+    calc(100vh - 10px)
+  );
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--popover-foreground);
+  background: var(--popover);
+  box-shadow: none;
+  font-size: var(--font-size-tooltip);
+  line-height: var(--line-height-tooltip);
+  overflow-wrap: break-word;
+  white-space: normal;
+  pointer-events: none;
+  user-select: none;
+}
+
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(max(180px, 24%), 1fr));
+  gap: 10px;
+}
+
+.viz-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.viz-stat-value {
+  font-size: var(--font-size-h2);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.25;
+}
+
+.viz-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.viz-badge {
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  color: var(--accent-foreground);
+  background: var(--accent);
+  font-weight: var(--font-weight-medium);
+}
+
+small,
+.text-small,
+.viz-badge {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.text-muted {
+  color: var(--muted-foreground);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-controls &gt; .form-label {
+  display: grid;
+  min-width: min(100%, 260px);
+  flex: 1 1 280px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 2px 12px;
+  margin-bottom: 0;
+}
+
+.viz-controls &gt; .form-label &gt; :is(.form-control, .form-range, .form-select) {
+  grid-column: 1 / -1;
+}
+
+.btn,
+.form-check-input,
+.form-control,
+.form-range,
+.form-select {
+  font: inherit;
+}
+
+.btn {
+  appearance: button;
+  display: inline-flex;
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-height: 28px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0 8px;
+  -webkit-app-region: no-drag;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: var(--cursor-interaction, pointer);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.btn:is(.btn-block, .viz-tile) {
+  inline-size: 100%;
+}
+
+.btn.viz-tile {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+a.btn {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn-primary {
+  border-color: transparent;
+  color: var(--primary-foreground);
+  background: var(--foreground);
+  background-clip: padding-box;
+}
+
+.btn-primary .text-muted {
+  color: color-mix(in srgb, var(--primary-foreground) 50%, transparent);
+}
+
+.btn-primary:not(:disabled):hover {
+  background: color-mix(in srgb, var(--foreground) 80%, transparent);
+  background-clip: padding-box;
+}
+
+.btn-ghost {
+  border-color: transparent;
+  color: var(--muted-foreground);
+  background: transparent;
+}
+
+.btn-ghost:not(:disabled):hover {
+  color: var(--foreground);
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+[data-lucide] {
+  stroke-width: 1.6;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--foreground);
+}
+
+.form-control {
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  padding: 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background: var(--secondary);
+}
+
+.form-control::placeholder {
+  color: var(--muted-foreground);
+}
+
+.form-control[type=&quot;file&quot;] {
+  padding: 0;
+  overflow: hidden;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control[type=&quot;file&quot;]::file-selector-button {
+  min-height: 26px;
+  margin-right: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-right: 1px solid var(--input);
+  color: var(--secondary-foreground);
+  background: var(--secondary);
+  cursor: inherit;
+  font: inherit;
+}
+
+.form-control[type=&quot;file&quot;]:not(:disabled):hover::file-selector-button {
+  background: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-control-color[type=&quot;color&quot;] {
+  width: 40px;
+  height: 28px;
+  padding: 3px;
+  cursor: var(--cursor-interaction, pointer);
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.form-control-color[type=&quot;color&quot;]::-webkit-color-swatch {
+  border: 0;
+  border-radius: calc(var(--radius-lg) - 4px);
+  corner-shape: superellipse(1.5);
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 72px;
+  padding: 8px 10px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-control:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.form-select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 28px;
+  margin: 0;
+  padding: 0 32px 0 8px;
+  outline: none;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  corner-shape: superellipse(1.5);
+  color: var(--foreground);
+  background-color: var(--secondary);
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 10px) 50%;
+  background-repeat: no-repeat;
+  background-size: 4px 4px;
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-select:not(:disabled):hover {
+  background-color: color-mix(in srgb, var(--foreground) 6%, var(--secondary));
+}
+
+.form-select:focus-visible {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-check {
+  display: flex;
+  min-height: 20px;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-check-input {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  margin: 0;
+  border: 1px solid var(--input);
+  color: var(--primary-foreground);
+  background-color: transparent;
+  cursor: var(--cursor-interaction, default);
+  transition:
+    background-color 150ms,
+    border-color 150ms,
+    box-shadow 150ms;
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;] {
+  border-color: var(--input);
+  border-radius: var(--radius-sm);
+  corner-shape: superellipse(1.5);
+  background-color: var(--secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input:not(:disabled):not(:checked):hover {
+  background-color: var(--card);
+}
+
+.form-check:not(.form-switch) .form-check-input[type=&quot;checkbox&quot;]:checked {
+  border-color: var(--primary);
+  background-color: var(--primary);
+}
+
+.form-check:not(.form-switch)
+  .form-check-input[type=&quot;checkbox&quot;]:checked::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-foreground);
+  content: &quot;&quot;;
+  mask: var(--checkmark-image) center / 12px 12px no-repeat;
+}
+
+.form-check-input[type=&quot;radio&quot;] {
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+}
+
+.form-check-input[type=&quot;radio&quot;]:checked {
+  border: 2px solid var(--primary);
+  background:
+    radial-gradient(circle, var(--primary-foreground) 0 2.5px, transparent 3px),
+    var(--primary);
+}
+
+.form-check:not(.form-switch) .form-check-input:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.form-check:not(.form-switch) .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+}
+
+.form-switch .form-check-input:disabled,
+.form-switch .form-check-input:disabled + .form-check-label {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-check-label {
+  color: var(--foreground);
+  cursor: var(--cursor-interaction, default);
+}
+
+.form-switch .form-check-input {
+  position: relative;
+  width: 32px;
+  height: 20px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--muted);
+  box-shadow: none;
+  transition: background-color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  box-sizing: border-box;
+  border: 1px solid light-dark(var(--primary-foreground), var(--foreground));
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+  box-shadow: var(--shadow-sm);
+  content: &quot;&quot;;
+  transform: translate(2px, -50%);
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.form-switch .form-check-input:checked {
+  background: var(--primary);
+}
+
+.form-switch .form-check-input:checked::before {
+  transform: translate(14px, -50%);
+}
+
+.form-switch .form-check-input:focus-visible {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
+.form-range {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 28px;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  accent-color: var(--primary);
+  background: linear-gradient(
+      color-mix(in srgb, var(--foreground) 7%, transparent),
+      color-mix(in srgb, var(--foreground) 7%, transparent)
+    )
+    center / 100% 2px no-repeat;
+}
+
+.form-range::-webkit-slider-runnable-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-webkit-slider-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range::-moz-range-track {
+  height: 28px;
+  background: transparent;
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  background: light-dark(var(--primary-foreground), var(--foreground));
+}
+
+.form-range:focus-visible::-moz-range-thumb {
+  border-color: var(--ring);
+  box-shadow: inset 0 0 0 1px var(--ring);
+}
+
+.form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.btn:not(.btn-primary, .viz-tile):is(
+    [aria-pressed=&quot;true&quot;],
+    [aria-selected=&quot;true&quot;],
+    .is-selected
+  ) {
+  border-color: var(--primary);
+  color: var(--primary-foreground);
+  background: var(--primary);
+}
+
+.btn.viz-tile:is([aria-pressed=&quot;true&quot;], [aria-selected=&quot;true&quot;], .is-selected) {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+#widget &gt; svg {
+  width: 100%;
+}
+
+.text-warning,
+.text-destructive {
+  color: var(--destructive);
+}
+
+html&gt;body{padding:0}&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id=&quot;contextos-ingestion-visual&quot;&gt;
+  &lt;div class=&quot;viz-row&quot; aria-label=&quot;Current ingestion configuration&quot;&gt;
+    &lt;span class=&quot;viz-badge&quot;&gt;Current runtime · July 22, 2026&lt;/span&gt;
+    &lt;span&gt;Auto-refine: on&lt;/span&gt;
+    &lt;span&gt;Paid refinement: on&lt;/span&gt;
+    &lt;span&gt;Legacy re-sweep: off&lt;/span&gt;
+  &lt;/div&gt;
+
+  &lt;nav class=&quot;ingestion-phases&quot; aria-label=&quot;Document ingestion stages&quot;&gt;
+    &lt;section class=&quot;ingestion-phase&quot; aria-labelledby=&quot;phase-review&quot;&gt;
+      &lt;div&gt;
+        &lt;h3 id=&quot;phase-review&quot;&gt;Review gate&lt;/h3&gt;
+        &lt;p class=&quot;text-muted&quot;&gt;Local preparation before a library write&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;ol class=&quot;ingestion-stage-list&quot;&gt;
+        &lt;li&gt;&lt;button class=&quot;btn btn-ghost&quot; type=&quot;button&quot; data-stage-id=&quot;source&quot; aria-pressed=&quot;true&quot;&gt;01 · Source selection&lt;/button&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;button class=&quot;btn btn-ghost&quot; type=&quot;button&quot; data-stage-id=&quot;acquire&quot; aria-pressed=&quot;false&quot;&gt;02 · Web acquisition&lt;/button&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;button class=&quot;btn btn-ghost&quot; type=&quot;button&quot; data-stage-id=&quot;guard&quot; aria-pressed=&quot;false&quot;&gt;03 · Intake guard&lt;/button&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;button class=&quot;btn btn-ghost&quot; type=&quot;button&quot; data-stage-id=&quot;extract&quot; aria-pressed=&quot;false&quot;&gt;04 · Envelope + extract&lt;/button&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;button class=&quot;btn btn-ghost&quot; type=&quot;button&quot; data-stage-id=&quot;classify&quot; aria-pressed=&quot;false&quot;&gt;05 · Classify + group&lt;/button&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;button class=&quot;btn btn-ghost&quot; type=&quot;button&quot; data-stage-id=&quot;review&quot; aria-pressed=&quot;false&quot;&gt;06 · Inspect + approve&lt;/button&gt;&lt;/li&gt;
+      &lt;/ol&gt;
+    &lt;/section&gt;
+
+    &lt;section class=&quot;ingestion-phase&quot; aria-labelledby=&quot;phase-fast&quot;&gt;
+      &lt;div&gt;
+        &lt;h3 id=&quot;phase-fast&quot;&gt;Library fast path&lt;/h3&gt;
+        &lt;p class=&quot;text-muted&quot;&gt;Durable commit and immediate searchability&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;ol class=&quot;ingestion-stage-list&quot; start=&quot;7&quot;&gt;
+        &lt;li&gt;&lt;button class=&quot;btn btn-ghost&quot; type=&quot;button&quot; data-stage-id=&quot;handoff&quot; aria-pressed=&quot;false&quot;&gt;07 · Durable handoff&lt;/button&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;button class=&quot;btn btn-ghost&quot; type=&quot;button&quot; data-stage-id=&quot;fast&quot; aria-pressed=&quot;false&quot;&gt;08 · Pool fast path&lt;/button&gt;&lt;/li&gt;
+      &lt;/ol&gt;
+    &lt;/section&gt;
+
+    &lt;section class=&quot;ingestion-phase&quot; aria-labelledby=&quot;phase-background&quot;&gt;
+      &lt;div&gt;
+        &lt;h3 id=&quot;phase-background&quot;&gt;Background work&lt;/h3&gt;
+        &lt;p class=&quot;text-muted&quot;&gt;Knowledge layers added after search is ready&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;ol class=&quot;ingestion-stage-list&quot; start=&quot;9&quot;&gt;
+        &lt;li&gt;&lt;button class=&quot;btn btn-ghost&quot; type=&quot;button&quot; data-stage-id=&quot;enrich&quot; aria-pressed=&quot;false&quot;&gt;09 · Deep enrichment&lt;/button&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;button class=&quot;btn btn-ghost&quot; type=&quot;button&quot; data-stage-id=&quot;intelligence&quot; aria-pressed=&quot;false&quot;&gt;10 · Intelligence&lt;/button&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;button class=&quot;btn btn-ghost&quot; type=&quot;button&quot; data-stage-id=&quot;refine&quot; aria-pressed=&quot;false&quot;&gt;11 · Synthesize + refine&lt;/button&gt;&lt;/li&gt;
+      &lt;/ol&gt;
+    &lt;/section&gt;
+  &lt;/nav&gt;
+
+  &lt;section class=&quot;card&quot; aria-live=&quot;polite&quot; aria-labelledby=&quot;ingestion-detail-title&quot;&gt;
+    &lt;div class=&quot;viz-row&quot;&gt;
+      &lt;span id=&quot;ingestion-detail-number&quot; class=&quot;viz-badge&quot;&gt;Stage 01&lt;/span&gt;
+      &lt;span id=&quot;ingestion-detail-mode&quot; class=&quot;viz-badge&quot;&gt;User choice · no write&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;h2 id=&quot;ingestion-detail-title&quot;&gt;Source selection&lt;/h2&gt;
+    &lt;p id=&quot;ingestion-detail-summary&quot;&gt;The Add workspace identifies what kind of material is entering the funnel and keeps the draft local until you prepare it.&lt;/p&gt;
+
+    &lt;div class=&quot;ingestion-detail-grid&quot;&gt;
+      &lt;section&gt;
+        &lt;h3&gt;What happens&lt;/h3&gt;
+        &lt;ul id=&quot;ingestion-detail-actions&quot;&gt;
+          &lt;li&gt;Choose browser files or a folder, pasted text, readable web pages, or linked web files.&lt;/li&gt;
+          &lt;li&gt;Browser files are read locally and their text is sent to the local Studio API.&lt;/li&gt;
+          &lt;li&gt;Draft and prepared-batch state are retained per library when the drawer closes.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/section&gt;
+      &lt;section&gt;
+        &lt;h3&gt;Specific settings&lt;/h3&gt;
+        &lt;dl id=&quot;ingestion-detail-settings&quot;&gt;
+          &lt;dt&gt;Default mode&lt;/dt&gt;&lt;dd&gt;Files or folder&lt;/dd&gt;
+          &lt;dt&gt;Default web task&lt;/dt&gt;&lt;dd&gt;Readable pages&lt;/dd&gt;
+          &lt;dt&gt;Default link depth&lt;/dt&gt;&lt;dd&gt;1 · only supplied pages&lt;/dd&gt;
+          &lt;dt&gt;File ceiling&lt;/dt&gt;&lt;dd&gt;4,000 files · 5 MiB each · 100 MiB total&lt;/dd&gt;
+          &lt;dt&gt;Draft state&lt;/dt&gt;&lt;dd&gt;contextos:pool-studio:&amp;lt;libraryId&amp;gt; · version 1&lt;/dd&gt;
+        &lt;/dl&gt;
+      &lt;/section&gt;
+      &lt;section&gt;
+        &lt;h3&gt;Produces&lt;/h3&gt;
+        &lt;ul id=&quot;ingestion-detail-outputs&quot;&gt;
+          &lt;li&gt;A source-specific local request ready for intake validation.&lt;/li&gt;
+          &lt;li&gt;No document, library link, index, or model call yet.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/section&gt;
+      &lt;section&gt;
+        &lt;h3&gt;Branch or failure behavior&lt;/h3&gt;
+        &lt;ul id=&quot;ingestion-detail-failures&quot;&gt;
+          &lt;li&gt;Empty, unsupported, or oversized browser files are rejected before intake.&lt;/li&gt;
+          &lt;li&gt;Direct pages continue through the crawler; linked files enter the discovery-and-review branch.&lt;/li&gt;
+          &lt;li&gt;The current dropzone helper says 25 MiB total, while client and server enforcement are both 100 MiB.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/section&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;viz-row ingestion-next-row&quot;&gt;
+      &lt;span id=&quot;ingestion-detail-status&quot; class=&quot;viz-badge&quot;&gt;Not started&lt;/span&gt;
+      &lt;span id=&quot;ingestion-detail-next&quot; class=&quot;text-muted&quot;&gt;Next: web acquisition when needed, otherwise intake guard.&lt;/span&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+  #contextos-ingestion-visual {
+    display: grid;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  #contextos-ingestion-visual .ingestion-phases {
+    display: grid;
+    gap: 0;
+  }
+
+  #contextos-ingestion-visual .ingestion-phase {
+    display: grid;
+    grid-template-columns: minmax(8rem, .24fr) minmax(0, 1fr);
+    gap: 1rem;
+    align-items: start;
+    padding-block: .85rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  #contextos-ingestion-visual .ingestion-phase:first-child {
+    border-top: 1px solid var(--border);
+  }
+
+  #contextos-ingestion-visual .ingestion-phase h3,
+  #contextos-ingestion-visual .ingestion-phase p,
+  #contextos-ingestion-visual .card h2,
+  #contextos-ingestion-visual .card h3,
+  #contextos-ingestion-visual .card p {
+    margin-top: 0;
+  }
+
+  #contextos-ingestion-visual .ingestion-stage-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  #contextos-ingestion-visual .ingestion-stage-list li {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
+
+  #contextos-ingestion-visual .ingestion-stage-list li:not(:last-child)::after {
+    content: &#x27;→&#x27;;
+    color: var(--muted-foreground);
+  }
+
+  #contextos-ingestion-visual .ingestion-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem 1.5rem;
+  }
+
+  #contextos-ingestion-visual .ingestion-detail-grid section {
+    min-width: 0;
+  }
+
+  #contextos-ingestion-visual .ingestion-detail-grid ul {
+    margin-bottom: 0;
+    padding-left: 1.15rem;
+  }
+
+  #contextos-ingestion-visual .ingestion-detail-grid li + li {
+    margin-top: .4rem;
+  }
+
+  #contextos-ingestion-visual .ingestion-detail-grid dl {
+    display: grid;
+    grid-template-columns: minmax(7rem, .42fr) minmax(0, 1fr);
+    gap: .45rem .8rem;
+    margin-bottom: 0;
+  }
+
+  #contextos-ingestion-visual .ingestion-detail-grid dt {
+    color: var(--muted-foreground);
+  }
+
+  #contextos-ingestion-visual .ingestion-detail-grid dd {
+    min-width: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  #contextos-ingestion-visual .ingestion-next-row {
+    margin-top: 1rem;
+    padding-top: .85rem;
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 560px) {
+    #contextos-ingestion-visual .ingestion-phase,
+    #contextos-ingestion-visual .ingestion-detail-grid {
+      grid-template-columns: 1fr;
+    }
+
+    #contextos-ingestion-visual .ingestion-stage-list li:not(:last-child)::after {
+      display: none;
+    }
+
+    #contextos-ingestion-visual .ingestion-detail-grid dl {
+      grid-template-columns: 1fr;
+    }
+  }
+&lt;/style&gt;
+
+&lt;script&gt;
+(() =&gt; {
+  const root = document.getElementById(&#x27;contextos-ingestion-visual&#x27;);
+  if (!root) return;
+
+  const stages = [
+    {
+      id: &#x27;source&#x27;, number: &#x27;01&#x27;, title: &#x27;Source selection&#x27;, mode: &#x27;User choice · no write&#x27;, status: &#x27;Not started&#x27;,
+      summary: &#x27;The Add workspace identifies what kind of material is entering the funnel and keeps the draft local until you prepare it.&#x27;,
+      actions: [
+        &#x27;Choose browser files or a folder, pasted text, readable web pages, or linked web files.&#x27;,
+        &#x27;Browser files are read locally and their text is sent to the local Studio API.&#x27;,
+        &#x27;Draft and prepared-batch state are retained per library when the drawer closes.&#x27;
+      ],
+      settings: [
+        [&#x27;Default mode&#x27;, &#x27;Files or folder&#x27;],
+        [&#x27;Default web task&#x27;, &#x27;Readable pages&#x27;],
+        [&#x27;Default link depth&#x27;, &#x27;1 · only supplied pages&#x27;],
+        [&#x27;File ceiling&#x27;, &#x27;4,000 files · 5 MiB each · 100 MiB total&#x27;],
+        [&#x27;Supported browser text&#x27;, &#x27;Markdown, text, CSV/TSV, JSON/YAML, HTML/XML, common code and SQL&#x27;],
+        [&#x27;Draft state&#x27;, &#x27;contextos:pool-studio:&lt;libraryId&gt; · version 1&#x27;]
+      ],
+      outputs: [&#x27;A source-specific local request ready for intake validation.&#x27;, &#x27;No document, library link, index, or model call yet.&#x27;],
+      failures: [
+        &#x27;Empty, unsupported, or oversized browser files are rejected before intake.&#x27;,
+        &#x27;Direct pages continue through the crawler; linked files enter the discovery-and-review branch.&#x27;,
+        &#x27;The current dropzone helper says 25 MiB total, while client and server enforcement are both 100 MiB.&#x27;
+      ],
+      next: &#x27;Next: web acquisition when needed, otherwise intake guard.&#x27;
+    },
+    {
+      id: &#x27;acquire&#x27;, number: &#x27;02&#x27;, title: &#x27;Web acquisition&#x27;, mode: &#x27;Conditional source branch&#x27;, status: &#x27;Network-bound&#x27;,
+      summary: &#x27;Web input is converted into readable local material through either a bounded page crawler or a reviewed linked-file discovery job.&#x27;,
+      actions: [
+        &#x27;Direct-page mode fetches supplied URLs, removes navigation, ads, popups, and cookie text, and follows only the selected depth.&#x27;,
+        &#x27;Linked-file mode discovers candidate documents first, pauses for explicit human selection, then downloads only the reviewed candidates.&#x27;,
+        &#x27;Robots directives, redirects, crawl scope, host pacing, and archive limits are enforced before artifacts enter Studio intake.&#x27;
+      ],
+      settings: [
+        [&#x27;Direct pages&#x27;, &#x27;Depth 1 → 10 pages; depth 2 → 20 pages&#x27;],
+        [&#x27;Direct-page scope&#x27;, &#x27;sameDomain=true · clean_mode=standard&#x27;],
+        [&#x27;Linked-file scope&#x27;, &#x27;section by default · page / section / site available&#x27;],
+        [&#x27;Linked-file defaults&#x27;, &#x27;Depth 6 · page limit 250 in UI · file limit 1,000&#x27;],
+        [&#x27;Linked-file bounds&#x27;, &#x27;Depth 0–12 · pages 1–500 · files 1–2,000&#x27;],
+        [&#x27;Crawler safeguards&#x27;, &#x27;respectRobots=true · includeExternalFiles=true&#x27;],
+        [&#x27;Server pacing defaults&#x27;, &#x27;180 ms host delay · discovery concurrency bounded to 6 · downloads to 4&#x27;]
+      ],
+      outputs: [&#x27;Clean page text or a versioned downloaded-file artifact.&#x27;, &#x27;A source receipt suitable for the same Studio batch planner used by local files.&#x27;],
+      failures: [&#x27;Out-of-scope redirects and disallowed robots paths are rejected.&#x27;, &#x27;The job pauses when page, candidate, byte, archive-expansion, or parser safety limits are reached.&#x27;, &#x27;A changed artifact generation cannot be intaken using an older receipt.&#x27;],
+      next: &#x27;Next: intake guard.&#x27;
+    },
+    {
+      id: &#x27;guard&#x27;, number: &#x27;03&#x27;, title: &#x27;Intake guard&#x27;, mode: &#x27;Blocking validation&#x27;, status: &#x27;Must pass&#x27;,
+      summary: &#x27;The Studio API rejects unsafe or unreadable input before it creates a batch.&#x27;,
+      actions: [
+        &#x27;Cap browser submissions, reject empty text, normalize path separators, and remove dot or parent-directory segments.&#x27;,
+        &#x27;Server-folder intake scans only ingestible files and reports truncation or skipped binary files.&#x27;,
+        &#x27;All current Add routes enter planning with model proposals disabled, so preparation remains deterministic and local.&#x27;
+      ],
+      settings: [
+        [&#x27;Browser maximum&#x27;, &#x27;4,000 files&#x27;],
+        [&#x27;Per-file text&#x27;, &#x27;5 MiB / 5,242,880 characters&#x27;],
+        [&#x27;Batch text&#x27;, &#x27;100 MiB / 104,857,600 characters&#x27;],
+        [&#x27;Planning model&#x27;, &#x27;disableLlm=true for files, folders, paste, and direct web&#x27;],
+        [&#x27;Folder exclusions&#x27;, &#x27;node_modules, .git, dist, build, .next, coverage, vendor, virtual environments, __pycache__&#x27;]
+      ],
+      outputs: [&#x27;A sanitized FunnelInput list with origin, MIME type, and raw text.&#x27;, &#x27;A batch label plus counts for accepted, skipped, binary, or truncated sources.&#x27;],
+      failures: [&#x27;No readable input produces a 400 response and no batch.&#x27;, &#x27;Oversized or empty items are skipped; the batch proceeds only when at least one valid input remains.&#x27;, &#x27;Browser-native intake is text-only; binary formats are not falsely reported as ingested.&#x27;],
+      next: &#x27;Next: envelope and extraction.&#x27;
+    },
+    {
+      id: &#x27;extract&#x27;, number: &#x27;04&#x27;, title: &#x27;Envelope and extraction&#x27;, mode: &#x27;Deterministic batch stage&#x27;, status: &#x27;Batch running&#x27;,
+      summary: &#x27;Every accepted source receives a replayable envelope, a checksum identity, and extracted readable content.&#x27;,
+      actions: [
+        &#x27;Create source envelopes and run checksum duplicate detection before extraction.&#x27;,
+        &#x27;Persist fresh envelopes and point duplicate envelopes at their original source.&#x27;,
+        &#x27;Extract readable text, structural hints, and media metadata for downstream planning.&#x27;
+      ],
+      settings: [
+        [&#x27;Stage order&#x27;, &#x27;Envelope/checksum → extraction&#x27;],
+        [&#x27;Duplicate behavior&#x27;, &#x27;Record duplicateOf; do not extract the same payload twice&#x27;],
+        [&#x27;Decision log&#x27;, &#x27;Every tree-shaping decision is persisted for replay&#x27;],
+        [&#x27;Catastrophic state&#x27;, &#x27;Only unrecoverable I/O moves a batch to failed&#x27;]
+      ],
+      outputs: [&#x27;Envelope rows, extracted documents, checksums, structural hints, and duplicate links.&#x27;, &#x27;Fresh documents ready for classification.&#x27;],
+      failures: [&#x27;Duplicates remain visible as review information instead of becoming silent failures.&#x27;, &#x27;Model availability cannot fail this stage because extraction and identity are code-controlled.&#x27;],
+      next: &#x27;Next: classification and grouping.&#x27;
+    },
+    {
+      id: &#x27;classify&#x27;, number: &#x27;05&#x27;, title: &#x27;Classification and grouping&#x27;, mode: &#x27;Heuristic planning&#x27;, status: &#x27;Pauses for review&#x27;,
+      summary: &#x27;Studio proposes document types and clusters, applies confidence tiers, and stops before committing anything.&#x27;,
+      actions: [
+        &#x27;Classify content type and archetype with confidence and supporting signals.&#x27;,
+        &#x27;Group documents through four voters; code validates, grounds, and disposes the result.&#x27;,
+        &#x27;Apply confidence tiers and pre-flag degraded or low-confidence decisions.&#x27;
+      ],
+      settings: [
+        [&#x27;Current proposal mode&#x27;, &#x27;LLM disabled by Add requests; heuristic floor is used&#x27;],
+        [&#x27;Grouping&#x27;, &#x27;Four voters with optional LLM tie-breaker&#x27;],
+        [&#x27;Failure policy&#x27;, &#x27;Proposal failure degrades; it does not fail the batch&#x27;],
+        [&#x27;Terminal planner state&#x27;, &#x27;paused_review&#x27;]
+      ],
+      outputs: [&#x27;Classifications, clusters, orphans, confidence tiers, and a complete review plan.&#x27;, &#x27;A paused batch that cannot write to the target library by itself.&#x27;],
+      failures: [&#x27;Low confidence arrives flagged for human review.&#x27;, &#x27;Invalid model proposals would be rejected by code even if model proposals were enabled.&#x27;],
+      next: &#x27;Next: inspect and approve.&#x27;
+    },
+    {
+      id: &#x27;review&#x27;, number: &#x27;06&#x27;, title: &#x27;Inspect and approve&#x27;, mode: &#x27;Required human gate&#x27;, status: &#x27;User-controlled&#x27;,
+      summary: &#x27;The review surface is the last authority before library ingestion.&#x27;,
+      actions: [
+        &#x27;Preview title, source, type, word count, excerpt, confidence, grouping, and duplicate state.&#x27;,
+        &#x27;Select or exclude individual documents and apply title overrides.&#x27;,
+        &#x27;Keep the prepared batch and edits durable when the drawer closes or the app restarts.&#x27;
+      ],
+      settings: [
+        [&#x27;Document states&#x27;, &#x27;ready · review · duplicate&#x27;],
+        [&#x27;Needs-review rule&#x27;, &#x27;Unreadable text or an untitled derived document&#x27;],
+        [&#x27;Duplicate display&#x27;, &#x27;Hidden by default; showDuplicates=false&#x27;],
+        [&#x27;Classification confidence&#x27;, &#x27;Influences grouping but does not automatically block readable content&#x27;],
+        [&#x27;Editable commit fields&#x27;, &#x27;selectedSourceIds · excludeSourceIds · titleOverrides&#x27;]
+      ],
+      outputs: [&#x27;An explicit approved source set and any user-authored title corrections.&#x27;, &#x27;A commit request scoped to one target library.&#x27;],
+      failures: [&#x27;No selected documents or no target library blocks the commit.&#x27;, &#x27;Duplicate sources can be inspected without being treated as new documents.&#x27;],
+      next: &#x27;Next: durable library handoff.&#x27;
+    },
+    {
+      id: &#x27;handoff&#x27;, number: &#x27;07&#x27;, title: &#x27;Durable library handoff&#x27;, mode: &#x27;Idempotent commit ledger&#x27;, status: &#x27;Resumable&#x27;,
+      summary: &#x27;Approval becomes a persistent per-document job rather than one fragile request.&#x27;,
+      actions: [
+        &#x27;Create or resume one idempotent handoff job for the batch and target library.&#x27;,
+        &#x27;Record every source outcome, including skipped and globally duplicate envelopes.&#x27;,
+        &#x27;Start work asynchronously and return a public job snapshot for polling.&#x27;
+      ],
+      settings: [
+        [&#x27;Client poll interval&#x27;, &#x27;2 seconds&#x27;],
+        [&#x27;Recovery lease&#x27;, &#x27;15 minutes; orphaned jobs are reclaimed after process restart&#x27;],
+        [&#x27;Item states&#x27;, &#x27;pending · processing · added · linked · already-linked · skipped · failed&#x27;],
+        [&#x27;Retry identity&#x27;, &#x27;Existing jobId and per-source ledger rows&#x27;],
+        [&#x27;Commit endpoint&#x27;, &#x27;POST /api/studio/batch/:id/add-to-library&#x27;]
+      ],
+      outputs: [&#x27;Per-source receipts, document IDs, search-ready counts, and honest partial-failure details.&#x27;, &#x27;Exactly-once behavior across retries and restarts.&#x27;],
+      failures: [&#x27;A failed item can be retried without reprocessing successful siblings.&#x27;, &#x27;Cancellation and status reads operate on the durable job rather than browser memory.&#x27;],
+      next: &#x27;Next: Pool fast path for new content, or link the existing document for exact duplicates.&#x27;
+    },
+    {
+      id: &#x27;fast&#x27;, number: &#x27;08&#x27;, title: &#x27;Pool fast path&#x27;, mode: &#x27;Blocking until searchable&#x27;, status: &#x27;fast_ready&#x27;,
+      summary: &#x27;The Pool performs canonical dedupe, parsing, indexing, vault storage, and library linking before returning success.&#x27;,
+      actions: [
+        &#x27;Run the purity pass, exact-content duplicate detection, and media-specific preprocessing.&#x27;,
+        &#x27;Register a processing document and parse it into sections.&#x27;,
+        &#x27;Build FTS/chunks and write the local vault in parallel, then link the library and emit fast-ready.&#x27;
+      ],
+      settings: [
+        [&#x27;Exact duplicate branch&#x27;, &#x27;Link the existing healthy document instead of inserting another copy&#x27;],
+        [&#x27;Parallel work&#x27;, &#x27;FTS/chunks/routing scaffold ∥ readable vault/source artifacts&#x27;],
+        [&#x27;Ready status&#x27;, &#x27;fast_ready&#x27;],
+        [&#x27;Search-ready statuses&#x27;, &#x27;fast_ready · enriching · complete · partial&#x27;],
+        [&#x27;Deep-enrichment setting&#x27;, &#x27;deferDeepEnrichment=false unless an explicit caller opts out&#x27;]
+      ],
+      outputs: [&#x27;Sections, retrieval chunks, FTS rows, local vault files, and a library_documents link.&#x27;, &#x27;Immediate chat/search availability plus a deterministic catalog event.&#x27;],
+      failures: [&#x27;An exact duplicate of a healthy document is linked; one stuck in error returns a conflict for repair.&#x27;, &#x27;Media preprocessing may fall back to raw text, but parse/index/vault failure marks the new document error.&#x27;],
+      next: &#x27;Next: deterministic cataloging begins immediately; deep enrichment enters the bounded queue.&#x27;
+    },
+    {
+      id: &#x27;enrich&#x27;, number: &#x27;09&#x27;, title: &#x27;Deep enrichment&#x27;, mode: &#x27;Bounded background queue&#x27;, status: &#x27;Non-blocking&#x27;,
+      summary: &#x27;Search is already available while model-backed and embedding stages build richer retrieval and provenance artifacts.&#x27;,
+      actions: [
+        &#x27;Generate and validate summaries first so the micro-summary can contextualize later embeddings and classification.&#x27;,
+        &#x27;Run facts, classification, key sections, digest, section embeddings, and datasets concurrently.&#x27;,
+        &#x27;Build document-level meta-embeddings afterward and issue advisory near-duplicate notices at 95% similarity.&#x27;
+      ],
+      settings: [
+        [&#x27;Pipeline generation&#x27;, &#x27;enrichment_version=2&#x27;],
+        [&#x27;Queue concurrency&#x27;, &#x27;ENRICHMENT_CONCURRENCY default 6; clamped 1–8&#x27;],
+        [&#x27;Immediate attempts&#x27;, &#x27;Default 1; ENRICHMENT_IMMEDIATE_ATTEMPTS clamped 1–2&#x27;],
+        [&#x27;Required stages&#x27;, &#x27;summaries · facts · classification · digest&#x27;],
+        [&#x27;Optional stages&#x27;, &#x27;key sections · section embeddings · datasets · meta-embeddings&#x27;],
+        [&#x27;Current paid mode&#x27;, &#x27;enabled=true · freeOnly=false&#x27;],
+        [&#x27;Current request ceilings&#x27;, &#x27;600/hour · 6,000/day · background 500/hour and 5,000/day&#x27;],
+        [&#x27;Current per-call ceilings&#x27;, &#x27;100,000 input tokens · 16,384 output tokens&#x27;]
+      ],
+      outputs: [&#x27;Validated summaries, grounded facts, trust/time classification, digest, embeddings, datasets, and stage receipts.&#x27;, &#x27;complete when every required stage succeeds; partial otherwise, while remaining searchable.&#x27;],
+      failures: [&#x27;Optional-stage failure degrades ranking or visualization data but cannot make the document incomplete.&#x27;, &#x27;Required-stage failure leaves the document partial and unstamped for later repair.&#x27;, &#x27;Budget exhaustion fails closed before a paid provider call and allows retry in a later window.&#x27;],
+      next: &#x27;Next: full intelligence on complete; partial documents remain eligible for later re-enrichment.&#x27;
+    },
+    {
+      id: &#x27;intelligence&#x27;, number: &#x27;10&#x27;, title: &#x27;Intelligence&#x27;, mode: &#x27;Two-level background catalog&#x27;, status: &#x27;Isolated stages&#x27;,
+      summary: &#x27;A deterministic catalog starts at fast-ready; full model-assisted intelligence follows successful enrichment.&#x27;,
+      actions: [
+        &#x27;At fast-ready, build a deterministic scaffold and harvest people, places, organizations, concepts, relationships, and dated events.&#x27;,
+        &#x27;At complete, run harvest, entities, graph, timeline, decisions, and people in that order.&#x27;,
+        &#x27;Cross-link person entities to people records, update living signals, invalidate stale context, and emit intelligence-ready.&#x27;
+      ],
+      settings: [
+        [&#x27;Catalog generation&#x27;, &#x27;CATALOG_VERSION=4&#x27;],
+        [&#x27;Fast catalog trigger&#x27;, &#x27;document:fast-ready&#x27;],
+        [&#x27;Full pipeline trigger&#x27;, &#x27;document:complete&#x27;],
+        [&#x27;Full order&#x27;, &#x27;harvest → entities → graph → timeline → decisions → people → signals&#x27;],
+        [&#x27;Confidence layers&#x27;, &#x27;Deterministic baseline at 0.6; model/user-confirmed objects are preserved&#x27;],
+        [&#x27;Failure isolation&#x27;, &#x27;Each stage catches its own error and the remaining stages continue&#x27;]
+      ],
+      outputs: [&#x27;Entity mentions, graph edges, dated events, decisions, people links, signals, and refreshed context artifacts.&#x27;, &#x27;Library events for catalog-ready and intelligence-ready consumers.&#x27;],
+      failures: [&#x27;One extractor cannot sink ingestion or block later extractors.&#x27;, &#x27;Backfill queues missing or old catalog versions after startup.&#x27;],
+      next: &#x27;Next: synthesis and delta-aware refinement.&#x27;
+    },
+    {
+      id: &#x27;refine&#x27;, number: &#x27;11&#x27;, title: &#x27;Synthesize and refine&#x27;, mode: &#x27;Automatic corpus-level maintenance&#x27;, status: &#x27;Debounced&#x27;,
+      summary: &#x27;Library-level structure converges after bursts of ingestion without forcing a manual optimize pass.&#x27;,
+      actions: [
+        &#x27;Reset one per-library debounce on both fast-ready and complete events.&#x27;,
+        &#x27;Use change-data-capture identity to skip unchanged libraries before creating an operation.&#x27;,
+        &#x27;Run deterministic repair and, when allowed, paid deepening; reuse an already-active refinement run.&#x27;
+      ],
+      settings: [
+        [&#x27;Current autoAfterIngest&#x27;, &#x27;true&#x27;],
+        [&#x27;Current autoAllowPaidAi&#x27;, &#x27;true&#x27;],
+        [&#x27;Current autoResumePaid&#x27;, &#x27;true&#x27;],
+        [&#x27;Debounce&#x27;, &#x27;90 seconds by default; bounded 10 seconds–30 minutes&#x27;],
+        [&#x27;Minimum interval&#x27;, &#x27;10 minutes by default; bounded 1 minute–24 hours&#x27;],
+        [&#x27;Change gate&#x27;, &#x27;CDC cursor + coveredSince + libraryChangedSince&#x27;],
+        [&#x27;Current autoResweep&#x27;, &#x27;false&#x27;],
+        [&#x27;Re-sweep when enabled&#x27;, &#x27;Boot delay 90 seconds · tick 5 minutes · batch 8 · max 2 attempts/boot&#x27;],
+        [&#x27;Stale recovery&#x27;, &#x27;Reset enriching documents after 45 minutes without a write&#x27;]
+      ],
+      outputs: [&#x27;Updated synthesis, context architecture, chapter/graph structure, quality metrics, and a durable operation receipt.&#x27;, &#x27;No-op when the CDC cursor proves the corpus unchanged.&#x27;],
+      failures: [&#x27;The automatic pass never crashes ingestion; errors are logged and later changes retrigger the debounce.&#x27;, &#x27;With re-sweep off, old enrichment generations are not automatically upgraded by the maintenance loop.&#x27;],
+      next: &#x27;End state: searchable documents plus continuously maintained library-level knowledge.&#x27;
+    }
+  ];
+
+  const buttons = Array.from(root.querySelectorAll(&#x27;button[data-stage-id]&#x27;));
+  const title = root.querySelector(&#x27;#ingestion-detail-title&#x27;);
+  const number = root.querySelector(&#x27;#ingestion-detail-number&#x27;);
+  const mode = root.querySelector(&#x27;#ingestion-detail-mode&#x27;);
+  const summary = root.querySelector(&#x27;#ingestion-detail-summary&#x27;);
+  const actions = root.querySelector(&#x27;#ingestion-detail-actions&#x27;);
+  const settings = root.querySelector(&#x27;#ingestion-detail-settings&#x27;);
+  const outputs = root.querySelector(&#x27;#ingestion-detail-outputs&#x27;);
+  const failures = root.querySelector(&#x27;#ingestion-detail-failures&#x27;);
+  const status = root.querySelector(&#x27;#ingestion-detail-status&#x27;);
+  const next = root.querySelector(&#x27;#ingestion-detail-next&#x27;);
+
+  const replaceList = (element, items) =&gt; {
+    element.replaceChildren(...items.map(item =&gt; {
+      const li = document.createElement(&#x27;li&#x27;);
+      li.textContent = item;
+      return li;
+    }));
+  };
+
+  const replaceSettings = (element, items) =&gt; {
+    const nodes = [];
+    items.forEach(([label, value]) =&gt; {
+      const term = document.createElement(&#x27;dt&#x27;);
+      const detail = document.createElement(&#x27;dd&#x27;);
+      term.textContent = label;
+      detail.textContent = value;
+      nodes.push(term, detail);
+    });
+    element.replaceChildren(...nodes);
+  };
+
+  const showStage = stageId =&gt; {
+    const stage = stages.find(candidate =&gt; candidate.id === stageId);
+    if (!stage) return;
+    buttons.forEach(button =&gt; button.setAttribute(&#x27;aria-pressed&#x27;, String(button.dataset.stageId === stageId)));
+    number.textContent = `Stage ${stage.number}`;
+    mode.textContent = stage.mode;
+    title.textContent = stage.title;
+    summary.textContent = stage.summary;
+    status.textContent = stage.status;
+    next.textContent = stage.next;
+    replaceList(actions, stage.actions);
+    replaceSettings(settings, stage.settings);
+    replaceList(outputs, stage.outputs);
+    replaceList(failures, stage.failures);
+  };
+
+  buttons.forEach(button =&gt; button.addEventListener(&#x27;click&#x27;, () =&gt; showStage(button.dataset.stageId)));
+})();
+&lt;/script&gt;
+
+&lt;script src=&quot;https://unpkg.com/@floating-ui/core@1.7.3/dist/floating-ui.core.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;https://unpkg.com/@floating-ui/dom@1.7.4/dist/floating-ui.dom.umd.min.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  if (window.FloatingUIDOM == null) {
+    return;
+  }
+  const { autoUpdate, computePosition, flip, offset, shift, size } =
+    window.FloatingUIDOM;
+  const tooltipPlacements = new Set([&quot;top&quot;, &quot;right&quot;, &quot;bottom&quot;, &quot;left&quot;]);
+  const tooltipId = `codex-visualization-tooltip-${
+    window.crypto?.randomUUID?.() ?? Date.now().toString(36)
+  }`;
+  const tooltipGap = 5;
+  const hoverDelay = 700;
+  const skipDelay = 300;
+  let activeTrigger = null;
+  let pendingTrigger = null;
+  let tooltip = null;
+  let openTimeout = null;
+  let autoUpdateCleanup = null;
+  let positionRequest = 0;
+  let skipDelayUntil = 0;
+
+  const getTrigger = (target) =&gt;
+    target?.nodeType === Node.ELEMENT_NODE
+      ? target.closest(&quot;[data-tooltip]&quot;)
+      : null;
+  const containsTarget = (trigger, target) =&gt;
+    target?.nodeType != null &amp;&amp; trigger.contains(target);
+  const getContent = (trigger) =&gt;
+    trigger.getAttribute(&quot;data-tooltip&quot;)?.trim() ?? &quot;&quot;;
+  const getPlacement = (trigger) =&gt; {
+    const placement = trigger.getAttribute(&quot;data-tooltip-placement&quot;);
+    return tooltipPlacements.has(placement) ? placement : &quot;top&quot;;
+  };
+  const getTooltip = () =&gt; {
+    if (tooltip == null) {
+      tooltip = document.createElement(&quot;div&quot;);
+      tooltip.id = tooltipId;
+      tooltip.className = &quot;tooltip&quot;;
+      tooltip.setAttribute(&quot;role&quot;, &quot;tooltip&quot;);
+    }
+    return tooltip;
+  };
+  const setDescribedBy = (trigger, described) =&gt; {
+    const ids = new Set(
+      (trigger.getAttribute(&quot;aria-describedby&quot;) ?? &quot;&quot;)
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+    if (described) {
+      ids.add(tooltipId);
+    } else {
+      ids.delete(tooltipId);
+    }
+    if (ids.size === 0) {
+      trigger.removeAttribute(&quot;aria-describedby&quot;);
+    } else {
+      trigger.setAttribute(&quot;aria-describedby&quot;, [...ids].join(&quot; &quot;));
+    }
+  };
+  const clearOpenTimeout = () =&gt; {
+    if (openTimeout != null) {
+      window.clearTimeout(openTimeout);
+      openTimeout = null;
+    }
+    pendingTrigger = null;
+  };
+  const closeTooltip = (activateSkipDelay = true) =&gt; {
+    clearOpenTimeout();
+    positionRequest += 1;
+    autoUpdateCleanup?.();
+    autoUpdateCleanup = null;
+    if (activeTrigger == null) {
+      return;
+    }
+    setDescribedBy(activeTrigger, false);
+    activeTrigger = null;
+    tooltip?.remove();
+    if (activateSkipDelay) {
+      skipDelayUntil = Date.now() + skipDelay;
+    }
+  };
+  const updatePosition = (trigger, floating) =&gt; {
+    const request = ++positionRequest;
+    void computePosition(trigger, floating, {
+      middleware: [
+        offset(tooltipGap),
+        flip({ padding: tooltipGap }),
+        shift({ padding: tooltipGap }),
+        size({
+          padding: tooltipGap,
+          apply({ availableHeight, availableWidth, elements }) {
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-width&quot;,
+              `${Math.max(0, availableWidth)}px`,
+            );
+            elements.floating.style.setProperty(
+              &quot;--tooltip-available-height&quot;,
+              `${Math.max(0, availableHeight)}px`,
+            );
+          },
+        }),
+      ],
+      placement: getPlacement(trigger),
+      strategy: &quot;fixed&quot;,
+    })
+      .then(({ x, y }) =&gt; {
+        if (activeTrigger !== trigger || request !== positionRequest) {
+          return;
+        }
+        const scale = window.devicePixelRatio || 1;
+        floating.style.transform = `translate(${Math.round(x * scale) / scale}px, ${Math.round(y * scale) / scale}px)`;
+        floating.style.visibility = &quot;visible&quot;;
+      })
+      .catch(() =&gt; {
+        if (activeTrigger === trigger &amp;&amp; request === positionRequest) {
+          closeTooltip(false);
+        }
+      });
+  };
+  const openTooltip = (trigger) =&gt; {
+    const content = getContent(trigger);
+    if (!trigger.isConnected || content.length === 0) {
+      return;
+    }
+    clearOpenTimeout();
+    if (activeTrigger === trigger) {
+      return;
+    }
+    closeTooltip();
+    const floating = getTooltip();
+    floating.textContent = content;
+    floating.style.visibility = &quot;hidden&quot;;
+    floating.style.transform = &quot;translate(0, 0)&quot;;
+    document.body.appendChild(floating);
+    activeTrigger = trigger;
+    setDescribedBy(trigger, true);
+    autoUpdateCleanup = autoUpdate(trigger, floating, () =&gt; {
+      updatePosition(trigger, floating);
+    });
+  };
+  const requestOpen = (trigger, immediate = false) =&gt; {
+    if (
+      getContent(trigger).length === 0 ||
+      activeTrigger === trigger ||
+      pendingTrigger === trigger
+    ) {
+      return;
+    }
+    clearOpenTimeout();
+    pendingTrigger = trigger;
+    const delay =
+      immediate || activeTrigger != null || Date.now() &lt; skipDelayUntil
+        ? 0
+        : hoverDelay;
+    if (delay === 0) {
+      openTooltip(trigger);
+      return;
+    }
+    openTimeout = window.setTimeout(() =&gt; {
+      openTimeout = null;
+      pendingTrigger = null;
+      openTooltip(trigger);
+    }, delay);
+  };
+  const handlePointerOpen = (event) =&gt; {
+    if (event.pointerType === &quot;touch&quot;) {
+      return;
+    }
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    requestOpen(trigger);
+  };
+  const handleLeave = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger == null || containsTarget(trigger, event.relatedTarget)) {
+      return;
+    }
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const handleFocusIn = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (trigger?.matches(&quot;:focus-visible&quot;)) {
+      requestOpen(trigger, true);
+    }
+  };
+  const handleKeyDown = (event) =&gt; {
+    if (event.key === &quot;Escape&quot;) {
+      closeTooltip();
+    }
+  };
+  const handleContextMenu = (event) =&gt; {
+    const trigger = getTrigger(event.target);
+    if (activeTrigger === trigger || pendingTrigger === trigger) {
+      closeTooltip();
+    }
+  };
+  const destroy = () =&gt; {
+    closeTooltip(false);
+    document.removeEventListener(&quot;pointerover&quot;, handlePointerOpen);
+    document.removeEventListener(&quot;pointerout&quot;, handleLeave);
+    document.removeEventListener(&quot;focusin&quot;, handleFocusIn);
+    document.removeEventListener(&quot;focusout&quot;, handleLeave);
+    document.removeEventListener(&quot;keydown&quot;, handleKeyDown);
+    document.removeEventListener(&quot;contextmenu&quot;, handleContextMenu);
+    tooltip = null;
+  };
+
+  document.addEventListener(&quot;pointerover&quot;, handlePointerOpen);
+  document.addEventListener(&quot;pointerout&quot;, handleLeave);
+  document.addEventListener(&quot;focusin&quot;, handleFocusIn);
+  document.addEventListener(&quot;focusout&quot;, handleLeave);
+  document.addEventListener(&quot;keydown&quot;, handleKeyDown);
+  document.addEventListener(&quot;contextmenu&quot;, handleContextMenu);
+  window.addEventListener(&quot;pagehide&quot;, destroy, { once: true });
+})();
+&lt;/script&gt;
+&lt;script id=&quot;codex-visualization-lucide&quot; async src=&quot;https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+(() =&gt; {
+  const initialize = () =&gt; {
+    globalThis.lucide?.createIcons({ attrs: { width: 16, height: 16 } });
+  };
+  if (globalThis.lucide != null) {
+    initialize();
+    return;
+  }
+  document
+    .getElementById(&quot;codex-visualization-lucide&quot;)
+    ?.addEventListener(&quot;load&quot;, initialize, { once: true });
+})();
+&lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+"></iframe>
+</body>
+</html>
