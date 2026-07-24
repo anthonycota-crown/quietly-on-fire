@@ -1,0 +1,20 @@
+{
+  "name": "contextos",
+  "version": "1.0.0",
+  "description": "Personal knowledge OS — local-first, single-user",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "dev:desktop": "concurrently \"npm run dev:server\" \"npm run dev:client\" \"sleep 4 && cd desktop && npm run dev\"",
+    "install:all": "npm install && cd server && npm install && cd ../client && npm install && cd ../desktop && npm install && cd ../mobile && npm install",
+    "build": "cd client && npm run build",
+    "build:desktop": "npm run build && cd desktop && npm run build",
+    "extraction:switchboard": "TS_NODE_PROJECT=./scripts/tsconfig.json node -r ./server/node_modules/ts-node/register/transpile-only scripts/run-extraction-switchboard.ts",
+    "start": "cd server && npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

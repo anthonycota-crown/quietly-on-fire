@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ContextOS — Library Chat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --canvas:       #fcfcfb;
+    --canvas-2:     #f8f8f6;
+    --surface:      #f6f6f3;
+    --ink:          #18181a;
+    --ink-2:        #3d3d42;
+    --accent:       #4f46e5;
+    --accent-soft:  rgba(79,70,229,0.09);
+    --accent-mid:   rgba(79,70,229,0.18);
+    --hairline:     #e8e8e5;
+    --ghost:        #9d9d9a;
+    --mid:          #6b6b69;
+    --mist:         #f2f2ef;
+    --status-ok:    #16a34a;
+    --status-warn:  #d97706;
+    --status-err:   #dc2626;
+    --status-info:  #2563eb;
+    --shadow-sm:    0 1px 2px rgba(0,0,0,0.05);
+    --shadow-md:    0 4px 12px rgba(0,0,0,0.08);
+    --shadow-lg:    0 8px 32px rgba(0,0,0,0.12);
+    --radius:       8px;
+    --radius-sm:    5px;
+    --radius-lg:    12px;
+  }
+
+  html, body {
+    height: 100%;
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--canvas);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Animations ─────────────────────────── */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes cursor-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  @keyframes slideInRight {
+    from { opacity: 0; transform: translateX(12px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes toastOut {
+    from { opacity: 1; transform: translateY(0) scale(1); }
+    to   { opacity: 0; transform: translateY(8px) scale(0.97); }
+  }
+  @keyframes typing-dot {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+    40%            { transform: scale(1);   opacity: 1; }
+  }
+
+  .fade-in-up { animation: fadeInUp 0.3s ease both; }
+
+  /* ── Layout ─────────────────────────────── */
+  #app {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ── Sidebar (outer) ─────────────────────── */
+  #outer-sidebar {
+    width: 208px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--hairline);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .sidebar-wordmark {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 18px 16px 14px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .wordmark-dot {
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .wordmark-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+
+  .sidebar-nav {
+    padding: 8px 8px 0;
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .sidebar-nav::-webkit-scrollbar { display: none; }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--mid);
+    cursor: pointer;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    transition: color 0.12s, background 0.12s;
+    margin-bottom: 1px;
+  }
+  .nav-item:hover { color: var(--ink); background: var(--hairline); }
+  .nav-item.active {
+    color: var(--accent);
+    background: var(--accent-soft);
+    box-shadow: inset 2px 0 0 var(--accent);
+  }
+  .nav-item svg { flex-shrink: 0; opacity: 0.7; }
+  .nav-item.active svg { opacity: 1; }
+
+  .nav-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--ghost);
+    text-transform: uppercase;
+    padding: 12px 10px 4px;
+  }
+
+  .library-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 12.5px;
+    color: var(--mid);
+    cursor: pointer;
+    transition: background 0.1s, color 0.1s;
+    margin-bottom: 1px;
+  }
+  .library-item:hover { background: var(--hairline); color: var(--ink); }
+  .library-item.active { background: var(--accent-soft); color: var(--accent); }
+  .lib-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .lib-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lib-count {
+    font-size: 10px; color: var(--ghost);
+    background: var(--mist);
+    padding: 1px 5px;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .sidebar-bottom {
+    padding: 8px;
+    border-top: 1px solid var(--hairline);
+  }
+
+  /* ── Main area ───────────────────────────── */
+  #main {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  /* ── Session Sidebar ─────────────────────── */
+  #session-sidebar {
+    width: 180px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--hairline);
+    background: var(--canvas-2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .session-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 12px 10px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .session-header-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ghost);
+  }
+  .btn-new-session {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    background: var(--canvas);
+    border: 1px solid var(--hairline);
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--mid);
+    cursor: pointer;
+    transition: all 0.1s;
+  }
+  .btn-new-session:hover { border-color: var(--accent); color: var(--accent); }
+
+  .session-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px 6px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--hairline) transparent;
+  }
+  .session-list::-webkit-scrollbar { width: 4px; }
+  .session-list::-webkit-scrollbar-thumb { background: var(--hairline); border-radius: 2px; }
+
+  .session-item {
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.1s;
+    margin-bottom: 2px;
+  }
+  .session-item:hover { background: var(--hairline); }
+  .session-item.active { background: var(--accent-soft); }
+  .session-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.35;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .session-item.active .session-title { color: var(--accent); }
+  .session-date {
+    font-size: 10px;
+    color: var(--ghost);
+    margin-top: 3px;
+  }
+
+  /* ── Chat column ─────────────────────────── */
+  #chat-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  /* ── Context strip ───────────────────────── */
+  #context-strip {
+    border-bottom: 1px solid var(--hairline);
+    background: var(--canvas);
+    transition: all 0.2s;
+  }
+
+  .context-strip-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .context-strip-header:hover { background: var(--mist); }
+  .context-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--mid);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }
+  .context-count {
+    font-size: 10px;
+    color: var(--ghost);
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--mist);
+    padding: 1px 6px;
+    border-radius: 8px;
+    margin-left: 2px;
+  }
+  .context-chevron {
+    margin-left: auto;
+    color: var(--ghost);
+    transition: transform 0.2s;
+  }
+  .context-chevron.open { transform: rotate(180deg); }
+
+  .context-docs {
+    display: none;
+    padding: 0 16px 10px;
+    gap: 4px;
+    flex-direction: column;
+  }
+  .context-docs.open { display: flex; animation: fadeIn 0.15s ease; }
+  .context-doc {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--mid);
+    background: var(--canvas-2);
+    border: 1px solid var(--hairline);
+    transition: all 0.1s;
+  }
+  .context-doc:hover { border-color: var(--accent); color: var(--ink); }
+  .doc-icon { color: var(--ghost); flex-shrink: 0; }
+  .doc-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .doc-words { font-size: 10px; color: var(--ghost); font-family: 'JetBrains Mono', monospace; }
+  .doc-remove {
+    color: var(--ghost);
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.1s;
+  }
+  .context-doc:hover .doc-remove { opacity: 1; }
+  .doc-remove:hover { color: var(--status-err); }
+
+  /* ── Messages area ───────────────────────── */
+  #messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--hairline) transparent;
+  }
+  #messages::-webkit-scrollbar { width: 5px; }
+  #messages::-webkit-scrollbar-thumb { background: var(--hairline); border-radius: 3px; }
+
+  .msg-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 24px;
+    animation: fadeInUp 0.25s ease both;
+  }
+
+  /* User message */
+  .msg-user {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 2px;
+  }
+  .msg-user-bubble {
+    max-width: 72%;
+    background: var(--ink);
+    color: var(--canvas);
+    padding: 10px 14px;
+    border-radius: 14px 14px 3px 14px;
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+
+  /* Assistant message */
+  .msg-assistant {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 2px;
+  }
+  .assistant-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-mid);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .assistant-dot {
+    width: 7px; height: 7px;
+    background: var(--accent);
+    border-radius: 1.5px;
+  }
+  .msg-assistant-body { flex: 1; min-width: 0; }
+  .msg-assistant-content {
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: var(--ink-2);
+    max-width: 680px;
+  }
+  .msg-assistant-content p { margin-bottom: 10px; }
+  .msg-assistant-content p:last-child { margin-bottom: 0; }
+  .msg-assistant-content strong { color: var(--ink); font-weight: 600; }
+  .msg-assistant-content code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--mist);
+    border: 1px solid var(--hairline);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: var(--ink);
+  }
+
+  /* Sources */
+  .msg-sources {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .source-chip {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    background: var(--canvas-2);
+    border: 1px solid var(--hairline);
+    border-radius: 20px;
+    font-size: 11px;
+    color: var(--mid);
+    cursor: pointer;
+    transition: all 0.1s;
+  }
+  .source-chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+  .source-num {
+    width: 14px; height: 14px;
+    background: var(--hairline);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--ghost);
+  }
+
+  /* Streaming cursor */
+  .streaming-cursor {
+    display: inline-block;
+    width: 2px; height: 14px;
+    background: var(--accent);
+    border-radius: 1px;
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    animation: cursor-blink 0.9s ease infinite;
+  }
+
+  /* Typing indicator */
+  .typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    animation: fadeIn 0.2s ease;
+  }
+  .typing-dots {
+    display: flex;
+    gap: 4px;
+    padding: 10px 14px;
+    background: var(--canvas-2);
+    border: 1px solid var(--hairline);
+    border-radius: 12px 12px 12px 3px;
+  }
+  .typing-dot {
+    width: 5px; height: 5px;
+    background: var(--ghost);
+    border-radius: 50%;
+    animation: typing-dot 1.2s ease infinite;
+  }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+  /* Error state */
+  .msg-error {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: rgba(220,38,38,0.06);
+    border: 1px solid rgba(220,38,38,0.18);
+    border-radius: var(--radius);
+    font-size: 12.5px;
+    color: var(--status-err);
+    margin-top: 8px;
+    max-width: 460px;
+    animation: fadeInUp 0.2s ease;
+  }
+  .btn-retry {
+    margin-left: auto;
+    padding: 4px 10px;
+    background: none;
+    border: 1px solid var(--status-err);
+    border-radius: 4px;
+    font-size: 11px;
+    color: var(--status-err);
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.1s;
+    white-space: nowrap;
+  }
+  .btn-retry:hover { background: var(--status-err); color: white; }
+
+  /* Timestamp */
+  .msg-time {
+    font-size: 10px;
+    color: var(--ghost);
+    margin-top: 4px;
+    padding-left: 38px;
+  }
+
+  /* Day divider */
+  .day-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 8px 0 20px;
+    color: var(--ghost);
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .day-divider::before, .day-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--hairline);
+  }
+
+  /* ── Input area ──────────────────────────── */
+  #input-area {
+    padding: 12px 24px 16px;
+    border-top: 1px solid var(--hairline);
+    background: var(--canvas);
+  }
+
+  .input-wrapper {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    background: var(--canvas);
+    border: 1.5px solid var(--hairline);
+    border-radius: 12px;
+    padding: 10px 12px 10px 14px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .input-wrapper:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+
+  #chat-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 13.5px;
+    color: var(--ink);
+    line-height: 1.5;
+    resize: none;
+    min-height: 20px;
+    max-height: 180px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+  #chat-input::placeholder { color: var(--ghost); }
+
+  .input-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .input-btn {
+    width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.12s;
+    background: none;
+    color: var(--ghost);
+  }
+  .input-btn:hover { background: var(--mist); color: var(--mid); }
+
+  #send-btn {
+    width: 32px; height: 32px;
+    background: var(--ink);
+    color: var(--canvas);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.12s;
+    flex-shrink: 0;
+  }
+  #send-btn:hover { background: var(--accent); transform: scale(1.04); }
+  #send-btn:disabled { background: var(--hairline); color: var(--ghost); cursor: default; transform: none; }
+  #send-btn.streaming { background: var(--status-err); }
+
+  .input-hints {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 6px;
+    padding: 0 2px;
+  }
+  .input-hint {
+    font-size: 10.5px;
+    color: var(--ghost);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  kbd {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 4px;
+    background: var(--mist);
+    border: 1px solid var(--hairline);
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    color: var(--mid);
+    line-height: 1.4;
+  }
+
+  /* ── Intelligence panel ──────────────────── */
+  #intel-panel {
+    width: 260px;
+    flex-shrink: 0;
+    border-left: 1px solid var(--hairline);
+    background: var(--canvas-2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .intel-header {
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .intel-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ghost);
+  }
+
+  .intel-tabs {
+    display: flex;
+    gap: 2px;
+    padding: 8px 12px 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .intel-tab {
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ghost);
+    cursor: pointer;
+    border: none;
+    background: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.12s;
+  }
+  .intel-tab:hover { color: var(--mid); }
+  .intel-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .intel-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--hairline) transparent;
+  }
+  .intel-body::-webkit-scrollbar { width: 4px; }
+  .intel-body::-webkit-scrollbar-thumb { background: var(--hairline); border-radius: 2px; }
+
+  .intel-tab-pane { display: none; }
+  .intel-tab-pane.active { display: block; animation: fadeIn 0.15s ease; }
+
+  .intel-section {
+    margin-bottom: 16px;
+  }
+  .intel-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ghost);
+    margin-bottom: 6px;
+  }
+
+  .insight-card {
+    background: var(--canvas);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.5;
+    cursor: pointer;
+    transition: all 0.12s;
+    animation: fadeInUp 0.25s ease both;
+  }
+  .insight-card:hover { border-color: var(--accent); box-shadow: var(--shadow-sm); }
+  .insight-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 2px 6px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+  }
+  .insight-label.insight { background: var(--accent-soft); color: var(--accent); }
+  .insight-label.gap { background: rgba(217,119,6,0.1); color: var(--status-warn); }
+  .insight-label.entity { background: rgba(22,163,74,0.1); color: var(--status-ok); }
+
+  .entity-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--hairline);
+    cursor: pointer;
+    transition: color 0.1s;
+  }
+  .entity-row:last-child { border-bottom: none; }
+  .entity-row:hover .entity-name { color: var(--accent); }
+  .entity-emoji { font-size: 13px; }
+  .entity-name { font-size: 12px; color: var(--ink); font-weight: 500; flex: 1; }
+  .entity-type { font-size: 10px; color: var(--ghost); }
+  .entity-count {
+    font-size: 10px;
+    color: var(--ghost);
+    background: var(--mist);
+    padding: 1px 5px;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .memory-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 8px 10px;
+    background: var(--canvas);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    margin-bottom: 6px;
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.45;
+    animation: fadeInUp 0.2s ease both;
+  }
+  .memory-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    margin-top: 5px;
+    flex-shrink: 0;
+  }
+  .memory-dot.high { background: var(--status-ok); }
+  .memory-dot.medium { background: var(--status-warn); }
+
+  /* ── Toast ───────────────────────────────── */
+  #toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 9999;
+    pointer-events: none;
+  }
+  .toast {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--ink);
+    color: var(--canvas);
+    border-radius: var(--radius);
+    font-size: 13px;
+    box-shadow: var(--shadow-lg);
+    pointer-events: all;
+    animation: toastIn 0.25s ease both;
+    min-width: 200px;
+    max-width: 340px;
+  }
+  .toast.out { animation: toastOut 0.2s ease both; }
+  .toast-icon { font-size: 14px; flex-shrink: 0; }
+  .toast.success .toast-icon::before { content: '✓'; }
+  .toast.error .toast-icon::before { content: '!'; }
+  .toast.error { background: var(--status-err); }
+  .toast-close {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.6);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+    line-height: 1;
+    transition: color 0.1s;
+  }
+  .toast-close:hover { color: white; }
+
+  /* ── Suggestion pills ────────────────────── */
+  .suggestion-area {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding: 0 24px 10px;
+  }
+  .suggestion-pill {
+    padding: 5px 12px;
+    background: var(--canvas);
+    border: 1px solid var(--hairline);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--mid);
+    cursor: pointer;
+    transition: all 0.1s;
+    white-space: nowrap;
+  }
+  .suggestion-pill:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+
+  /* ── Scrollbar ───────────────────────────── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--hairline); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ── Outer Sidebar ──────────────────────── -->
+  <nav id="outer-sidebar">
+    <div class="sidebar-wordmark">
+      <div class="wordmark-dot"></div>
+      <span class="wordmark-text">ContextOS</span>
+    </div>
+
+    <div class="sidebar-nav">
+      <button class="nav-item" onclick="showToast('Navigating home…', 'success')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </button>
+      <button class="nav-item" onclick="showToast('Opening Inbox…', 'success')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+        Inbox
+        <span style="margin-left:auto;background:var(--accent);color:white;font-size:10px;font-weight:700;padding:1px 5px;border-radius:8px;">3</span>
+      </button>
+      <button class="nav-item" onclick="showToast('Opening Collect…', 'success')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Collect
+      </button>
+      <button class="nav-item" onclick="showToast('Opening Search…', 'success')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Search
+      </button>
+      <button class="nav-item" onclick="showToast('Opening Actions…', 'success')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Actions
+      </button>
+      <button class="nav-item" onclick="showToast('Opening Ambient…', 'success')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h1M21 12h1M12 2v1M12 21v1M4.93 4.93l.7.7M18.37 18.37l.7.7M4.93 19.07l.7-.7M18.37 5.63l.7-.7"/><circle cx="12" cy="12" r="4"/></svg>
+        Ambient
+      </button>
+      <button class="nav-item" onclick="showToast('Opening People…', 'success')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        People
+      </button>
+      <button class="nav-item" onclick="showToast('Opening Writing…', 'success')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Writing
+      </button>
+
+      <div class="nav-section-label">Libraries</div>
+
+      <div class="library-item active" onclick="showToast('Switched to Product Roadmap', 'success')">
+        <div class="lib-dot" style="background:#4f46e5"></div>
+        <span class="lib-name">Product Roadmap</span>
+        <span class="lib-count">24</span>
+      </div>
+      <div class="library-item" onclick="showToast('Switched to Market Research', 'success')">
+        <div class="lib-dot" style="background:#16a34a"></div>
+        <span class="lib-name">Market Research</span>
+        <span class="lib-count">11</span>
+      </div>
+      <div class="library-item" onclick="showToast('Switched to Team Notes', 'success')">
+        <div class="lib-dot" style="background:#d97706"></div>
+        <span class="lib-name">Team Notes</span>
+        <span class="lib-count">38</span>
+      </div>
+      <div class="library-item" onclick="showToast('Switched to Engineering', 'success')">
+        <div class="lib-dot" style="background:#dc2626"></div>
+        <span class="lib-name">Engineering</span>
+        <span class="lib-count">7</span>
+      </div>
+    </div>
+
+    <div class="sidebar-bottom">
+      <button class="nav-item" onclick="showToast('Opening Settings…', 'success')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Main ───────────────────────────────── -->
+  <div id="main">
+
+    <!-- ── Session Sidebar ──────────────────── -->
+    <div id="session-sidebar">
+      <div class="session-header">
+        <span class="session-header-label">Sessions</span>
+        <button class="btn-new-session" onclick="newSession()">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New
+        </button>
+      </div>
+      <div class="session-list" id="session-list">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- ── Chat column ────────────────────────── -->
+    <div id="chat-col">
+
+      <!-- Context strip -->
+      <div id="context-strip">
+        <div class="context-strip-header" onclick="toggleContext()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span class="context-label">Context</span>
+          <span class="context-count" id="context-count">3 docs · 14.2k words</span>
+          <svg class="context-chevron" id="context-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="context-docs" id="context-docs">
+          <div class="context-doc">
+            <svg class="doc-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span class="doc-name">Q3 Roadmap Planning.md</span>
+            <span class="doc-words">4.8k</span>
+            <button class="doc-remove" onclick="removeDoc(this, '3 docs · 14.2k words', '2 docs · 9.4k words')">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+          <div class="context-doc">
+            <svg class="doc-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span class="doc-name">User Research Synthesis.pdf</span>
+            <span class="doc-words">6.1k</span>
+            <button class="doc-remove" onclick="removeDoc(this, '3 docs · 14.2k words', '2 docs · 8.1k words')">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+          <div class="context-doc">
+            <svg class="doc-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span class="doc-name">Competitive Analysis 2026.docx</span>
+            <span class="doc-words">3.3k</span>
+            <button class="doc-remove" onclick="removeDoc(this, '3 docs · 14.2k words', '2 docs · 10.9k words')">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div id="messages">
+        <div class="day-divider">Today</div>
+
+        <!-- Exchange 1 -->
+        <div class="msg-group fade-in-up" style="animation-delay:0.05s">
+          <div class="msg-user">
+            <div class="msg-user-bubble">What are the top priorities we identified for Q3?</div>
+          </div>
+        </div>
+        <div class="msg-group fade-in-up" style="animation-delay:0.1s">
+          <div class="msg-assistant">
+            <div class="assistant-avatar"><div class="assistant-dot"></div></div>
+            <div class="msg-assistant-body">
+              <div class="msg-assistant-content">
+                <p>Based on your Q3 Roadmap Planning document, the top three priorities are:</p>
+                <p><strong>1. AI-powered search improvements</strong> — The team flagged semantic search as critical for reducing time-to-insight. Targeted for sprint 7–9.</p>
+                <p><strong>2. Mobile capture experience</strong> — User research shows 68% of your team captures on mobile but the current flow has 4+ taps. Goal is ≤2.</p>
+                <p><strong>3. Library sharing & permissions</strong> — Currently blocked on the auth refactor. ETD end of July.</p>
+              </div>
+              <div class="msg-sources">
+                <div class="source-chip" onclick="showToast('Jumping to source in Q3 Roadmap Planning.md…', 'success')">
+                  <span class="source-num">1</span>
+                  Q3 Roadmap Planning.md
+                </div>
+                <div class="source-chip" onclick="showToast('Jumping to source in User Research Synthesis.pdf…', 'success')">
+                  <span class="source-num">2</span>
+                  User Research Synthesis.pdf
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="msg-time">2:14 PM</div>
+        </div>
+
+        <!-- Exchange 2 -->
+        <div class="msg-group fade-in-up" style="animation-delay:0.15s">
+          <div class="msg-user">
+            <div class="msg-user-bubble">What does the competitive analysis say about mobile capture?</div>
+          </div>
+        </div>
+        <div class="msg-group fade-in-up" style="animation-delay:0.2s">
+          <div class="msg-assistant">
+            <div class="assistant-avatar"><div class="assistant-dot"></div></div>
+            <div class="msg-assistant-body">
+              <div class="msg-assistant-content">
+                <p>The Competitive Analysis 2026 doc has a section specifically on mobile UX. Key findings:</p>
+                <p><strong>Notion</strong> requires 3 taps to capture a note. <strong>Obsidian Mobile</strong> is 1 tap via a widget. <strong>Roam</strong> doesn't have a native mobile app — considered a significant weakness by analysts.</p>
+                <p>Your analysis concludes that <em>quick-capture widgets</em> are becoming a table-stakes feature by mid-2026, and teams without one see ~22% lower daily active usage on mobile.</p>
+              </div>
+              <div class="msg-sources">
+                <div class="source-chip" onclick="showToast('Jumping to source…', 'success')">
+                  <span class="source-num">3</span>
+                  Competitive Analysis 2026.docx
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="msg-time">2:17 PM</div>
+        </div>
+
+        <!-- Streaming message -->
+        <div id="streaming-group" class="msg-group" style="display:none">
+          <div class="msg-assistant">
+            <div class="assistant-avatar"><div class="assistant-dot"></div></div>
+            <div class="msg-assistant-body">
+              <div class="msg-assistant-content" id="streaming-content">
+                <span id="streaming-text"></span><span class="streaming-cursor" id="streaming-cursor"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Typing indicator -->
+        <div class="typing-indicator" id="typing-indicator" style="display:none">
+          <div class="assistant-avatar"><div class="assistant-dot"></div></div>
+          <div class="typing-dots">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+          </div>
+        </div>
+
+        <!-- Error state (hidden by default) -->
+        <div id="error-state" style="display:none; padding-left: 38px; margin-bottom: 16px;">
+          <div class="msg-error">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>Something went wrong generating a response.</span>
+            <button class="btn-retry" onclick="retryMessage()">Retry</button>
+          </div>
+        </div>
+
+        <div id="messages-end"></div>
+      </div>
+
+      <!-- Suggestions -->
+      <div class="suggestion-area" id="suggestions">
+        <div class="suggestion-pill" onclick="usesuggestion(this)">Draft Q3 executive summary</div>
+        <div class="suggestion-pill" onclick="usesuggestion(this)">Compare to Q2 goals</div>
+        <div class="suggestion-pill" onclick="usesuggestion(this)">Identify blockers</div>
+        <div class="suggestion-pill" onclick="usesuggestion(this)">Summarize key risks</div>
+      </div>
+
+      <!-- Input -->
+      <div id="input-area">
+        <div class="input-wrapper">
+          <textarea
+            id="chat-input"
+            placeholder="Ask anything about your library…"
+            rows="1"
+            onkeydown="handleKeyDown(event)"
+            oninput="autoResize(this); updateSendBtn();"
+          ></textarea>
+          <div class="input-actions">
+            <button class="input-btn" title="Attach document" onclick="showToast('Document picker coming soon', 'success')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+            </button>
+            <button id="send-btn" onclick="sendMessage()" title="Send (⌘↵)" disabled>
+              <svg id="send-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              <svg id="stop-icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="4" y="4" width="16" height="16" rx="2"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="input-hints">
+          <span class="input-hint"><kbd>⌘↵</kbd> send</span>
+          <span class="input-hint"><kbd>⇧↵</kbd> newline</span>
+          <span class="input-hint" style="margin-left:auto;cursor:pointer" onclick="showToast('Model: claude-sonnet-4-6 · Fast mode off', 'success')">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            claude-sonnet-4-6
+          </span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Intelligence Panel ──────────────── -->
+    <div id="intel-panel">
+      <div class="intel-header">
+        <div class="intel-title">Intelligence</div>
+      </div>
+      <div class="intel-tabs">
+        <button class="intel-tab active" onclick="switchTab(this, 'insights')">Insights</button>
+        <button class="intel-tab" onclick="switchTab(this, 'entities')">Entities</button>
+        <button class="intel-tab" onclick="switchTab(this, 'memory')">Memory</button>
+      </div>
+      <div class="intel-body">
+
+        <!-- Insights tab -->
+        <div class="intel-tab-pane active" id="tab-insights">
+          <div class="intel-section">
+            <div class="intel-section-label">From this session</div>
+            <div class="insight-card" onclick="showToast('Pinned insight to library', 'success')">
+              <div><span class="insight-label insight">Insight</span></div>
+              Mobile capture is a top differentiator — 68% of team captures on mobile but current flow loses them at step 3.
+            </div>
+            <div class="insight-card" onclick="showToast('Pinned insight to library', 'success')">
+              <div><span class="insight-label gap">Gap</span></div>
+              No clear owner assigned for the auth refactor blocking library sharing — ETD July could slip.
+            </div>
+            <div class="insight-card" onclick="showToast('Pinned insight to library', 'success')">
+              <div><span class="insight-label insight">Insight</span></div>
+              Quick-capture widgets are table-stakes by mid-2026 according to competitive analysis.
+            </div>
+          </div>
+          <div class="intel-section">
+            <div class="intel-section-label">Library signal</div>
+            <div class="insight-card" onclick="showToast('Expanding gap detail…', 'success')">
+              <div><span class="insight-label gap">Gap</span></div>
+              No documentation found for the permissions model. 2 documents reference it but none define it.
+            </div>
+          </div>
+        </div>
+
+        <!-- Entities tab -->
+        <div class="intel-tab-pane" id="tab-entities">
+          <div class="intel-section">
+            <div class="intel-section-label">Mentioned in session</div>
+            <div class="entity-row" onclick="showToast('Opening Notion entity page…', 'success')">
+              <span class="entity-emoji">🏢</span>
+              <span class="entity-name">Notion</span>
+              <span class="entity-count">4</span>
+            </div>
+            <div class="entity-row" onclick="showToast('Opening Obsidian entity page…', 'success')">
+              <span class="entity-emoji">🏢</span>
+              <span class="entity-name">Obsidian</span>
+              <span class="entity-count">2</span>
+            </div>
+            <div class="entity-row" onclick="showToast('Opening Roam entity page…', 'success')">
+              <span class="entity-emoji">🏢</span>
+              <span class="entity-name">Roam</span>
+              <span class="entity-count">1</span>
+            </div>
+          </div>
+          <div class="intel-section">
+            <div class="intel-section-label">People</div>
+            <div class="entity-row" onclick="showToast('Opening entity page…', 'success')">
+              <span class="entity-emoji">👤</span>
+              <span class="entity-name">Sarah Kim</span>
+              <span class="entity-type" style="margin-right:4px">PM</span>
+              <span class="entity-count">3</span>
+            </div>
+            <div class="entity-row" onclick="showToast('Opening entity page…', 'success')">
+              <span class="entity-emoji">👤</span>
+              <span class="entity-name">Dev Team</span>
+              <span class="entity-count">2</span>
+            </div>
+          </div>
+          <div class="intel-section">
+            <div class="intel-section-label">Concepts</div>
+            <div class="entity-row" onclick="showToast('Opening entity page…', 'success')">
+              <span class="entity-emoji">💡</span>
+              <span class="entity-name">Quick Capture</span>
+              <span class="entity-count">5</span>
+            </div>
+            <div class="entity-row" onclick="showToast('Opening entity page…', 'success')">
+              <span class="entity-emoji">⚙️</span>
+              <span class="entity-name">Auth Refactor</span>
+              <span class="entity-count">2</span>
+            </div>
+            <div class="entity-row" onclick="showToast('Opening entity page…', 'success')">
+              <span class="entity-emoji">📅</span>
+              <span class="entity-name">Q3 2026</span>
+              <span class="entity-count">8</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Memory tab -->
+        <div class="intel-tab-pane" id="tab-memory">
+          <div class="intel-section">
+            <div class="intel-section-label">Recalled this session</div>
+            <div class="memory-item">
+              <div class="memory-dot high"></div>
+              <span>Mobile UX is the team's #1 frustration — established 2 sessions ago.</span>
+            </div>
+            <div class="memory-item">
+              <div class="memory-dot high"></div>
+              <span>Sarah Kim is DRI for the Q3 roadmap.</span>
+            </div>
+            <div class="memory-item">
+              <div class="memory-dot medium"></div>
+              <span>Auth refactor was descoped from Q2 and carried to Q3.</span>
+            </div>
+          </div>
+          <div class="intel-section">
+            <div class="intel-section-label">Stored from session</div>
+            <div class="memory-item" style="animation-delay:0.05s">
+              <div class="memory-dot high"></div>
+              <span>Quick-capture widgets are table-stakes by mid-2026 per competitive analysis.</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- end #main -->
+</div><!-- end #app -->
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<script>
+  // ── Session data ─────────────────────────
+  const SESSIONS = [
+    { id: 1, title: 'Q3 priorities & mobile capture', date: 'Just now', active: true },
+    { id: 2, title: 'Competitive landscape deep dive', date: '2h ago', active: false },
+    { id: 3, title: 'Auth refactor timeline review', date: 'Yesterday', active: false },
+    { id: 4, title: 'User interview synthesis', date: 'Jun 18', active: false },
+    { id: 5, title: 'Sprint 7 retrospective notes', date: 'Jun 15', active: false },
+  ]
+
+  // ── Streaming simulation ─────────────────
+  const CANNED_RESPONSES = [
+    "Based on your documents, I can see that {QUERY}. The key points are:\n\n**First**, the Q3 roadmap clearly prioritizes this area with dedicated sprint capacity in weeks 7–10. Sarah Kim flagged it as 'non-negotiable' in the planning doc.\n\n**Second**, the user research corroborates this — 72% of interviewees mentioned this as a top pain point in the last synthesis session.\n\nWould you like me to draft action items from this, or explore what the competitive analysis says about how others approach it?",
+    "Great question. Across your three context documents, there's a consistent thread around this topic.\n\nThe **Competitive Analysis** notes that this is an emerging differentiator — only 2 of 8 competitors have tackled it well. The **User Research** shows users value it more than the team expected (NPS delta of +18 when present).\n\nThe Q3 roadmap estimates 3 sprints to ship an MVP. Based on current velocity in the Engineering library, that looks achievable.",
+    "Looking at this across your library, I notice something worth flagging: there's a **gap** in the documentation here. Your planning documents reference it in 4 places but there's no canonical definition or owner documented.\n\nI've surfaced this as a gap in the Intelligence panel. Want me to draft a brief spec to close it?",
+  ]
+
+  let isStreaming = false
+  let streamTimeout = null
+  let lastUserMsg = ''
+  let responseIndex = 0
+
+  // ── Initialize sessions ──────────────────
+  function renderSessions() {
+    const list = document.getElementById('session-list')
+    list.innerHTML = SESSIONS.map(s => `
+      <div class="session-item ${s.active ? 'active' : ''}" onclick="selectSession(${s.id})">
+        <div class="session-title">${s.title}</div>
+        <div class="session-date">${s.date}</div>
+      </div>
+    `).join('')
+  }
+
+  function selectSession(id) {
+    SESSIONS.forEach(s => s.active = s.id === id)
+    renderSessions()
+    showToast('Session loaded', 'success')
+  }
+
+  function newSession() {
+    const s = { id: Date.now(), title: 'New session', date: 'Just now', active: true }
+    SESSIONS.forEach(s => s.active = false)
+    SESSIONS.unshift(s)
+    renderSessions()
+    document.getElementById('messages').querySelectorAll('.msg-group').forEach(el => el.remove())
+    document.getElementById('messages').querySelector('.day-divider').remove()
+    showToast('New session started', 'success')
+  }
+
+  // ── Context strip ────────────────────────
+  let contextOpen = false
+  function toggleContext() {
+    contextOpen = !contextOpen
+    document.getElementById('context-docs').classList.toggle('open', contextOpen)
+    document.getElementById('context-chevron').classList.toggle('open', contextOpen)
+  }
+
+  function removeDoc(btn, oldCount, newCount) {
+    const doc = btn.closest('.context-doc')
+    doc.style.opacity = '0'
+    doc.style.transition = 'opacity 0.15s'
+    setTimeout(() => {
+      doc.remove()
+      document.getElementById('context-count').textContent = newCount
+    }, 150)
+    showToast('Document removed from context', 'success')
+  }
+
+  // ── Tabs ─────────────────────────────────
+  function switchTab(btn, tabId) {
+    document.querySelectorAll('.intel-tab').forEach(t => t.classList.remove('active'))
+    document.querySelectorAll('.intel-tab-pane').forEach(p => p.classList.remove('active'))
+    btn.classList.add('active')
+    document.getElementById('tab-' + tabId).classList.add('active')
+  }
+
+  // ── Input handling ───────────────────────
+  function autoResize(el) {
+    el.style.height = 'auto'
+    el.style.height = Math.min(el.scrollHeight, 180) + 'px'
+  }
+
+  function updateSendBtn() {
+    const input = document.getElementById('chat-input')
+    const btn = document.getElementById('send-btn')
+    btn.disabled = !input.value.trim() && !isStreaming
+  }
+
+  function handleKeyDown(e) {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      e.preventDefault()
+      sendMessage()
+    }
+  }
+
+  function usesuggestion(el) {
+    const input = document.getElementById('chat-input')
+    input.value = el.textContent
+    autoResize(input)
+    updateSendBtn()
+    input.focus()
+  }
+
+  // ── Send message ─────────────────────────
+  function sendMessage() {
+    if (isStreaming) { stopStreaming(); return }
+
+    const input = document.getElementById('chat-input')
+    const text = input.value.trim()
+    if (!text) return
+
+    lastUserMsg = text
+    input.value = ''
+    input.style.height = 'auto'
+    updateSendBtn()
+
+    // Hide suggestions on first message
+    document.getElementById('suggestions').style.display = 'none'
+
+    // Add user bubble
+    addUserMessage(text)
+
+    // Show typing then stream
+    setTimeout(() => startStreaming(text), 600)
+  }
+
+  function addUserMessage(text) {
+    const msgs = document.getElementById('messages')
+    const group = document.createElement('div')
+    group.className = 'msg-group fade-in-up'
+    group.innerHTML = `<div class="msg-user"><div class="msg-user-bubble">${escHtml(text)}</div></div>`
+    msgs.insertBefore(group, document.getElementById('streaming-group'))
+    scrollToBottom()
+
+    // Update active session title from first user msg
+    const activeSession = SESSIONS.find(s => s.active)
+    if (activeSession && activeSession.title === 'New session') {
+      activeSession.title = text.slice(0, 40) + (text.length > 40 ? '…' : '')
+      renderSessions()
+    }
+  }
+
+  // ── Streaming ────────────────────────────
+  function startStreaming(query) {
+    isStreaming = true
+    document.getElementById('error-state').style.display = 'none'
+
+    // Show typing indicator
+    const typing = document.getElementById('typing-indicator')
+    typing.style.display = 'flex'
+    scrollToBottom()
+
+    // Update send btn to stop
+    const btn = document.getElementById('send-btn')
+    btn.disabled = false
+    btn.classList.add('streaming')
+    document.getElementById('send-icon').style.display = 'none'
+    document.getElementById('stop-icon').style.display = 'block'
+
+    setTimeout(() => {
+      typing.style.display = 'none'
+      beginTextStream(query)
+    }, 900)
+  }
+
+  function beginTextStream(query) {
+    const group = document.getElementById('streaming-group')
+    const textEl = document.getElementById('streaming-text')
+    group.style.display = 'flex'
+    group.style.animation = 'fadeInUp 0.25s ease both'
+
+    const raw = CANNED_RESPONSES[responseIndex % CANNED_RESPONSES.length]
+    responseIndex++
+    const response = raw.replace('{QUERY}', query.slice(0, 40).toLowerCase())
+    const words = response.split(' ')
+    let i = 0
+    textEl.textContent = ''
+
+    function tick() {
+      if (!isStreaming) return
+      if (i >= words.length) {
+        finishStreaming(response)
+        return
+      }
+      // Add 1-3 words per tick for realistic pacing
+      const chunk = words.slice(i, i + Math.floor(Math.random() * 3) + 1).join(' ')
+      textEl.textContent += (i === 0 ? '' : ' ') + chunk
+      i += Math.floor(Math.random() * 3) + 1
+      scrollToBottom()
+      streamTimeout = setTimeout(tick, 35 + Math.random() * 60)
+    }
+    tick()
+  }
+
+  function finishStreaming(fullText) {
+    isStreaming = false
+
+    // Hide streaming group
+    document.getElementById('streaming-group').style.display = 'none'
+    document.getElementById('streaming-text').textContent = ''
+
+    // Reset send btn
+    const btn = document.getElementById('send-btn')
+    btn.classList.remove('streaming')
+    btn.disabled = true
+    document.getElementById('send-icon').style.display = 'block'
+    document.getElementById('stop-icon').style.display = 'none'
+
+    // Render final message
+    const msgs = document.getElementById('messages')
+    const group = document.createElement('div')
+    group.className = 'msg-group fade-in-up'
+
+    const formatted = formatMarkdown(fullText)
+    const time = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+
+    group.innerHTML = `
+      <div class="msg-assistant">
+        <div class="assistant-avatar"><div class="assistant-dot"></div></div>
+        <div class="msg-assistant-body">
+          <div class="msg-assistant-content">${formatted}</div>
+          <div class="msg-sources">
+            <div class="source-chip" onclick="showToast('Jumping to source…', 'success')">
+              <span class="source-num">${responseIndex}</span>
+              Q3 Roadmap Planning.md
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="msg-time">${time}</div>
+    `
+    msgs.insertBefore(group, document.getElementById('streaming-group'))
+    scrollToBottom()
+
+    // Add new memory item
+    addNewMemory(fullText.split('\n')[0].slice(0, 80) + '…')
+  }
+
+  function stopStreaming() {
+    isStreaming = false
+    clearTimeout(streamTimeout)
+    document.getElementById('typing-indicator').style.display = 'none'
+    document.getElementById('streaming-group').style.display = 'none'
+    document.getElementById('streaming-text').textContent = ''
+
+    const btn = document.getElementById('send-btn')
+    btn.classList.remove('streaming')
+    btn.disabled = true
+    document.getElementById('send-icon').style.display = 'block'
+    document.getElementById('stop-icon').style.display = 'none'
+
+    showToast('Response stopped', 'success')
+  }
+
+  function retryMessage() {
+    document.getElementById('error-state').style.display = 'none'
+    addUserMessage(lastUserMsg)
+    setTimeout(() => startStreaming(lastUserMsg), 600)
+  }
+
+  // ── Helpers ──────────────────────────────
+  function addNewMemory(text) {
+    const memSection = document.querySelector('#tab-memory .intel-section:last-child')
+    const item = document.createElement('div')
+    item.className = 'memory-item'
+    item.style.animationDelay = '0.1s'
+    item.innerHTML = `<div class="memory-dot high"></div><span>${escHtml(text)}</span>`
+    memSection.appendChild(item)
+  }
+
+  function formatMarkdown(text) {
+    return text
+      .split('\n\n')
+      .filter(Boolean)
+      .map(p => {
+        p = p
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.+?)\*/g, '<em>$1</em>')
+          .replace(/`(.+?)`/g, '<code>$1</code>')
+        return `<p>${p}</p>`
+      })
+      .join('')
+  }
+
+  function escHtml(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+  }
+
+  function scrollToBottom() {
+    const msgs = document.getElementById('messages')
+    msgs.scrollTop = msgs.scrollHeight
+  }
+
+  // ── Toast ─────────────────────────────────
+  function showToast(msg, type = 'success') {
+    const container = document.getElementById('toast-container')
+    const toast = document.createElement('div')
+    toast.className = `toast ${type}`
+    toast.innerHTML = `
+      <span class="toast-icon"></span>
+      <span>${escHtml(msg)}</span>
+      <button class="toast-close" onclick="dismissToast(this.parentElement)">×</button>
+    `
+    container.appendChild(toast)
+    setTimeout(() => dismissToast(toast), 3200)
+  }
+
+  function dismissToast(toast) {
+    if (!toast || !toast.parentElement) return
+    toast.classList.add('out')
+    setTimeout(() => toast.remove(), 200)
+  }
+
+  // ── Boot ──────────────────────────────────
+  renderSessions()
+  document.getElementById('chat-input').addEventListener('focus', function() {
+    updateSendBtn()
+  })
+</script>
+</body>
+</html>
