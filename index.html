@@ -1,293 +1,522 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>brennanpickedthis.lol</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Lato:wght@300;400&family=DM+Mono:wght@300&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-snap-type:y mandatory;overflow-y:scroll;scroll-behavior:smooth;}
-body{background:#ebeae8;cursor:none;}
-:root{--paper:#faf3e4;--ink:#373633;--muted:#8a8070;--rule:#c2c0bb;}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>REGGIE — The Dachshund with Attitude!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-.cursor{position:fixed;width:7px;height:7px;background:var(--ink);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .18s,height .18s;}
-.prog{position:fixed;top:0;left:0;height:2px;background:var(--ink);z-index:500;transition:width .15s;opacity:.2;}
-.dots{position:fixed;right:1.6rem;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:.5rem;z-index:500;}
-.dot{width:4px;height:4px;border-radius:50%;background:rgba(104, 72, 7, 0.452);cursor:pointer;transition:background .3s,transform .3s;}
-.dot.active{background:var(--ink);transform:scale(2);}
+    :root {
+      --book-w: 380px;
+      --book-h: 590px;
+      --gold: #FFD700;
+      --red:  #8B0000;
+      --dark: #0e0809;
+    }
 
-.slide{height:100svh;scroll-snap-align:start;scroll-snap-stop:always;position:relative;overflow:hidden;}
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+    }
 
-/* TITLE */
-.slide-title{display:flex;align-items:flex-end;}
-.title-bg{position:absolute;inset:0;background-size:cover;transform:scale(1.04);opacity:0;transition:opacity 1.6s ease,transform 2.4s cubic-bezier(.16,1,.3,1);z-index:0;}
-.slide-title.in-view .title-bg,.slide-climax.in-view .climax-bg,.slide-finale.in-view .title-bg{opacity:1;transform:scale(1);}
-.title-veil{position:absolute;inset:0;z-index:1;background:linear-gradient(to top,rgba(225, 212, 185, 0.97) 0%,rgba(238, 238, 236, 0.65) 45%,rgba(240,235,224,.08) 100%);}
-.title-content{position:relative;z-index:2;padding:0 5vw 6vh;max-width:min(900px,92vw);}
-.title-eyebrow{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-bottom:1.2rem;opacity:0;transform:translateY(10px);transition:opacity .6s .1s ease,transform .6s .1s ease;}
-.slide-title.in-view .title-eyebrow{opacity:1;transform:none;}
-.title-text{
-  font-family:'Playfair Display',Georgia,serif;
-  font-size:clamp(2.2rem,7vw,8rem);
-  font-weight:700;font-style:normal;
-  line-height:.95;letter-spacing:-.03em;
-  color:var(--ink);
-  opacity:0;transform:translateY(30px);
-  transition:opacity 1.1s .2s ease,transform 1.1s .2s ease;
-}
-.slide-title.in-view .title-text{opacity:1;transform:none;}
-.title-sub{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:1.4rem;opacity:0;transform:translateY(8px);transition:opacity .6s .6s ease,transform .6s .6s ease;}
-.slide-title.in-view .title-sub{opacity:1;transform:none;}
+    body {
+      min-height: 100vh;
+      background: #0e0809;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Bangers', 'Impact', cursive;
+      user-select: none;
+    }
 
-/* SPLIT */
-.slide-split{display:flex;flex-direction:row;}
-.slide-split.flipped{flex-direction:row-reverse;}
-.image-pane{width:55%;height:100%;flex-shrink:0;position:relative;overflow:hidden;}
-.image-inner{position:absolute;inset:0;background-size:cover;transform:scale(1.08) translateX(-20px);opacity:0;transition:opacity 1.2s ease,transform 1.8s cubic-bezier(.16,1,.3,1);}
-.slide-split.flipped .image-inner{transform:scale(1.08) translateX(20px);}
-.slide-split.in-view .image-inner{opacity:1;transform:scale(1) translateX(0);}
-.text-pane{width:45%;background:var(--paper);display:flex;align-items:center;justify-content:center;position:relative;}
-.slide-split:not(.flipped) .text-pane::before{content:'';position:absolute;left:0;top:10%;height:80%;width:1px;background:var(--rule);}
-.slide-split.flipped .text-pane::after{content:'';position:absolute;right:0;top:10%;height:80%;width:1px;background:var(--rule);}
-.text-inner{padding:4rem 4rem 4rem 3rem;max-width:420px;}
-.slide-split.flipped .text-inner{padding:4rem 3rem 4rem 4rem;}
-.label{font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;opacity:0;transform:translateY(8px);transition:opacity .5s .15s ease,transform .5s .15s ease;}
-.slide-split.in-view .label{opacity:1;transform:none;}
-.headline{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.6rem,2.8vw,2.6rem);font-weight:400;line-height:1.2;letter-spacing:-.01em;color:var(--ink);opacity:0;transform:translateY(18px);transition:opacity .9s .25s ease,transform .9s .25s ease;}
-.slide-split.in-view .headline{opacity:1;transform:none;}
-.rule{width:0;height:1px;background:var(--rule);margin:1.2rem 0;transition:width 1s .42s ease;}
-.slide-split.in-view .rule{width:40px;}
-.body{font-family:'Lato',sans-serif;font-weight:300;font-size:clamp(.88rem,1.2vw,1rem);line-height:1.8;color:var(--muted);opacity:0;transform:translateY(10px);transition:opacity .8s .55s ease,transform .8s .55s ease;}
-.slide-split.in-view .body{opacity:1;transform:none;}
+    /* ── Halftone dot background ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: radial-gradient(circle, rgba(255,200,0,0.12) 1.5px, transparent 1.5px);
+      background-size: 22px 22px;
+      pointer-events: none;
+    }
 
-/* CLIMAX */
-.slide-climax{display:flex;align-items:center;}
-.climax-veil{position:absolute;inset:0;z-index:1;background:linear-gradient(105deg,rgba(10,8,6,.92) 0%,rgba(10,8,6,.75) 50%,rgba(10,8,6,.28) 100%);}
-.climax-content{position:relative;z-index:2;max-width:min(580px,88vw);padding:0 5vw;}
-.climax-label{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.35em;text-transform:uppercase;color:rgba(245,240,228,.35);margin-bottom:1.2rem;opacity:0;transform:translateY(8px);transition:opacity .5s .1s ease,transform .5s .1s ease;}
-.slide-climax.in-view .climax-label{opacity:1;transform:none;}
-.climax-headline{font-family:'Playfair Display',Georgia,serif;font-size:clamp(2.4rem,5vw,4.5rem);font-weight:400;line-height:1.1;letter-spacing:-.02em;color:#f5f0e8;opacity:0;transform:translateY(22px);transition:opacity 1s .2s ease,transform 1s .2s ease;text-shadow:0 2px 40px rgba(0,0,0,.6);}
-.slide-climax.in-view .climax-headline{opacity:1;transform:none;}
-.climax-rule{width:0;height:1px;background:rgba(245,240,228,.25);margin:1.4rem 0;transition:width 1.1s .4s ease;}
-.slide-climax.in-view .climax-rule{width:56px;}
-.climax-body{font-family:'Lato',sans-serif;font-weight:300;font-size:clamp(.9rem,1.4vw,1.05rem);line-height:1.85;color:rgba(245,240,228,.62);opacity:0;transform:translateY(12px);transition:opacity .9s .55s ease,transform .9s .55s ease;text-shadow:0 1px 20px rgba(0,0,0,.8);}
-.slide-climax.in-view .climax-body{opacity:1;transform:none;}
-.climax-body+.climax-body{margin-top:1rem;}
+    /* ── Vignette ── */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.75) 100%);
+      pointer-events: none;
+    }
 
-/* FINALE */
-.slide-finale{display:flex;align-items:center;justify-content:center;}
-.finale-veil{position:absolute;inset:0;z-index:1;background:rgba(10,8,6,.55);}
-.finale-content{position:relative;z-index:2;text-align:center;}
-.finale-text{font-family:'Playfair Display',Georgia,serif;font-size:clamp(3rem,10vw,11rem);font-weight:400;font-style:italic;line-height:1.0;letter-spacing:-.02em;color:#f5f0e8;text-shadow:0 2px 60px rgba(0,0,0,.7);opacity:0;transform:translateY(24px);transition:opacity 1.2s .2s ease,transform 1.2s .2s ease;}
-.slide-finale.in-view .finale-text{opacity:1;transform:none;}
+    /* ── Title banner ── */
+    .title-banner {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+    .title-banner h1 {
+      font-size: clamp(2rem, 6vw, 3.2rem);
+      letter-spacing: 6px;
+      color: var(--gold);
+      text-shadow:
+        3px  3px 0 var(--red),
+        -2px -2px 0 #000,
+        5px  5px 12px rgba(0,0,0,0.6);
+    }
+    .title-banner p {
+      font-size: clamp(0.7rem, 2vw, 0.95rem);
+      letter-spacing: 3px;
+      color: #ccc;
+      text-shadow: 1px 1px 0 #000;
+      margin-top: 2px;
+    }
 
-/* SCROLL HINT */
-.scroll-hint{position:absolute;bottom:2rem;right:5vw;font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:.7rem;z-index:10;animation:fadeIn 1s 2.6s both;}
-.scroll-line{width:32px;height:1px;background:linear-gradient(to right,var(--muted),transparent);animation:pulse 1.7s ease infinite;}
-@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-@keyframes pulse{0%,100%{opacity:.25;}50%{opacity:1;}}
+    /* ── Scene (perspective container) ── */
+    .scene {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
 
-@media(max-width:768px){
-  .slide-split,.slide-split.flipped{flex-direction:column;}
-  .image-pane{width:100%;height:50%;}
-  .text-pane{width:100%;height:50%;}
-  .slide-split:not(.flipped) .text-pane::before,.slide-split.flipped .text-pane::after{display:none;}
-  .text-inner,.slide-split.flipped .text-inner{padding:1.8rem 1.5rem;}
-  .dots{right:.6rem;}
-  .title-text{font-size:clamp(2.4rem,10vw,5rem);}
-}
-</style>
+    /* ── Book wrapper (for click zones + hint arrows) ── */
+    .book-wrapper {
+      position: relative;
+    }
+
+    /* ── The Book ── */
+    .book {
+      position: relative;
+      width: var(--book-w);
+      height: var(--book-h);
+      perspective: 3000px;
+      /* Aged book shadow */
+      filter:
+        drop-shadow(0 30px 50px rgba(0,0,0,0.9))
+        drop-shadow(0  6px 12px rgba(0,0,0,0.7))
+        drop-shadow(-4px 0 8px rgba(0,0,0,0.4));
+    }
+
+    /* ── Each Page ── */
+    .page {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      transform-origin: left center;
+      transform-style: preserve-3d;
+      transition: transform 0.75s cubic-bezier(0.55, 0.06, 0.21, 0.97);
+    }
+
+    .page-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      overflow: hidden;
+    }
+
+    .page-front { z-index: 2; }
+
+    .page-back {
+      transform: rotateY(180deg);
+      background: linear-gradient(160deg, #f4eed8 0%, #e8dfc8 60%, #ddd4b8 100%);
+    }
+
+    /* Aged paper texture on back */
+    .page-back::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
+      opacity: 0.4;
+    }
+
+    .page-back-content {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+    }
+
+    .page-front img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      /* Slight warm tint for aged look */
+      filter: sepia(8%) contrast(1.02);
+    }
+
+    /* Binding shadow on inner left edge */
+    .page-front::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 28px;
+      background: linear-gradient(to right, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.1) 60%, transparent 100%);
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    /* Outer border/edge of page */
+    .page-front::after {
+      content: '';
+      position: absolute; inset: 0;
+      border: 2px solid rgba(0,0,0,0.25);
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    /* ── Click zones ── */
+    .click-zone {
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 35%;
+      cursor: pointer;
+      z-index: 200;
+    }
+    .click-zone-left  { left: 0; }
+    .click-zone-right { right: 0; }
+
+    /* Hover hint: subtle highlight when hovering click zones */
+    .click-zone-right:hover ~ .book .page:last-child .page-front,
+    .click-zone-left:hover  ~ .book .page:last-child .page-front {
+      filter: brightness(1.05);
+    }
+
+    /* ── Hint arrows ── */
+    .hint {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255, 215, 0, 0.55);
+      font-size: 2rem;
+      pointer-events: none;
+      animation: hint-pulse 2.2s ease-in-out infinite;
+      z-index: 5;
+      text-shadow: 0 0 10px rgba(255,200,0,0.4);
+    }
+    .hint-left  { left:  -36px; }
+    .hint-right { right: -36px; }
+    .hint.hidden { opacity: 0 !important; animation: none; }
+
+    @keyframes hint-pulse {
+      0%, 100% { opacity: 0.35; transform: translateY(-50%) scale(1);    }
+      50%       { opacity: 0.85; transform: translateY(-50%) scale(1.25); }
+    }
+
+    /* ── Controls ── */
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn {
+      background: var(--gold);
+      border: 3px solid #000;
+      color: #000;
+      font-family: 'Bangers', cursive;
+      font-size: 1.15rem;
+      letter-spacing: 2px;
+      padding: 9px 22px;
+      cursor: pointer;
+      clip-path: polygon(6% 0%, 94% 0%, 100% 50%, 94% 100%, 6% 100%, 0% 50%);
+      transition: background 0.1s, transform 0.08s, box-shadow 0.08s;
+      box-shadow: 3px 3px 0 var(--red);
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn:hover:not(:disabled) {
+      background: #FFC200;
+      transform: translate(-1px, -1px);
+      box-shadow: 4px 4px 0 var(--red);
+    }
+    .btn:active:not(:disabled) {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0 var(--red);
+    }
+    .btn:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+
+    .page-indicator {
+      color: var(--gold);
+      font-size: 1.35rem;
+      letter-spacing: 3px;
+      text-shadow: 2px 2px 0 #000;
+      min-width: 110px;
+      text-align: center;
+    }
+
+    /* ── SFX pop-in animations ── */
+    .sfx {
+      position: fixed;
+      font-family: 'Bangers', cursive;
+      letter-spacing: 4px;
+      pointer-events: none;
+      z-index: 9999;
+      animation: sfx-burst 0.75s ease-out forwards;
+    }
+    @keyframes sfx-burst {
+      0%   { transform: scale(0.3) rotate(-15deg); opacity: 1; }
+      40%  { transform: scale(1.4) rotate(6deg);  opacity: 1; }
+      100% { transform: scale(1.8) rotate(-4deg); opacity: 0; }
+    }
+
+    /* ── Page-turn shadow overlay (darkens the underneath page's right edge) ── */
+    .shadow-overlay {
+      position: absolute;
+      top: 0; right: 0;
+      width: 80px; height: 100%;
+      background: linear-gradient(to right, transparent, rgba(0,0,0,0.35));
+      z-index: 50;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .book.turning .shadow-overlay {
+      opacity: 1;
+    }
+
+    /* ── Responsive scaling ── */
+    @media (max-height: 720px) {
+      :root { --book-w: 320px; --book-h: 496px; }
+      .title-banner h1 { font-size: 1.8rem; }
+    }
+    @media (max-width: 480px) {
+      :root { --book-w: 300px; --book-h: 465px; }
+      .hint-left, .hint-right { display: none; }
+    }
+    @media (max-width: 360px) {
+      :root { --book-w: 260px; --book-h: 403px; }
+    }
+  </style>
 </head>
 <body>
-<div class="cursor" id="cur"></div>
-<div class="prog" id="prog"></div>
-<nav class="dots" id="dots"></nav>
-<section class="slide slide-title" data-slide="0">
-  <div class="title-bg" style="background-image: url('https://res.cloudinary.com/dwjpl1hc0/image/upload/q_auto/f_auto/v1777689771/F5D0182D-437E-479E-8EFA-85C405F97C92_j6zqni.png'); background-position:center top"></div>
-  <div class="title-veil"></div>
-  <div class="title-content">
-    <div class="title-eyebrow">A Story About Everything</div>
-    <h1 class="title-text">brennanpickedthis.lol</h1>
-    <div class="title-sub">by Alan Watts</div>
+
+  <div class="title-banner">
+    <h1>★ REGGIE ★</h1>
+    <p>THE DACHSHUND WITH ATTITUDE &nbsp;·&nbsp; CANINE COMICS GROUP</p>
   </div>
-  <div class="scroll-hint"><span>scroll</span><div class="scroll-line"></div></div>
-</section>
-<section class="slide slide-split" data-slide="1">
-  <div class="image-pane">
-    <div class="image-inner" style="background-image: url('https://res.cloudinary.com/dwjpl1hc0/image/upload/q_auto/f_auto/v1777689771/07CE4B85-5CB9-463D-AC6F-C1A68311B4DC_ft7elc.png');background-position:center center;"></div>
-  </div>
-  <div class="text-pane">
-    <div class="text-inner">
-      <div class="label">I.</div>
-      <h2 class="headline">A being who could dream anything.</h2>
-      <div class="rule"></div>
-      <p class="body">Once, there was a being who could dream anything. Not just at night, but at will. This being — call it God, or the Universe, or simply the Self — was alone in an endless, formless vastness. And so, for fun, it decided to dream a world.</p>
+
+  <div class="scene">
+    <div class="book-wrapper">
+      <!-- Hint arrows shown outside the book -->
+      <div class="hint hint-left"  id="hint-left">◀</div>
+      <div class="hint hint-right" id="hint-right">▶</div>
+
+      <!-- Click-to-navigate overlays -->
+      <div class="click-zone click-zone-left"  id="zone-left"></div>
+      <div class="click-zone click-zone-right" id="zone-right"></div>
+
+      <div class="book" id="book">
+        <div class="shadow-overlay" id="shadow"></div>
+
+        <!-- PAGE 2 (bottom of stack — last page) -->
+        <div class="page" id="p2">
+          <div class="page-face page-front">
+            <img src="images/page2.jpeg" alt="Reggie — Issue 1, Page 2">
+          </div>
+          <div class="page-face page-back">
+            <div class="page-back-content">
+              <p style="font-size:2.2rem;color:#8B0000;letter-spacing:4px;text-align:center;text-shadow:1px 1px 0 #000">THE END</p>
+              <p style="margin-top:12px;font-family:Georgia,serif;font-size:0.85rem;color:#555;text-align:center;letter-spacing:1px;line-height:1.6">
+                REGGIE will return…<br>
+                <em>in Issue #2: The Big Heist</em>
+              </p>
+              <div style="margin-top:30px;width:60px;height:3px;background:#8B0000;opacity:0.4;border-radius:2px"></div>
+              <p style="margin-top:12px;font-family:Georgia,serif;font-size:0.72rem;color:#888;text-align:center;letter-spacing:1px">
+                CANINE COMICS GROUP<br>
+                © ISSUE #1 · MAY · 12¢
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGE 1 (middle of stack) -->
+        <div class="page" id="p1">
+          <div class="page-face page-front">
+            <img src="images/page1.jpeg" alt="Reggie — Issue 1, Page 1">
+          </div>
+          <div class="page-face page-back">
+            <div class="page-back-content">
+              <p style="font-size:1.6rem;color:#333;letter-spacing:3px;text-align:center">— continued —</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- COVER (top of stack) -->
+        <div class="page" id="p0">
+          <div class="page-face page-front">
+            <img src="images/cover.png" alt="Reggie — Cover">
+          </div>
+          <div class="page-face page-back" style="background:linear-gradient(145deg,#1a0305 0%,#2d0608 100%)">
+            <div class="page-back-content">
+              <p style="font-size:2.8rem;color:#FFD700;letter-spacing:5px;text-align:center;text-shadow:2px 2px 0 #8B0000">REGGIE</p>
+              <p style="margin-top:8px;font-family:Georgia,serif;font-size:0.9rem;color:#aaa;text-align:center;letter-spacing:2px;font-style:italic">The Dachshund with Attitude</p>
+              <div style="margin-top:20px;width:80px;height:2px;background:#FFD700;opacity:0.5"></div>
+              <p style="margin-top:16px;font-family:Georgia,serif;font-size:0.75rem;color:#777;text-align:center;letter-spacing:2px;line-height:1.8">
+                ISSUE #1 &nbsp;·&nbsp; MAY &nbsp;·&nbsp; 12¢<br>
+                <span style="font-size:0.65rem;color:#555">APPROVED BY THE COMICS CODE AUTHORITY</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div><!-- /book -->
+    </div><!-- /book-wrapper -->
+
+    <div class="controls">
+      <button class="btn" id="btn-prev" disabled>◀ PREV</button>
+      <div class="page-indicator" id="indicator">1 / 3</div>
+      <button class="btn" id="btn-next">NEXT ▶</button>
     </div>
   </div>
-</section>
-<section class="slide slide-split flipped" data-slide="2">
-  <div class="image-pane">
-    <div class="image-inner" style="background-image: url('https://res.cloudinary.com/dwjpl1hc0/image/upload/v1777689771/8666F446-7D2E-439E-8885-A917E499AE9E_mwwr4o.png');background-position:center top;"></div>
-  </div>
-  <div class="text-pane">
-    <div class="text-inner">
-      <div class="label">II.</div>
-      <h2 class="headline">For eons, this was bliss.</h2>
-      <div class="rule"></div>
-      <p class="body">It imagined galaxies swirling into birth, supernovas exploding like fireworks, oceans crashing against unseen shores. It built cities of crystal, loved without loss, and conquered every challenge before a single bead of sweat could form.</p>
-    </div>
-  </div>
-</section>
-<section class="slide slide-split" data-slide="3">
-  <div class="image-pane">
-    <div class="image-inner" style="background-image: url('https://res.cloudinary.com/dwjpl1hc0/image/upload/q_auto/f_auto/v1777689772/8C3D7640-C60E-4243-98B9-5F108CBDCC03_aponzr.png');background-position:center center;"></div>
-  </div>
-  <div class="text-pane">
-    <div class="text-inner">
-      <div class="label">III.</div>
-      <h2 class="headline">Then came the boredom.</h2>
-      <div class="rule"></div>
-      <p class="body">The being realized: I already know how every story ends. There is no surprise. No risk. No moment when my heart truly races. Slowly at first, then all at once — the emptiness crept in.</p>
-    </div>
-  </div>
-</section>
-<section class="slide slide-split flipped" data-slide="4">
-  <div class="image-pane">
-    <div class="image-inner" style="background-image: url('https://res.cloudinary.com/dwjpl1hc0/image/upload/q_auto/f_auto/v1777689773/84B80687-C718-433D-AFC8-5DA5466667FC_da9lfv.png');background-position:center top;"></div>
-  </div>
-  <div class="text-pane">
-    <div class="text-inner">
-      <div class="label">IV.</div>
-      <h2 class="headline">So it decided to add a little danger.</h2>
-      <div class="rule"></div>
-      <p class="body">It dreamed a monster in the shadows. It dreamed a cliff with no guardrail. It dreamed betrayal, illness, and the bite of winter. And oh — that worked, for a while. The heart pounded. The senses sharpened.</p>
-    </div>
-  </div>
-</section>
-<section class="slide slide-split" data-slide="5">
-  <div class="image-pane">
-    <div class="image-inner" style="background-image: url('https://res.cloudinary.com/dwjpl1hc0/image/upload/q_auto/f_auto/v1777689773/A62C090D-12D8-4A66-A9C3-012A0504679B_kkuj8g.png');background-position:center center;"></div>
-  </div>
-  <div class="text-pane">
-    <div class="text-inner">
-      <div class="label">V.</div>
-      <h2 class="headline">But even danger became predictable.</h2>
-      <div class="rule"></div>
-      <p class="body">Because deep down, the dreamer always knew: I am the one who dreamed the monster. I will survive. I always do. And the boredom returned — heavier than before.</p>
-    </div>
-  </div>
-</section>
-<section class="slide slide-split flipped" data-slide="6">
-  <div class="image-pane">
-    <div class="image-inner" style="background-image: url('https://res.cloudinary.com/dwjpl1hc0/image/upload/q_auto/f_auto/v1777689772/41B7B8AD-8961-4593-AFBD-A4C444C3C529_ryvqno.png');background-position:center top;"></div>
-  </div>
-  <div class="text-pane">
-    <div class="text-inner">
-      <div class="label">VI.</div>
-      <h2 class="headline">Its cleverest, strangest, most beautiful trick.</h2>
-      <div class="rule"></div>
-      <p class="body">What if I forget that I am dreaming? What if I give myself real stakes — pain that feels final, love that feels fragile, time that feels like it's running out? And so the being did exactly that.</p>
-    </div>
-  </div>
-</section>
-<section class="slide slide-climax" data-slide="7">
-  <div class="title-bg climax-bg" style="background-image: url('https://res.cloudinary.com/dwjpl1hc0/image/upload/q_auto/f_auto/v1777689772/7FBC2829-D551-4CD9-8D3F-5CCC039F7AC7_bmthyw.png');background-position:center center;"></div>
-  <div class="climax-veil"></div>
-  <div class="climax-content">
-    <div class="climax-label">The Climax</div>
-    <h2 class="climax-headline">The danger was real now.</h2>
-    <div class="climax-rule"></div>
-    <p class="climax-body">Every scrape on a knee felt like a small tragedy. Every goodbye felt like it might be forever. Every choice felt heavy with consequence. The being — now living as you, as me — struggled, failed, triumphed, and wept without ever knowing it had set the stage.</p><p class="climax-body">The dreamer had finally hidden itself so well that even it couldn't find the exit.</p>
-  </div>
-</section>
-<section class="slide slide-split" data-slide="8">
-  <div class="image-pane">
-    <div class="image-inner" style="background-image: url('https://res.cloudinary.com/dwjpl1hc0/image/upload/q_auto/f_auto/v1777689772/CEF5840E-BD4B-41E3-B897-BDF722C56AD5_ahzkus.png');background-position:center top;"></div>
-  </div>
-  <div class="text-pane">
-    <div class="text-inner">
-      <div class="label">VII.</div>
-      <h2 class="headline">And it will laugh — not bitterly.</h2>
-      <div class="rule"></div>
-      <p class="body">With deep, warm delight. It will open its eyes in that formless vastness, stretch like a cat after a long nap, and whisper: Oh. That was me. All of it. The monster and the hero, the wound and the kiss, the terror and the peace.</p>
-    </div>
-  </div>
-</section>
-<section class="slide slide-split flipped" data-slide="9">
-  <div class="image-pane">
-    <div class="image-inner" style="background-image: url('https://res.cloudinary.com/dwjpl1hc0/image/upload/q_auto/f_auto/v1777689773/6B311A05-A027-4AEA-A0DB-7BCE6C11772B_uctue6.png');background-position:center center;"></div>
-  </div>
-  <div class="text-pane">
-    <div class="text-inner">
-      <div class="label">VIII.</div>
-      <h2 class="headline">You are the universe experiencing itself.</h2>
-      <div class="rule"></div>
-      <p class="body">You chose this. The uncertainty. The weight. The beauty of it. This moment. This life. This is the adventure you asked for — the dream you designed so perfectly that you forgot you were dreaming.</p>
-    </div>
-  </div>
-</section>
-<section class="slide slide-split" data-slide="10">
-  <div class="image-pane">
-    <div class="image-inner" style="background-image: url('https://res.cloudinary.com/dwjpl1hc0/image/upload/q_auto/f_auto/v1777689774/246FD360-5FAD-4867-8146-02BD8B898FFF_bnhtoa.png');background-position:center top;"></div>
-  </div>
-  <div class="text-pane">
-    <div class="text-inner">
-      <div class="label">IX.</div>
-      <h2 class="headline">One day, the dreamer will wake up.</h2>
-      <div class="rule"></div>
-      <p class="body">It will rest for a while. Float in the silence. And after a time, when the silence itself begins to feel a little empty…</p>
-    </div>
-  </div>
-</section>
-<section class="slide slide-split flipped" data-slide="11">
-  <div class="image-pane">
-    <div class="image-inner" style="background-image: url('https://res.cloudinary.com/dwjpl1hc0/image/upload/q_auto/f_auto/v1777689772/0CE34619-3181-4A12-AD95-68AD6402CE4F_yifqcf.png');background-position:center center;"></div>
-  </div>
-  <div class="text-pane">
-    <div class="text-inner">
-      <div class="label">X.</div>
-      <h2 class="headline">It will close its eyes.</h2>
-      <div class="rule"></div>
-      <p class="body">And when the silence fills with longing again — for texture, for surprise, for the particular ache of being alive — it will do the only thing it knows.</p>
-    </div>
-  </div>
-</section>
-<section class="slide slide-finale" data-slide="12">
-  <div class="title-bg" style="background-image: url('https://res.cloudinary.com/dwjpl1hc0/image/upload/q_auto/f_auto/v1777689774/BA4D883C-D8ED-41FE-965E-D975A1A82A93_riiuhq.png');background-position:center top;"></div>
-  <div class="finale-veil"></div>
-  <div class="finale-content">
-    <h2 class="finale-text">And dream again.</h2>
-  </div>
-</section>
-<script>
-const cur = document.getElementById('cur');
-document.addEventListener('mousemove', e => {
-  cur.style.left = e.clientX+'px';
-  cur.style.top = e.clientY+'px';
-});
-const slides = document.querySelectorAll('.slide');
-const dotsEl = document.getElementById('dots');
-const prog = document.getElementById('prog');
-const total = slides.length;
-slides.forEach((_,i) => {
-  const d = document.createElement('div');
-  d.className = 'dot'+(i===0?' active':'');
-  d.addEventListener('click', () => slides[i].scrollIntoView({behavior:'smooth'}));
-  dotsEl.appendChild(d);
-});
-const dots = document.querySelectorAll('.dot');
-const obs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if(e.isIntersecting){
-      e.target.classList.add('in-view');
-      const i = parseInt(e.target.dataset.slide);
-      dots.forEach((d,j) => d.classList.toggle('active',j===i));
-      prog.style.width = ((i+1)/total*100)+'%';
+
+  <script>
+    const TOTAL = 3;
+    const pages = [
+      document.getElementById('p0'),
+      document.getElementById('p1'),
+      document.getElementById('p2'),
+    ];
+    const book      = document.getElementById('book');
+    const shadow    = document.getElementById('shadow');
+    const btnPrev   = document.getElementById('btn-prev');
+    const btnNext   = document.getElementById('btn-next');
+    const indicator = document.getElementById('indicator');
+    const hintLeft  = document.getElementById('hint-left');
+    const hintRight = document.getElementById('hint-right');
+    const zoneLeft  = document.getElementById('zone-left');
+    const zoneRight = document.getElementById('zone-right');
+
+    let current    = 0;   // which page face is visible (0=cover, 1=page1, 2=page2)
+    let animating  = false;
+
+    const SFX_WORDS = ['WHOOSH!', 'FWIP!', 'RUSTLE!', 'FLIP!', 'SWIPE!', 'ZAP!'];
+    const SFX_COLORS = ['#FFD700', '#FF4500', '#FF69B4', '#00CED1', '#ADFF2F'];
+
+    function zFor(i) {
+      // Z-index assignment while not animating
+      if (i < current) return i + 1;         // already turned → behind
+      if (i === current) return 100;          // current → topmost
+      return 50 + (TOTAL - i);               // future → below current, ordered
     }
-  });
-},{threshold:0.45});
-slides.forEach(s => obs.observe(s));
-</script>
+
+    function applyState(animated) {
+      pages.forEach((p, i) => {
+        p.style.transition = animated
+          ? 'transform 0.75s cubic-bezier(0.55, 0.06, 0.21, 0.97)'
+          : 'none';
+        p.style.zIndex    = zFor(i);
+        p.style.transform = i < current ? 'rotateY(-180deg)' : 'rotateY(0deg)';
+      });
+
+      indicator.textContent = `${current + 1} / ${TOTAL}`;
+      btnPrev.disabled  = current === 0;
+      btnNext.disabled  = current === TOTAL - 1;
+      hintLeft.classList.toggle('hidden',  current === 0);
+      hintRight.classList.toggle('hidden', current === TOTAL - 1);
+      zoneLeft.style.cursor  = current === 0          ? 'default'  : 'pointer';
+      zoneRight.style.cursor = current === TOTAL - 1  ? 'default'  : 'pointer';
+    }
+
+    function spawnSFX() {
+      const word  = SFX_WORDS[Math.floor(Math.random() * SFX_WORDS.length)];
+      const color = SFX_COLORS[Math.floor(Math.random() * SFX_COLORS.length)];
+      const el    = document.createElement('div');
+      el.className   = 'sfx';
+      el.textContent = word;
+      const size = 2.5 + Math.random() * 2;
+      el.style.cssText = `
+        left: ${20 + Math.random() * 60}%;
+        top:  ${15 + Math.random() * 50}%;
+        font-size: ${size}rem;
+        color: ${color};
+        text-shadow: 2px 2px 0 #000, -1px -1px 0 #000;
+      `;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 800);
+    }
+
+    function turnForward() {
+      if (animating || current >= TOTAL - 1) return;
+      animating = true;
+      spawnSFX();
+
+      const flipping = pages[current];
+      flipping.style.transition = 'transform 0.75s cubic-bezier(0.55, 0.06, 0.21, 0.97)';
+      flipping.style.zIndex = 200;
+      flipping.style.transform = 'rotateY(-180deg)';
+
+      book.classList.add('turning');
+
+      setTimeout(() => {
+        current++;
+        applyState(false);
+        book.classList.remove('turning');
+        animating = false;
+      }, 750);
+    }
+
+    function turnBack() {
+      if (animating || current <= 0) return;
+      animating = true;
+      spawnSFX();
+
+      const restoring = pages[current - 1];
+      restoring.style.transition = 'transform 0.75s cubic-bezier(0.55, 0.06, 0.21, 0.97)';
+      restoring.style.zIndex = 200;
+      restoring.style.transform = 'rotateY(0deg)';
+
+      book.classList.add('turning');
+
+      setTimeout(() => {
+        current--;
+        applyState(false);
+        book.classList.remove('turning');
+        animating = false;
+      }, 750);
+    }
+
+    // ── Wiring ──────────────────────────────────────────────────────────
+    btnNext.addEventListener('click',  turnForward);
+    btnPrev.addEventListener('click',  turnBack);
+    zoneRight.addEventListener('click', turnForward);
+    zoneLeft.addEventListener('click',  turnBack);
+
+    document.addEventListener('keydown', e => {
+      if (['ArrowRight', 'ArrowDown', ' ', 'PageDown'].includes(e.key)) {
+        e.preventDefault(); turnForward();
+      }
+      if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) {
+        e.preventDefault(); turnBack();
+      }
+    });
+
+    // Touch swipe
+    let touchX = 0;
+    document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+    document.addEventListener('touchend',   e => {
+      const dx = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx) > 45) {
+        if (dx < 0) turnForward(); else turnBack();
+      }
+    });
+
+    // ── Initial render (no transition) ──────────────────────────────────
+    applyState(false);
+  </script>
 </body>
 </html>
